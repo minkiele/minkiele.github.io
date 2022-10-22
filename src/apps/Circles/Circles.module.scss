@@ -4,13 +4,21 @@
 
 .circles {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  @media(min-width: 768px){
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  @media(min-width: 992px){
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  }
   grid-gap: 1rem;
   &_circleContainer {
     aspect-ratio: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 50%;
+    border: 1px black solid;
   }
   &_circle {
     width: 100%;
@@ -45,11 +53,11 @@
 
     @for $hour from 0 through 23 {
       &[data-h="#{$hour}"] {
-        $weight: (math.div($hour + 1, 24) * 100%);
+        $weight: (math.div($hour, 24) * 100%) * 2;
         @if $hour > 12 {
-          $weight: 100% - $weight;
+          $weight: 200% - $weight;
         }
-        background-color: color.mix($night, $day, $weight);
+        background-color: color.mix($day, $night, $weight);
       }
     }
   }

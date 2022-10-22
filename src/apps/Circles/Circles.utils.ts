@@ -51,10 +51,16 @@ export const getClockSizes = (date: Date): ClockData => ({
     fullHour: date.getHours(),
 });
 
-export const getGetCircleSize = (size: number): CSSProperties => ({
-    width: `${size * 100}%`,
-    height: `${size * 100}%`,
-});
+export const getGetCircleSize = (size: number): CSSProperties => {
+    // Diameter is proportional to the occupied area, not to the radius
+    // We don't need PI, after normalization it's just the diameter square root
+    const diameter = 100 * (size ** 0.5);
+
+    return {
+        width: `${diameter}%`,
+        height: `${diameter}%`,
+    };
+};
 
 export const CIRCLES: Array<keyof ClockRelativeSize> = [
     "day",

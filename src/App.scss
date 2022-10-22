@@ -2,13 +2,20 @@
 .App {
   display: flex;
 
-  aside {
-    width: 256px;
-    padding: 20px;
+  flex-direction: column;
 
+  aside {
+    padding: 20px;
     nav > ul {
       list-style: none;
       padding: 0;
+    }
+  }
+
+  @media(min-width: 768px) {
+    flex-direction: row;
+    aside {
+      width: 256px;
     }
   }
 

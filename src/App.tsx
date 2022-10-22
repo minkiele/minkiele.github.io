@@ -39,18 +39,18 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
     component: Cruciverba,
   },
   {
-    route: "/clock",
-    name: "Ora in parole",
-    component: OraInParole,
-  },
-  {
-    route: "/random-numbers",
+    route: "/numeri-a-caso",
     name: "Numeri a caso",
     component: NumeriCasuali,
   },
   {
-    route: "/circles",
-    name: "Balls clock",
+    route: "/parole",
+    name: "Ora a parole",
+    component: OraInParole,
+  },
+  {
+    route: "/palle",
+    name: "Palle",
     component: Circles,
   },
 ];
