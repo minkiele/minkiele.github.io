@@ -1,0 +1,59 @@
+.app {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  &_table {
+    border-collapse: collapse;
+  }
+  &_td {
+    border: 1px solid #000;
+    border-collapse: collapse;
+    width: 0;
+    height: 0;
+    position: relative;
+  }
+  &_definition {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 8px;
+    background-color: #fff;
+    color: #000;
+  }
+  &_input {
+    border: 0;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+  }
+  &_black {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #fff;
+    background-color: #000;
+  }
+  &_caption {
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: .5rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    font-family: serif;
+  }
+  &_definitions {
+    font-family: serif;
+    display: flex;
+    width: 100%;
+    gap: 20px;
+  }
+  &_directionDefinitions {
+    width: 50%;
+    flex-grow: 1;
+  }
+  &_definitionInput {
+    font-family: serif;
+    border-width: 0 0 1px;
+    min-width: 200px;
+  }
+}

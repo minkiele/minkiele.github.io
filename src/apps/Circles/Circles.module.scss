@@ -1,0 +1,56 @@
+@use "sass:color";
+@use "sass:list";
+@use "sass:math";
+
+.circles {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 1rem;
+  &_circleContainer {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &_circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: width, height 200ms;
+
+    // Change the color for every day of the year
+    $monthColors: rgb(162, 162, 162) rgb(216, 216, 216) rgb(31, 185, 87)
+      rgb(247, 180, 250) rgb(83, 199, 228) rgb(170, 255, 34) rgb(255, 29, 29)
+      rgb(255, 17, 17) rgb(123, 55, 16) rgb(107, 44, 2) rgb(73, 73, 73)
+      rgb(255, 0, 0) rgb(162, 162, 162);
+    $daysInMonths: 31 29 31 30 31 30 31 31 30 31 30 31;
+
+    $dayOfYear: 0;
+    @for $month from 1 through 12 {
+      $daysInMonth: list.nth($daysInMonths, $month);
+      @for $dayInMonth from 1 through $daysInMonth {
+        $dayOfYear: $dayOfYear + 1;
+        &[data-doy="#{$dayOfYear}"] {
+          background-color: color.mix(
+            list.nth($monthColors, $month),
+            list.nth($monthColors, $month + 1),
+            100% - (math.div($dayInMonth, $daysInMonth) * 100%)
+          );
+        }
+      }
+    }
+
+    $night: rgb(4, 29, 87);
+    $day: rgb(255, 230, 10);
+
+    @for $hour from 0 through 23 {
+      &[data-h="#{$hour}"] {
+        $weight: (math.div($hour + 1, 24) * 100%);
+        @if $hour > 12 {
+          $weight: 100% - $weight;
+        }
+        background-color: color.mix($night, $day, $weight);
+      }
+    }
+  }
+}

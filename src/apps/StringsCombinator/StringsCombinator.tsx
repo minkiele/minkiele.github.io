@@ -1,6 +1,6 @@
 import { thunkify, times } from "ramda";
 import { ChangeEvent, useMemo, useState } from "react";
-import {v4 as getRandomId} from 'uuid';
+import { v4 as getRandomId } from "uuid";
 import {
   Controller,
   SubmitHandler,
@@ -21,7 +21,12 @@ interface StringCombinatorForm {
   cases: Array<FormFriendlyStringCase>;
 }
 
-const getInitialState = (): FormFriendlyStringCase => ({ id: getRandomId(), letter: "", cases: [], many: "" });
+const getInitialState = (): FormFriendlyStringCase => ({
+  id: getRandomId(),
+  letter: "",
+  cases: [],
+  many: "",
+});
 const toString = (input: unknown) => JSON.stringify(input, null, 4);
 
 const StringsCombinator = (): JSX.Element => {
@@ -41,8 +46,11 @@ const StringsCombinator = (): JSX.Element => {
     remove: removeIndex,
   } = useFieldArray({ control, name: "cases" });
 
-  const watchVariants = watch('variants');
-  const variants = useMemo(() => Math.max(1, watchVariants - 2), [watchVariants]);
+  const watchVariants = watch("variants");
+  const variants = useMemo(
+    () => Math.max(1, watchVariants - 2),
+    [watchVariants]
+  );
 
   const handleRemove = thunkify(removeIndex);
 
@@ -55,9 +63,11 @@ const StringsCombinator = (): JSX.Element => {
     prefix,
     strong,
     ucFirst,
-    variants
+    variants,
   }) => {
-    setCombinations(toString(getCombinations(cases, prefix, ucFirst, strong, variants)));
+    setCombinations(
+      toString(getCombinations(cases, prefix, ucFirst, strong, variants))
+    );
   };
 
   return (
@@ -124,6 +134,7 @@ const StringsCombinator = (): JSX.Element => {
             {times(
               (time) => (
                 <Controller
+                  key={`cases.${index}.cases.${time}`}
                   name={`cases.${index}.cases.${time}` as const}
                   control={control}
                   render={({ field, fieldState: { invalid, error } }) => (
@@ -138,7 +149,7 @@ const StringsCombinator = (): JSX.Element => {
                   }}
                 />
               ),
-              variants,
+              variants
             )}
             <Controller
               name={`cases.${index}.many` as const}
@@ -154,9 +165,15 @@ const StringsCombinator = (): JSX.Element => {
                 required: "Variant Many required",
               }}
             />
-            <button type="button" onClick={handleRemove(index)} title="Remove">
-              -
-            </button>
+            {index > 0 && (
+              <button
+                type="button"
+                onClick={handleRemove(index)}
+                title="Remove"
+              >
+                -
+              </button>
+            )}
           </fieldset>
         ))}
         <button type="button" onClick={handleAppend} title="Add one">

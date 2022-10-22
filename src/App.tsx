@@ -1,15 +1,15 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router";
 import { NavLink } from "react-router-dom";
-import "./App.css";
-import logo from "./logo.svg";
+import "./App.scss";
 
+const Info = lazy(() => import("./apps/Info/Info"));
 const SudokuUI = lazy(() => import("./apps/SudokuUI/SudokuUI"));
 const Anagrammator = lazy(() => import("./apps/Anagrammator/Anagrammator"));
-const GoToReactJS = lazy(() => import("./apps/GoToReactJS/GoToReactJS"));
-const TestForm = lazy(() => import("./apps/TestForm/TestForm"));
-const StringsCombinator = lazy(() => import("./apps/StringsCombinator/StringsCombinator"));
-const TriggerEffect = lazy(() => import("./apps/TriggerEffect/TriggerEffect"));
+const Cruciverba = lazy(() => import("./apps/Cruciverba/Cruciverba"));
+const OraInParole = lazy(() => import("./apps/OraInParole/OraInParole"));
+const NumeriCasuali = lazy(() => import("./apps/NumeriCasuali/NumeriCasuali"));
+const Circles = lazy(() => import("./apps/Circles/Circles"));
 
 interface LazyRouteComponent {
   route: string;
@@ -20,6 +20,11 @@ interface LazyRouteComponent {
 const lazyRouteComponents: Array<LazyRouteComponent> = [
   {
     route: "/",
+    name: "Minkiele",
+    component: Info,
+  },
+  {
+    route: "/sudoku",
     name: "Sudoku",
     component: SudokuUI,
   },
@@ -29,39 +34,42 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
     component: Anagrammator,
   },
   {
-    route: "/gotoreactjs",
-    name: "Go to ReactJS",
-    component: GoToReactJS,
+    route: "/cruciverba",
+    name: "Cruciverba",
+    component: Cruciverba,
   },
   {
-    route: "/testform",
-    name: "Test Form",
-    component: TestForm,
+    route: "/clock",
+    name: "Ora in parole",
+    component: OraInParole,
   },
   {
-    route: "/strings-combinator",
-    name: "Strings Combinator",
-    component: StringsCombinator,
+    route: "/random-numbers",
+    name: "Numeri a caso",
+    component: NumeriCasuali,
   },
   {
-    route: "/triggereffect",
-    name: "TriggerEffect",
-    component: TriggerEffect,
+    route: "/circles",
+    name: "Balls clock",
+    component: Circles,
   },
 ];
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <ul>
-          {lazyRouteComponents.map(({ name, route }) => (
-            <li>
-              <NavLink to={route}>{name}</NavLink>
-            </li>
-          ))}
-        </ul>
+      <aside>
+        <nav>
+          <ul>
+            {lazyRouteComponents.map(({ name, route }) => (
+              <li key={route}>
+                <NavLink to={route}>{name}</NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+      <article>
         <Routes>
           {lazyRouteComponents.map(
             ({ component: LazyComponent, name, route }) => (
@@ -78,7 +86,7 @@ function App() {
             )
           )}
         </Routes>
-      </header>
+      </article>
     </div>
   );
 }

@@ -1,5 +1,22 @@
+
 .App {
-  text-align: center;
+  display: flex;
+
+  aside {
+    width: 256px;
+    padding: 20px;
+
+    nav > ul {
+      list-style: none;
+      padding: 0;
+    }
+  }
+
+  article {
+    flex-grow: 1;
+    padding: 20px;
+  }
+
 }
 
 .App-logo {
