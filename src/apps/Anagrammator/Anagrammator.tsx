@@ -1,7 +1,7 @@
 import { ChangeEvent, Children, useCallback, useEffect, useState } from "react";
-import { anagrammatorAsync } from "../../lib/anagrammator";
 import { factorial } from "../../lib/math";
 import debounce from "lodash.debounce";
+import anagrammator, { countAnagrams } from "anagrammator-minkiele";
 
 interface AnagrammatorState {
   value: string;
@@ -22,22 +22,45 @@ function Anagrammator() {
     });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debounceGenerateAnagrams = useCallback(debounce((input: string) => {
-    anagrammatorAsync(input).then((newAnagramms) => {
-      setState((oldState) => {
-        const newSize = newAnagramms.length;
-        const newTotal = input.length > 0 ? factorial(input.length) : 0;
-        const newSkipped = newTotal - newSize;
-        return {
-          ...oldState,
-          anagramms: newAnagramms,
-          size: newSize,
-          total: newTotal,
-          skipped: newSkipped,
-        };
+  const debounceGenerateAnagrams = useCallback(
+    debounce((input: string) => {
+      const newTotal = input.length > 0 ? factorial(input.length) : 0;
+
+      new Promise<Array<string>>((resolve, reject) => {
+        const total = countAnagrams(input);
+        if(total < 10000) {
+          const newAnagramms = anagrammator(input);
+          resolve(newAnagramms);
+        } else {
+          reject(total);
+        }
+      }).then((newAnagramms) => {
+        setState((oldState) => {
+          const newSize = newAnagramms.length;
+          const newSkipped = newTotal - newSize;
+          return {
+            ...oldState,
+            anagramms: newAnagramms,
+            size: newSize,
+            total: newTotal,
+            skipped: newSkipped,
+          };
+        });
+      }, (newSize) => {
+        setState((oldState) => {
+          const newSkipped = newTotal - newSize;
+          return {
+            ...oldState,
+            anagramms: [],
+            size: newSize,
+            total: newTotal,
+            skipped: newSkipped,
+          };
+        });
       });
-    });
-  }, 500), []);
+    }, 500),
+    []
+  );
 
   useEffect(() => {
     debounceGenerateAnagrams(value);
@@ -74,12 +97,14 @@ function Anagrammator() {
           </dl>
           {anagramms.length > 0 && anagramms.length < 10000 && (
             <>
-            <h2>The anagrams</h2>
-            <ol>
-              {Children.toArray(
-                anagramms.map((anagramm) => <li key={anagramm}>{anagramm}</li>)
-              )}
-            </ol>
+              <h2>The anagrams</h2>
+              <ol>
+                {Children.toArray(
+                  anagramms.map((anagramm) => (
+                    <li key={anagramm}>{anagramm}</li>
+                  ))
+                )}
+              </ol>
             </>
           )}
         </>

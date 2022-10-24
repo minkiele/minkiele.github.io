@@ -13,6 +13,7 @@
     "@types/node": "^16.18.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "anagrammator-minkiele": "github:minkiele/anagrammator",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
     "babel-plugin-named-asset-import": "^0.3.8",
