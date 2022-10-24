@@ -1,0 +1,18 @@
+@use 'sass:math';
+
+.cell {
+    border: 1px black solid;
+    border-collapse: collapse;
+    text-align: center;
+    vertical-align: middle;
+    opacity: 0;
+    transition: opacity 1s;
+    &__visible {
+        opacity: 1;
+        @for $cell from 1 through 25 {
+            &[data-c="#{$cell}"] {
+                transition-delay: #{math.div($cell - 1, 2)}s;
+            }
+        }
+    }
+}
