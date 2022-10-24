@@ -14,14 +14,14 @@ export class PrintableDirectionMatrix extends OrientationMatrix<Line.Line> {
             newOrientation === Plane.Orientation.S || comingOrientation === Plane.Orientation.S,
             newOrientation === Plane.Orientation.W || comingOrientation === Plane.Orientation.W
         );
-        let newContent: Line.Line | undefined;
+        let newContent: Line.Line;
         try {
-            const currentContent: Line.Line | null = this.getContent(this.row, this.column);
-            newContent = currentContent?.unite(newLine);
+            const currentContent: Line.Line = this.getContent(this.row, this.column);
+            newContent = currentContent.unite(newLine);
         } catch (exc) {
             newContent = newLine;
         }
-        return newContent != null ? this.setContent(newContent, this.row, this.column).move(newOrientation) : this;
+        return this.setContent(newContent, this.row, this.column).move(newOrientation);
 
     }
 

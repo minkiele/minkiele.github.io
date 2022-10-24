@@ -10,9 +10,9 @@ export class Matrix<T> {
         return this;
     }
 
-    public getContent(row: number, column: number): T | null {
+    public getContent(row: number, column: number): T {
         if (row >= 0 && row < this.rows && column >= 0 && column < this.columns) {
-            return this.matrix[row][column];
+            return this.matrix[row][column] as T;
         } else {
             throw new Error('ArrayIndexOutOfBoundException');
         }

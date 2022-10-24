@@ -27,7 +27,7 @@ function Bend(directions: Directions, direction: Symbol): Directions {
     }
 }
 
-function directionsToString(directions: Directions): string {
+export function directionsToString(directions: Directions): string {
     return directions.map(direction => direction === L ? L_REP : R_REP).join('');
 }
 
@@ -42,16 +42,16 @@ function bendToDirection(bend: Symbol): Plane.Direction {
     }
 }
 
-let dragon: Directions = [];
+export function getDragonFractal(iterations = 13): PrintableDirectionMatrix {
+    let dragon: Directions = [];
 
-for (let i = 1; i <= 13; i += 1) {
-    dragon = Bend(dragon, L);
+    for (let i = 1; i <= iterations; i += 1) {
+        dragon = Bend(dragon, L);
+    }
 
+    const matrix = new PrintableDirectionMatrix(Plane.Orientation.E);
+    for (let bend of dragon) {
+        matrix.turn(bendToDirection(bend));
+    }
+    return matrix;
 }
-
-const matrix = new PrintableDirectionMatrix(Plane.Orientation.E);
-for (let bend of dragon) {
-    matrix.turn(bendToDirection(bend));
-}
-console.log('Interaction %d, dragon matrix has a size of %dx%d', 10, matrix.getRows(), matrix.getColumns());
-console.log(matrix.toString());

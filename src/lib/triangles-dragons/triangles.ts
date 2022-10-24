@@ -33,6 +33,14 @@ function rowToString(row: Row, PRep: string = P_REP, DRep: string = D_REP): stri
     return row.map(single => single === D ? DRep : PRep).join('');
 }
 
+export function getTriangle(limit = 2**8): Triangle {
+    const triangle: Triangle = [];
+    for (let i = 0; i < limit; i += 1) {
+        addRow(triangle);
+    }
+    return triangle;
+}
+
 export function triangleToString(triangle: Triangle, PRep: string = P_REP, DRep: string = D_REP): string {
     return triangle.map(row => rowToString(row, PRep, DRep)).join('\n');
 }
