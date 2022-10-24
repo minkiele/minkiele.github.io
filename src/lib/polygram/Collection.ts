@@ -130,73 +130,73 @@ export const maybePickOne = (...terms: Array<InputTerm>): WeightedCollection => 
 export const weight = (term: InputTerm, weight?: number) => new WeightedTerm(term, weight);
 
 // DEMODOGS :D
-const barbon = join("Barbon", pickOne("e", "cino"));
-const volp = join("Volp", pickOne("ino", "one"));
+// const barbon = join("Barbon", pickOne("e", "cino"));
+// const volp = join("Volp", pickOne("ino", "one"));
 
-const races = pickOne(
-  "Carlino",
-  "Pastore",
-  "Beagle",
-  "Mastino",
-  weight(barbon, 2),
-  weight(volp, 2),
-  "Shiba",
-  "Chihuahua",
-  "Lupo",
-  "Cirneco",
-  "Rottweiler",
-  "Dobermann",
-  "Pitbull",
-  "Labrador",
-  "Golden",
-  "Schnauzer",
-  "Akita",
-  "Bull",
-  "Levriero",
-  "Dalmata",
-  "Boxer",
-  "Bulldog",
-  "Jack",
-  "Alano",
-  "Basset",
-  "Bassotto",
-  "Bouledogue"
-);
+// const races = pickOne(
+//   "Carlino",
+//   "Pastore",
+//   "Beagle",
+//   "Mastino",
+//   weight(barbon, 2),
+//   weight(volp, 2),
+//   "Shiba",
+//   "Chihuahua",
+//   "Lupo",
+//   "Cirneco",
+//   "Rottweiler",
+//   "Dobermann",
+//   "Pitbull",
+//   "Labrador",
+//   "Golden",
+//   "Schnauzer",
+//   "Akita",
+//   "Bull",
+//   "Levriero",
+//   "Dalmata",
+//   "Boxer",
+//   "Bulldog",
+//   "Jack",
+//   "Alano",
+//   "Basset",
+//   "Bassotto",
+//   "Bouledogue"
+// );
 
-const variants = pickOne("Inu", "Retriever", "Terrier", "Russell", "Hound", "Spaniel");
+// const variants = pickOne("Inu", "Retriever", "Terrier", "Russell", "Hound", "Spaniel");
 
-const nationalities = pickOne(
-  "Napoletano",
-  "Americano",
-  "Tedesco",
-  "Cecoslovacco",
-  "Inglese",
-  "Italiano",
-  "dell'Etna",
-  "Messicano",
-  "Australiano",
-  "Giapponese",
-  "Afghano",
-  "Francese"
-);
-const dogRaces = join(
-  races,
-  pickOne("", weight(variants, 2)),
-  pickOne("", weight(nationalities, 2))
-).withSeparator(" ");
+// const nationalities = pickOne(
+//   "Napoletano",
+//   "Americano",
+//   "Tedesco",
+//   "Cecoslovacco",
+//   "Inglese",
+//   "Italiano",
+//   "dell'Etna",
+//   "Messicano",
+//   "Australiano",
+//   "Giapponese",
+//   "Afghano",
+//   "Francese"
+// );
+// const dogRaces = join(
+//   races,
+//   pickOne("", weight(variants, 2)),
+//   pickOne("", weight(nationalities, 2))
+// ).withSeparator(" ");
+
+// // for (var i = 0; i < 10; i += 1) {
+// //  console.log(dogRaces.toString().trim());
+// // }
+
+// const seniority = pickOne("Junior", "Senior");
+// const preAdj = pickOne("Inclusion", "Human", "Pragmatic");
+// const adjectives = pickOne("UX", "UI", "CX", "Web", "Testing", "Quality", "Quality Assurance", "Project");
+// const assistant = join("Assistant", pickOne("", "Extraordinaire")).withSeparator(' ');
+// const jobTitle = pickOne("Developer", "Designer", "Consultant", "VP", "Vice President", "President", "Advocate", "Evangelist", "Manager", "Intern", assistant, "Master");
+
+// const jobTitles = join(maybePickOne(seniority), pickOne("", preAdj), maybePickOne(adjectives), jobTitle).withSeparator(' ');
 
 // for (var i = 0; i < 10; i += 1) {
-//  console.log(dogRaces.toString().trim());
+//   console.log(jobTitles.toString().trim());
 // }
-
-const seniority = pickOne("Junior", "Senior");
-const preAdj = pickOne("Inclusion", "Human", "Pragmatic");
-const adjectives = pickOne("UX", "UI", "CX", "Web", "Testing", "Quality", "Quality Assurance", "Project");
-const assistant = join("Assistant", pickOne("", "Extraordinaire")).withSeparator(' ');
-const jobTitle = pickOne("Developer", "Designer", "Consultant", "VP", "Vice President", "President", "Advocate", "Evangelist", "Manager", "Intern", assistant, "Master");
-
-const jobTitles = join(maybePickOne(seniority), pickOne("", preAdj), maybePickOne(adjectives), jobTitle).withSeparator(' ');
-
-for (var i = 0; i < 10; i += 1) {
-  console.log(jobTitles.toString().trim());
-}

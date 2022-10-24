@@ -135,6 +135,8 @@ function SudokuUI() {
   };
 
   return (
+    <div>
+    <p>Simple Sudoku matrix. There is no check if the Sudoku is correct though.</p>
     <table className={styles.table}>
       <caption>
         <Caption started={started} />
@@ -171,6 +173,7 @@ function SudokuUI() {
         )}
       </tbody>
     </table>
+    </div>
   );
 }
 

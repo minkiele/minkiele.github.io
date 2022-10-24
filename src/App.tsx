@@ -11,7 +11,9 @@ const OraInParole = lazy(() => import("./apps/OraInParole/OraInParole"));
 const NumeriCasuali = lazy(() => import("./apps/NumeriCasuali/NumeriCasuali"));
 const Circles = lazy(() => import("./apps/Circles/Circles"));
 const JumpMatrix = lazy(() => import("./apps/JumpMatrix/JumpMatrix"));
-const TrianglesAndDragons = lazy(() => import("./apps/TrianglesAndDragons/TrianglesAndDragons"));
+const Triangles = lazy(() => import("./apps/Triangles/Triangles"));
+const Dragons = lazy(() => import("./apps/Dragons/Dragons"));
+const DemoDogs = lazy(() => import("./apps/DemoDogs/DemoDogs"));
 
 interface LazyRouteComponent {
   route: string;
@@ -52,7 +54,7 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
   },
   {
     route: "/palle",
-    name: "Palle",
+    name: "Ora a palla",
     component: Circles,
   },
   {
@@ -61,9 +63,19 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
     component: JumpMatrix,
   },
   {
-    route: "/triangles-and-dragons",
-    name: "Triangles and Dragons",
-    component: TrianglesAndDragons,
+    route: "/fibonacci-triangle",
+    name: "Fibonacci's triangle",
+    component: Triangles,
+  },
+  {
+    route: "/dragon-fractal",
+    name: "The Dragon Fractal",
+    component: Dragons,
+  },
+  {
+    route: "/demodogs",
+    name: "Demo Dogs",
+    component: DemoDogs,
   },
 ];
 

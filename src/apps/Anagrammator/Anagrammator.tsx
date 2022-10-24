@@ -28,36 +28,39 @@ function Anagrammator() {
 
       new Promise<Array<string>>((resolve, reject) => {
         const total = countAnagrams(input);
-        if(total < 10000) {
+        if (total < 10000) {
           const newAnagramms = anagrammator(input);
           resolve(newAnagramms);
         } else {
           reject(total);
         }
-      }).then((newAnagramms) => {
-        setState((oldState) => {
-          const newSize = newAnagramms.length;
-          const newSkipped = newTotal - newSize;
-          return {
-            ...oldState,
-            anagramms: newAnagramms,
-            size: newSize,
-            total: newTotal,
-            skipped: newSkipped,
-          };
-        });
-      }, (newSize) => {
-        setState((oldState) => {
-          const newSkipped = newTotal - newSize;
-          return {
-            ...oldState,
-            anagramms: [],
-            size: newSize,
-            total: newTotal,
-            skipped: newSkipped,
-          };
-        });
-      });
+      }).then(
+        (newAnagramms) => {
+          setState((oldState) => {
+            const newSize = newAnagramms.length;
+            const newSkipped = newTotal - newSize;
+            return {
+              ...oldState,
+              anagramms: newAnagramms,
+              size: newSize,
+              total: newTotal,
+              skipped: newSkipped,
+            };
+          });
+        },
+        (newSize) => {
+          setState((oldState) => {
+            const newSkipped = newTotal - newSize;
+            return {
+              ...oldState,
+              anagramms: [],
+              size: newSize,
+              total: newTotal,
+              skipped: newSkipped,
+            };
+          });
+        }
+      );
     }, 500),
     []
   );
@@ -72,6 +75,14 @@ function Anagrammator() {
 
   return (
     <div>
+      <p>
+        Get anagrams for the provided input.
+      </p>
+      <p>
+        <strong>Warning</strong>: since the growth of the number is almost
+        exponential I capped the generator. If total number of anagrams exceed
+        10000 they won't be generated, but you can see stats about them.
+      </p>
       <div>
         <input
           id="input"
