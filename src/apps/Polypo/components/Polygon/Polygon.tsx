@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { times } from "ramda";
 import { FunctionComponent, memo } from "react";
 import Slice from "./components/Slice/Slice";
@@ -10,11 +11,18 @@ interface PolygonProps {
 
 const Polygon: FunctionComponent<PolygonProps> = memo(({ sides, radius }) => (
   <div
-    className={styles.polygon}
-    style={{
-      width: 2 * radius,
-      height: 2 * radius,
-    }}
+    className={classNames({
+      [styles.polygon]: true,
+      [styles.polygon__aspectRatio]: radius == null,
+    })}
+    style={
+      radius == null
+        ? undefined
+        : {
+            width: 2 * radius,
+            height: 2 * radius,
+          }
+    }
   >
     {times(
       (side) => (

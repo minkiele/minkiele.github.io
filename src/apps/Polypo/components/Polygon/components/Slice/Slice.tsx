@@ -7,13 +7,18 @@ export interface SliceProps {
   side: number;
 }
 
-const Slice: FunctionComponent<SliceProps> = memo(({ radius, sides, side }) => {
+const Slice: FunctionComponent<SliceProps> = memo(({ sides, side }) => {
   const angle = Math.PI / sides;
-  const height = radius * Math.cos(angle);
-  const width = 2 * radius * Math.sin(angle);
+  const height = 50 * Math.cos(angle);
+  const width = 100 * Math.sin(angle);
   const rotate = 2 * angle * side;
   const transform = `translateX(-50%) rotate(${rotate}rad)`;
-  return <div className={styles.slice} style={{ width, height, transform }} />;
+  return (
+    <div
+      className={styles.slice}
+      style={{ width: `${width}%`, height: `${height}%`, transform }}
+    />
+  );
 });
 
 export default Slice;

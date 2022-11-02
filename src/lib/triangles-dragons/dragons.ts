@@ -4,8 +4,8 @@ import { PrintableDirectionMatrix } from './matrix/printable-direction-matrix';
 const L_REP: string = 'L';
 const R_REP: string = 'R';
 
-const L: Symbol = Symbol(L_REP);
-const R: Symbol = Symbol(R_REP);
+export const L: Symbol = Symbol(L_REP);
+export const R: Symbol = Symbol(R_REP);
 
 function MirrorDirections(direction: Symbol): Symbol {
     switch (direction) {
@@ -42,14 +42,14 @@ function bendToDirection(bend: Symbol): Plane.Direction {
     }
 }
 
-export function getDragonFractal(iterations = 13): PrintableDirectionMatrix {
+export function getDragonFractal(iterations = 13, bendDirection = L, orientation = Plane.Orientation.E): PrintableDirectionMatrix {
     let dragon: Directions = [];
 
     for (let i = 1; i <= iterations; i += 1) {
-        dragon = Bend(dragon, L);
+        dragon = Bend(dragon, bendDirection);
     }
 
-    const matrix = new PrintableDirectionMatrix(Plane.Orientation.E);
+    const matrix = new PrintableDirectionMatrix(orientation);
     for (let bend of dragon) {
         matrix.turn(bendToDirection(bend));
     }
