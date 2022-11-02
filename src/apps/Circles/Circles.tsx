@@ -49,9 +49,7 @@ const Circles: FunctionComponent = () => {
             data-doy={getDoy(circle, circleSizes.dayOfYear)}
             data-h={getHour(circle, circleSizes.fullHour)}
             style={getGetCircleSize(circleSizes[circle])}
-          >
-            &nbsp;
-          </div>
+          ></div>
         </div>
       ))}
     </div>
