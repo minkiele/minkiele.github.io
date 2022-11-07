@@ -1,4 +1,6 @@
-const Info = () => (
+import { FunctionComponent } from "react";
+
+const Info: FunctionComponent = () => (
   <div>
     <h2>About the author</h2>
     <p>
@@ -15,14 +17,9 @@ const Info = () => (
       and most ridiculous things I've ever written.
       <br />
       Well, it never got published, and my life changed in the last years, as I
-      think it happened for everybody, so it isn't accurate; and I'd like to
+      think it happened for everybody, so it isn't very accurate; and I'd like to
       protect, for what is worth, whatever little is left of my privacy.
     </p>
-    {/* <h2>Little projects</h2>
-    <p>
-      For the most part this is a <abbr title="user interface">UI</abbr>
-      for some little projects I worked during the years.
-    </p> */}
     <h2>Other little projects</h2>
     <p>
       Yes, I have another little project published in Github:{" "}

@@ -7,13 +7,15 @@ import styles from "./Polygon.module.scss";
 interface PolygonProps {
   sides: number;
   radius: number;
+  className?: string;
 }
 
-const Polygon: FunctionComponent<PolygonProps> = memo(({ sides, radius }) => (
+const Polygon: FunctionComponent<PolygonProps> = memo(({ sides, radius, className }) => (
   <div
     className={classNames({
       [styles.polygon]: true,
       [styles.polygon__aspectRatio]: radius == null,
+      [className as string]: className,
     })}
     style={
       radius == null
