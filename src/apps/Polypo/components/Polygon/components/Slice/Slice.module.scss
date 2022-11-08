@@ -3,5 +3,12 @@
     border-bottom: 1px black solid;
     bottom: 0;
     left: 50%;
-    transform-origin: top center;
+    box-shadow: 0 0 4px 1px black;
+    &__even {
+        border-top: 1px black solid;
+        transform-origin: center;
+    }
+    &__odd {
+        transform-origin: top center;
+    }
 }

@@ -30,7 +30,7 @@ const Polygon: FunctionComponent<PolygonProps> = memo(({ sides, radius, classNam
       (side) => (
         <Slice key={side} radius={radius} sides={sides} side={side} />
       ),
-      sides
+      sides % 2 === 0 ? sides / 2 : sides
     )}
   </div>
 ));
