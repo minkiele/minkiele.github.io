@@ -1,6 +1,16 @@
 import dayjs, { Dayjs } from "dayjs";
 import { assocPath, repeat, times } from "ramda";
-import { ChangeEvent, KeyboardEvent, useEffect, useReducer, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  ForwardedRef,
+  forwardRef,
+  KeyboardEvent,
+  useEffect,
+  useImperativeHandle,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import generateClassName from "../../lib/generateClassName";
 import styles from "./SudokuUI.module.scss";
 import { SudokuMatrix } from "minkiele-sudoku-matrix";
@@ -18,18 +28,29 @@ interface ElapsedReducerState {
 }
 
 interface ElapsedReducerAction {
-  type: "start" | "stop" | "update" | 'reset';
+  type: "start" | "stop" | "update" | "reset";
 }
 
 interface CaptionProps {
   started: boolean;
 }
 
-const getSudokuMatrix = (matrix: Array<Array<string>>) => matrix.map((row) => row.map((col) => {
-  const numCol = parseInt(col); return isNaN(numCol) ? null : numCol;
-}));
+interface CaptionRef {
+  reset: () => void;
+}
 
-function Caption({ started = false }: CaptionProps) {
+const getSudokuMatrix = (matrix: Array<Array<string>>) =>
+  matrix.map((row) =>
+    row.map((col) => {
+      const numCol = parseInt(col);
+      return isNaN(numCol) ? null : numCol;
+    })
+  );
+
+const Caption = forwardRef(function Caption(
+  { started = false }: CaptionProps,
+  forwardedRef: ForwardedRef<CaptionRef>
+) {
   const [timeStatus, setTimeStatus] = useReducer(
     (state: ElapsedReducerState, action: ElapsedReducerAction) => {
       switch (action.type) {
@@ -63,6 +84,17 @@ function Caption({ started = false }: CaptionProps) {
     }
   );
 
+  useImperativeHandle(
+    forwardedRef,
+    () => ({
+      reset: () =>
+        setTimeStatus({
+          type: "reset",
+        }),
+    }),
+    []
+  );
+
   useEffect(() => {
     if (started === true) {
       setTimeStatus({
@@ -94,8 +126,9 @@ function Caption({ started = false }: CaptionProps) {
   }, [started, timeStatus.start]);
 
   return <>{timeStatus.elapsed}s</>;
-}
+});
 
+Caption.displayName = "Caption";
 
 function SudokuUI() {
   const sanitizeValue = (input: string): string => {
@@ -121,89 +154,104 @@ function SudokuUI() {
   const [started, setStarted] = useState<boolean>(false);
 
   useEffect(() => {
-    if(valid) {
+    if (valid) {
       setStarted(false);
     }
   }, [valid]);
 
-  const inputRefs = useRef<Array<Array<HTMLInputElement | null>>>(repeat(repeat(null, 9), 9));
+  const inputRefs = useRef<Array<Array<HTMLInputElement | null>>>(
+    times(() => repeat(null, 9), 9)
+  );
 
   const handleChange = (row: number, col: number) => (evt: ChangeEvent) => {
     setValue({ row, col, value: (evt.target as HTMLInputElement).value });
     setStarted(true);
   };
 
-  const setRefFactory = (row: number, col: number) => (ref: HTMLInputElement) => {
-    inputRefs.current[row][col] = ref;
+  const setRefFactory =
+    (row: number, col: number) => (ref: HTMLInputElement) => {
+      inputRefs.current[row][col] = ref;
+    };
+
+  // Keep track of the cursor position before we move otherwise it won't work correctly
+  const selectionRef = useRef<number | null>();
+  const handleSelectionFactory = (row: number, col: number) => () => {
+    selectionRef.current = inputRefs.current[row][col]?.selectionStart;
   };
 
-  const handleMoveFactory = (row: number, col: number) => (evt: KeyboardEvent<HTMLInputElement>) => {
-    // if((evt.target as HTMLInputElement).value.length === 0)
-    switch(evt.key) {
-      case 'Up':
-        if(row > 0) {
-          inputRefs.current[row - 1][col]?.focus();
-        }
-        break;
-      case 'Down':
-        if(row < 8) {
-          inputRefs.current[row + 1][col]?.focus();
-        }
-        break;
-      case 'Left':
-        if(col > 0) {
-          inputRefs.current[row][col - 1]?.focus();
-        }
-        break;
-      case 'Right':
-        if(col < 8) {
-          inputRefs.current[row][col + 1]?.focus();
-        }
-        break;
-    }
-  };
+  const handleMoveFactory =
+    (row: number, col: number) => (evt: KeyboardEvent<HTMLInputElement>) => {
+      switch (evt.key) {
+        case "ArrowUp":
+          if (row > 0) {
+            inputRefs.current[row - 1][col]?.focus();
+          }
+          break;
+        case "ArrowDown":
+          if (row < 8) {
+            inputRefs.current[row + 1][col]?.focus();
+          }
+          break;
+        case "ArrowLeft":
+          if (col > 0 && !selectionRef.current) {
+            inputRefs.current[row][col - 1]?.focus();
+          }
+          break;
+        case "ArrowRight":
+          if (
+            col < 8 &&
+            (selectionRef.current || !evt.currentTarget.value.length)
+          ) {
+            inputRefs.current[row][col + 1]?.focus();
+          }
+          break;
+      }
+    };
 
   return (
     <div>
-    <p>Simple Sudoku matrix. This whole application was born to actually integrate
-      yet another library I wrote to check the correctness of the sudoku.
-    </p>
-    <table className={styles.table}>
-      <caption>
-        <Caption started={started} /> {valid && <span>Bravo, the sudoku is valid!</span>}
-      </caption>
-      <tbody>
-        {times(
-          (row) => (
-            <tr
-              key={`row-${row}`}
-            >
-              {times(
-                (col) => (
-                  <td
-                    key={`col-${row}-${col}`}
-                    className={generateClassName({
-                      [styles.cell]: true,
-                    })}
-                  >
-                    <input
-                      id={`input-${row}-${col}`}
-                      value={matrix[row][col]}
-                      onChange={handleChange(row, col)}
-                      className={styles.input}
-                      ref={setRefFactory(row, col)}
-                      onKeyUp={handleMoveFactory(row, col)}
-                    />
-                  </td>
-                ),
-                9
-              )}
-            </tr>
-          ),
-          9
-        )}
-      </tbody>
-    </table>
+      <p>
+        Simple Sudoku matrix. This whole application was born to actually
+        integrate yet another library I wrote to check the correctness of the
+        sudoku.
+      </p>
+      <table className={styles.table}>
+        <caption>
+          <Caption started={started} />{" "}
+          {valid && <span>Bravo, the sudoku is valid!</span>}
+        </caption>
+        <tbody>
+          {times(
+            (row) => (
+              <tr key={`row-${row}`}>
+                {times(
+                  (col) => (
+                    <td
+                      key={`col-${row}-${col}`}
+                      className={generateClassName({
+                        [styles.cell]: true,
+                      })}
+                    >
+                      <input
+                        id={`input-${row}-${col}`}
+                        value={matrix[row][col]}
+                        onChange={handleChange(row, col)}
+                        className={styles.input}
+                        ref={setRefFactory(row, col)}
+                        onKeyDown={handleSelectionFactory(row, col)}
+                        onKeyUp={handleMoveFactory(row, col)}
+                        autoComplete="off"
+                      />
+                    </td>
+                  ),
+                  9
+                )}
+              </tr>
+            ),
+            9
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }

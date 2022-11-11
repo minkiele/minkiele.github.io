@@ -12,7 +12,7 @@ import {
 
 const DEFAULT_ROWS = 12;
 const DEFAULT_COLS = 22;
-const DEFAULT_SHOW_DEFS = true;
+const DEFAULT_SHOW_DEFS = false;
 
 type ReducerState = {
   matrix: Array<Array<string | null>>;
@@ -360,6 +360,7 @@ function Cruciverba() {
 
   return (
     <div className="app">
+      <p>An implementation of the crosswords schema with automatic calculation of definitions number</p>
       <table className="app_table">
         <caption className="app_caption">Parole Crociate</caption>
         <tbody>
@@ -396,6 +397,7 @@ function Cruciverba() {
                             ref={setRefCallbackFactory(row, col)}
                             onKeyDown={handleKeyDownNavigateFactory(row, col)}
                             onKeyUp={handleKeyUpNavigateFactory(row, col)}
+                            autoComplete="off"
                           />
                         </>
                       )}
@@ -455,19 +457,22 @@ function Cruciverba() {
         </div>
       )}
       <form onSubmit={handleSetSize}>
-        <label htmlFor="rows">Numero di righe:</label>
-        <input name="rows" defaultValue={ROWS} ref={rowsRef} type="number" />
-        <label htmlFor="cols">Numero di colonne:</label>
-        <input name="cols" defaultValue={COLS} ref={colsRef} type="number" />
-        <input
-          name="showDefs"
-          checked={showDefs}
-          onChange={handleToggleDefs}
-          type="checkbox"
-          value="showDefs"
-        />
-        <label htmlFor="defs">Mostra definizioni</label>
-        <button type="submit">Update</button>
+        <fieldset>
+          <legend>Opzioni</legend>
+          <label htmlFor="rows">Numero di righe:</label>
+          <input name="rows" defaultValue={ROWS} ref={rowsRef} type="number" />
+          <label htmlFor="cols">Numero di colonne:</label>
+          <input name="cols" defaultValue={COLS} ref={colsRef} type="number" />
+          <input
+            name="showDefs"
+            checked={showDefs}
+            onChange={handleToggleDefs}
+            type="checkbox"
+            value="showDefs"
+          />
+          <label htmlFor="defs">Mostra definizioni</label>
+          <button type="submit">Update</button>
+        </fieldset>
       </form>
     </div>
   );

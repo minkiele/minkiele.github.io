@@ -1,6 +1,8 @@
+import classNames from "classnames";
 import { ChangeEventHandler, FunctionComponent, useState } from "react";
 import { getDragonFractal, L, R } from "../../lib/triangles-dragons/dragons";
 import { Plane } from "../../lib/triangles-dragons/matrix/plane";
+import styles from "./Dragons.module.scss";
 
 const Dragons: FunctionComponent = () => {
   const [dragons, setDragons] = useState<{
@@ -145,7 +147,11 @@ const Dragons: FunctionComponent = () => {
           <label htmlFor="orientationWest">West</label>
         </fieldset>
       </div>
-      <pre>
+      <pre className={classNames({
+        [styles.dragons]: true,
+        [styles.dragons__medium]: dragons.iterations > 10 && dragons.iterations <= 13,
+        [styles.dragons__small]: dragons.iterations > 13
+      })}>
         {getDragonFractal(
           dragons.iterations,
           dragons.fold,
