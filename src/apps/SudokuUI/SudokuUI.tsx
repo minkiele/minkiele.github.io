@@ -136,7 +136,10 @@ function SudokuUI() {
 
   return (
     <div>
-    <p>Simple Sudoku matrix. There is no check if the Sudoku is correct though.</p>
+    <p>Simple Sudoku matrix. <strong>Coming soon:</strong> This whole application was born
+      to actually integrate yet another library I wrote to check the correctness of a sudoku.
+      I have to find the urge to build that library and to integrate it here.
+    </p>
     <table className={styles.table}>
       <caption>
         <Caption started={started} />
