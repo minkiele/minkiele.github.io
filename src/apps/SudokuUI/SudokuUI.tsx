@@ -3,6 +3,7 @@ import { assocPath, repeat, times } from "ramda";
 import { ChangeEvent, KeyboardEvent, useEffect, useReducer, useRef, useState } from "react";
 import generateClassName from "../../lib/generateClassName";
 import styles from "./SudokuUI.module.scss";
+import { SudokuMatrix } from "minkiele-sudoku-matrix";
 
 interface MatrixReducerAction {
   row: number;
@@ -17,12 +18,16 @@ interface ElapsedReducerState {
 }
 
 interface ElapsedReducerAction {
-  type: "start" | "stop" | "update";
+  type: "start" | "stop" | "update" | 'reset';
 }
 
 interface CaptionProps {
   started: boolean;
 }
+
+const getSudokuMatrix = (matrix: Array<Array<string>>) => matrix.map((row) => row.map((col) => {
+  const numCol = parseInt(col); return isNaN(numCol) ? null : numCol;
+}));
 
 function Caption({ started = false }: CaptionProps) {
   const [timeStatus, setTimeStatus] = useReducer(
@@ -37,6 +42,9 @@ function Caption({ started = false }: CaptionProps) {
           }
         }
         case "stop": {
+          return { ...state, start: null, current: null };
+        }
+        case "reset": {
           return { start: null, current: null, elapsed: 0 };
         }
         default:
@@ -55,8 +63,6 @@ function Caption({ started = false }: CaptionProps) {
     }
   );
 
-  const timerId = useRef<ReturnType<typeof setInterval>>();
-
   useEffect(() => {
     if (started === true) {
       setTimeStatus({
@@ -67,17 +73,27 @@ function Caption({ started = false }: CaptionProps) {
 
   useEffect(() => {
     if (timeStatus.start != null) {
-      timerId.current = setInterval(() => {
+      const timerId = setInterval(() => {
         setTimeStatus({
           type: "update",
         });
       }, 1000);
-    } else if (timerId.current != null) {
-      clearTimeout(timerId.current);
+      return () => {
+        clearTimeout(timerId);
+      };
+    }
+    return undefined;
+  }, [started, timeStatus.start]);
+
+  useEffect(() => {
+    if (!started && timeStatus.start != null) {
+      setTimeStatus({
+        type: "stop",
+      });
     }
   }, [started, timeStatus.start]);
 
-  return <>{timeStatus.elapsed}</>;
+  return <>{timeStatus.elapsed}s</>;
 }
 
 
@@ -95,7 +111,20 @@ function SudokuUI() {
     repeat(repeat("", 9), 9)
   );
 
+  const [valid, setValid] = useState<boolean>(false);
+
+  useEffect(() => {
+    const validator = new SudokuMatrix(getSudokuMatrix(matrix));
+    setValid(validator.isValid());
+  }, [matrix]);
+
   const [started, setStarted] = useState<boolean>(false);
+
+  useEffect(() => {
+    if(valid) {
+      setStarted(false);
+    }
+  }, [valid]);
 
   const inputRefs = useRef<Array<Array<HTMLInputElement | null>>>(repeat(repeat(null, 9), 9));
 
@@ -136,13 +165,12 @@ function SudokuUI() {
 
   return (
     <div>
-    <p>Simple Sudoku matrix. <strong>Coming soon:</strong> This whole application was born
-      to actually integrate yet another library I wrote to check the correctness of a sudoku.
-      I have to find the urge to build that library and to integrate it here.
+    <p>Simple Sudoku matrix. This whole application was born to actually integrate
+      yet another library I wrote to check the correctness of the sudoku.
     </p>
     <table className={styles.table}>
       <caption>
-        <Caption started={started} />
+        <Caption started={started} /> {valid && <span>Bravo, the sudoku is valid!</span>}
       </caption>
       <tbody>
         {times(
