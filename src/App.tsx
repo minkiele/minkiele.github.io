@@ -15,6 +15,7 @@ const Triangles = lazy(() => import("./apps/Triangles/Triangles"));
 const Dragons = lazy(() => import("./apps/Dragons/Dragons"));
 const DemoDogs = lazy(() => import("./apps/DemoDogs/DemoDogs"));
 const Polypo = lazy(() => import("./apps/Polypo/Polypo"));
+const Factorizer = lazy(() => import("./apps/Factorizer/Factorizer"));
 
 interface LazyRouteComponent {
   route: string;
@@ -79,9 +80,14 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
     component: DemoDogs,
   },
   {
-    route: "/Polypo",
-    name: "Polypo",
+    route: "/folypo",
+    name: "Folypo",
     component: Polypo,
+  },
+  {
+    route: "/factorize",
+    name: "Factorizer",
+    component: Factorizer,
   },
 ];
 
