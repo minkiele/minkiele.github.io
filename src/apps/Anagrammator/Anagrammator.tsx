@@ -1,7 +1,7 @@
 import { ChangeEvent, Children, useCallback, useEffect, useState } from "react";
-import { factorial } from "../../lib/math";
 import debounce from "lodash.debounce";
 import anagrammator, { countAnagrams } from "anagrammator-minkiele";
+import { UberMath } from "../../lib/ubermath";
 
 interface AnagrammatorState {
   value: string;
@@ -24,7 +24,7 @@ function Anagrammator() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceGenerateAnagrams = useCallback(
     debounce((input: string) => {
-      const newTotal = input.length > 0 ? factorial(input.length) : 0;
+      const newTotal = input.length > 0 ? UberMath.factorial(input.length) : 0;
 
       new Promise<Array<string>>((resolve, reject) => {
         const total = countAnagrams(input);

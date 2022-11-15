@@ -174,4 +174,11 @@ export namespace UberMath {
         return output;
     }
 
+    export const factorial = (input: number): number => {
+        let output = 1;
+        for (let i = 2; i <= input; i += 1) {
+          output *= i;
+        }
+        return output;
+    }
 }
