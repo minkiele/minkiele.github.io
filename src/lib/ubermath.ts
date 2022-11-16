@@ -113,7 +113,7 @@ export namespace UberMath {
         const sortedInputs = Array.from(inputs).sort(sortNumbers);
 
         for (const input of sortedInputs) {
-            console.log('Starting factorization of %d', input);
+            // console.log('Starting factorization of %d', input);
             let factors: Array<number> = [];
             let upperLimit: number = input;
             let i = 2;
@@ -122,7 +122,7 @@ export namespace UberMath {
             let currentPrimeIndex = 0;
             while (currentPrimeIndex < primes.length && i < upperLimit) {
                 i = primes[currentPrimeIndex];
-                console.log('Testing found prime %d on an upper limit of %d', i, upperLimit);
+                // console.log('Testing found prime %d on an upper limit of %d', i, upperLimit);
                 const rem = current % i;
                 if (rem === 0) {
                     factors.push(i);
@@ -135,25 +135,25 @@ export namespace UberMath {
             }
 
             while (i < upperLimit) {
-                console.log('Testing %d on an upper limit of %d', i, upperLimit);
+                // console.log('Testing %d on an upper limit of %d', i, upperLimit);
                 const rem = current % i;
                 if (rem === 0) {
                     factors.push(i);
                     if (i > largestPrime) {
                         primes.push(i);
                         largestPrime = i;
-                        console.log('Adding %d as largest prime', largestPrime);
+                        // console.log('Adding %d as largest prime', largestPrime);
                     }
                     current /= i;
                     upperLimit = current;
-                    console.log('Found %d, setting current to %d', i, current);
+                    // console.log('Found %d, setting current to %d', i, current);
                 } else {
                     upperLimit = (current - rem) / i;
                     i += (i === 2 ? 1 : 2);
                 }
             }
             // Current is already the largest prime.
-            console.log('Adding back largest prime number found %d', current);
+            // console.log('Adding back largest prime number found %d', current);
             if (i >= upperLimit) {
                 factors.push(current);
                 if (i > largestPrime) {
@@ -163,6 +163,7 @@ export namespace UberMath {
             }
             allFactors.push({input, factors});
         }
+        // console.log('Primes pool is %s', primes);
         return allFactors.sort(({input: a}, {input: b}) => sortNumbers(a, b)).map(({factors}) => factors);
     }
 

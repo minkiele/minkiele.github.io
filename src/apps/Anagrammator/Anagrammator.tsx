@@ -11,6 +11,11 @@ interface AnagrammatorState {
   skipped: number;
 }
 
+const normalizeInput = (input: string) => {
+  const trimmedInput = input.trim();
+  return trimmedInput.length > 0 ? trimmedInput.toUpperCase().replace(/[^A-Z]/, '') : trimmedInput;
+};
+
 function Anagrammator() {
   const [{ value, anagramms, size, total, skipped }, setState] =
     useState<AnagrammatorState>({
@@ -70,7 +75,7 @@ function Anagrammator() {
   }, [debounceGenerateAnagrams, value]);
 
   const handleChangeValue = (evt: ChangeEvent<HTMLInputElement>) => {
-    setState((oldState) => ({ ...oldState, value: evt.target.value }));
+    setState((oldState) => ({ ...oldState, value: normalizeInput(evt.target.value) }));
   };
 
   return (
@@ -83,14 +88,17 @@ function Anagrammator() {
         exponential I capped the generator. If total number of anagrams exceed
         10000 they won't be generated, but you can see stats about them.
       </p>
-      <div>
+      <fieldset>
+        <legend>Generator controls</legend>
+        <label htmlFor="input">Type in a word:</label>
+        {' '}
         <input
           id="input"
           value={value}
           type="text"
           onChange={handleChangeValue}
         />
-      </div>
+      </fieldset>
       {total > 0 && (
         <>
           <h2>Facts</h2>
@@ -106,7 +114,7 @@ function Anagrammator() {
             <dt>Skipped Combinations:</dt>
             <dd>{skipped}</dd>
           </dl>
-          {anagramms.length > 0 && anagramms.length < 10000 && (
+          {anagramms.length > 0 && (
             <>
               <h2>The anagrams</h2>
               <ol>

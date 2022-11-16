@@ -31,11 +31,11 @@ const Polypo: FunctionComponent = () => {
 
   };
 
-  return (
+  const renderedApp = (
     <div>
       <Polygon sides={sides} radius={radius} className={styles.polypo_polygon} />
       <fieldset>
-        <legend>Configuration</legend>
+        <legend>Generator configuration</legend>
         <label htmlFor="sides">Number of sides</label>
         <input
           name="sides"
@@ -44,6 +44,7 @@ const Polypo: FunctionComponent = () => {
           onChange={handleChangeSides}
           type="number"
         />
+        <br />
         <label htmlFor="radius">Radius of the surrounding circle</label>
         <input
           name="sides"
@@ -56,6 +57,12 @@ const Polypo: FunctionComponent = () => {
       </fieldset>
     </div>
   );
+  return <div>
+    <p>Simple engine to print regular polygons using HTML.
+      For fun I turned on shadows to see what was drawn inside,
+      because above 20 sides they looked pretty much all the same.</p>
+    {renderedApp}
+  </div>
 };
 
 export default Polypo;

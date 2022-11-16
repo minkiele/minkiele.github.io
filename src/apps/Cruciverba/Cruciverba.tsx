@@ -358,9 +358,9 @@ function Cruciverba() {
       }
     };
 
-  return (
+  // Workaround to avoid a whole tab shifting
+  const renderedApp = (
     <div className="app">
-      <p>An implementation of the crosswords schema with automatic calculation of definitions number</p>
       <table className="app_table">
         <caption className="app_caption">Parole Crociate</caption>
         <tbody>
@@ -474,6 +474,17 @@ function Cruciverba() {
           <button type="submit">Update</button>
         </fieldset>
       </form>
+    </div>
+  );
+
+  return (
+    <div>
+      <p>
+        An implementation of the crosswords schema with automatic calculation of
+        definitions number. Definitely not suitable for mobile devices, it will
+        frustrate you soooo much.
+      </p>
+      {renderedApp}
     </div>
   );
 }

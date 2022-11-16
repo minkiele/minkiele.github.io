@@ -37,6 +37,9 @@ const NumeriCasuali: FunctionComponent = () => {
 
   return (
     <div>
+      <p>Enunciate a number in italian language. I tried to put down in code the way I think we enunciate
+        the numbers in Italy. This demo will generate a pseudo-random number between 1 and 10<sup>{NUMBER_LENGTH}</sup>,
+      but it could really go up wherever you want.</p>
       <h2>{numeroCasuale.aParole} (<small>{numeroCasuale.inNumero}</small>)</h2>
       <button onClick={handleNextRandom}>Prossimo numero</button>
     </div>

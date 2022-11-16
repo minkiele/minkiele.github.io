@@ -9,6 +9,18 @@
     nav > ul {
       list-style: none;
       padding: 0;
+
+      > li {
+        display: inline;
+        + li::before {
+          content: ' ';
+        }
+
+        > a {
+          white-space: nowrap;
+        }
+      }
+
     }
   }
 
@@ -16,6 +28,19 @@
     flex-direction: row;
     aside {
       width: 256px;
+      nav > ul {
+        > li {
+          display: list-item;
+          + li::before {
+            content: none;
+          }
+
+          > a {
+            white-space: normal;
+          }
+        }
+
+      }
     }
   }
 

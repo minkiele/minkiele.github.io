@@ -41,8 +41,12 @@ export function getTriangle(limit = 2**8): Triangle {
     return triangle;
 }
 
+export function triangleToStringRows(triangle: Triangle, PRep: string = P_REP, DRep: string = D_REP): Array<string> {
+    return triangle.map(row => rowToString(row, PRep, DRep));
+}
+
 export function triangleToString(triangle: Triangle, PRep: string = P_REP, DRep: string = D_REP): string {
-    return triangle.map(row => rowToString(row, PRep, DRep)).join('\n');
+    return triangleToStringRows(triangle, PRep, DRep).join('\n');
 }
 
 // console.log(triangleToString(triangle));
