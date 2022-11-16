@@ -9,7 +9,7 @@ const Triangles: FunctionComponent = () => {
   const [triangles, setTriangles] = useState<number>(4);
   const handleTriangles: ChangeEventHandler<HTMLInputElement> = (evt) => {
     const newTriangles = parseInt(evt.target.value);
-    if (newTriangles > 0) {
+    if (newTriangles >= 0) {
       setTriangles(newTriangles);
     }
   };

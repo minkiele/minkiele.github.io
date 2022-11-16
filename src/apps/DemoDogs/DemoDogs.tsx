@@ -80,9 +80,14 @@ const DemoDogs: FunctionComponent = () => {
   };
   return (
     <div>
-      <p>This was inspired by Polygen, I wanted to create a suite of functions that could help you write a Polygen-like generative grammar.
-        The verbs are very limited but they do most of the work you need. The challenge for me here was to pick out an element from a weighted collection.
-        The pseudo-random generator does not work very well here, too many terms are repeated but it seems ok.</p>
+      <p>
+        This was inspired by Polygen, I wanted to create a suite of functions
+        that could help you write a Polygen-like generative grammar. The verbs
+        are very limited but they do most of the work you need. The challenge
+        for me here was to pick out an element from a weighted collection. The
+        pseudo-random generator does not work very well here, too many terms are
+        repeated but it seems ok.
+      </p>
       <div>
         <h3>Dog breeds</h3>
         <ul>
@@ -90,7 +95,9 @@ const DemoDogs: FunctionComponent = () => {
             <li key={demoDog}>{demoDog}</li>
           ))}
         </ul>
-        <button onClick={handleDemoDogs}>Gimme more dog breeds</button>
+        <p>
+          <button onClick={handleDemoDogs}>Gimme more dog breeds</button>
+        </p>
       </div>
     </div>
   );

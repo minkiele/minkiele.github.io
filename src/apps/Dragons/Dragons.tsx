@@ -76,16 +76,19 @@ const Dragons: FunctionComponent = () => {
         explanation.
       </p>
       <div>
-        <label htmlFor="newDragons">
-          This will generate a dragon fractal with the specified iterations
-          (after 15 iterations will start to considerably slow down).
-        </label>
-        <input
-          id="newDragons"
-          type="number"
-          onChange={handleDragons}
-          value={dragons.iterations}
-        />
+        <fieldset>
+          <legend>Iterations</legend>
+          <label htmlFor="newDragons">
+            This will generate a dragon fractal with the specified iterations
+            (after 15 iterations will start to considerably slow down).
+          </label>
+          <input
+            id="newDragons"
+            type="number"
+            onChange={handleDragons}
+            value={dragons.iterations}
+          />
+        </fieldset>
         <fieldset>
           <legend>Fold orientation</legend>
           <input
@@ -97,6 +100,7 @@ const Dragons: FunctionComponent = () => {
             checked={dragons.fold === L}
           />
           <label htmlFor="foldLeft">Left</label>
+          {' '}
           <input
             type="radio"
             name="fold"
@@ -118,6 +122,7 @@ const Dragons: FunctionComponent = () => {
             checked={dragons.orientation === Plane.Orientation.N}
           />
           <label htmlFor="orientationNorth">North</label>
+          {' '}
           <input
             type="radio"
             name="orientation"
@@ -127,6 +132,7 @@ const Dragons: FunctionComponent = () => {
             checked={dragons.orientation === Plane.Orientation.E}
           />
           <label htmlFor="orientationEast">East</label>
+          {' '}
           <input
             type="radio"
             name="orientation"
@@ -136,6 +142,7 @@ const Dragons: FunctionComponent = () => {
             checked={dragons.orientation === Plane.Orientation.S}
           />
           <label htmlFor="orientationSouth">South</label>
+          {' '}
           <input
             type="radio"
             name="orientation"
@@ -145,13 +152,17 @@ const Dragons: FunctionComponent = () => {
             checked={dragons.orientation === Plane.Orientation.W}
           />
           <label htmlFor="orientationWest">West</label>
+          {' '}
         </fieldset>
       </div>
-      <pre className={classNames({
-        [styles.dragons]: true,
-        [styles.dragons__medium]: dragons.iterations > 10 && dragons.iterations <= 13,
-        [styles.dragons__small]: dragons.iterations > 13
-      })}>
+      <pre
+        className={classNames({
+          [styles.dragons]: true,
+          [styles.dragons__medium]:
+            dragons.iterations > 10 && dragons.iterations <= 13,
+          [styles.dragons__small]: dragons.iterations > 13,
+        })}
+      >
         {getDragonFractal(
           dragons.iterations,
           dragons.fold,

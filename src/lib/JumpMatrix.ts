@@ -93,21 +93,6 @@ export class JumpMatrix {
     }
   }
 
-  public rewindOneMove(): this {
-    this.matrix[this.row][this.col] = undefined;
-    this.move -= 1;
-    outer: for(let row = 0; row < this.size; row += 1) {
-      for(let col = 0; col < this.size; col += 1) {
-        if(this.matrix[row][col] === this.move) {
-          this.row = row;
-          this.col = col;
-          break outer;
-        }
-      }
-    }
-    return this;
-  }
-
   private getValueAtCurrentPosition(): number | undefined {
     return this.matrix[this.row][this.col];
   }
@@ -160,42 +145,3 @@ export class JumpMatrix {
   }
 
 }
-
-// let tries = 0;
-// let done = false;
-
-// do {
-//   const jm = new JumpMatrix();
-//   tries += 1;
-//   try {
-//     jm.playFrom(0, 0);
-//     console.log('SOLVED IN %s TRIES', tries);
-//     if(jm.getValueAt(2, 2) === 25) {
-//       done = true;
-//     }
-//   } catch(err) {
-//     console.log("NO MORE MOVES");
-//   }
-//   console.log(jm.toString());
-// } while(!done);
-
-// const LIMIT = 100;
-
-// let tries = 0;
-// let done = 0;
-// let moves = 0;
-
-// do {
-//   const jm = new JumpMatrix();
-//   tries += 1;
-//   try {
-//     jm.play();
-//     done += 1;
-//   } catch(err) {
-//   }
-//   moves += jm.getMove();
-// } while(done < LIMIT);
-
-// console.log("Total tries: %d", tries);
-// console.log("Success Percentage: %d%%", LIMIT / tries * 100);
-// console.log("Average move per try: %d", moves / tries);

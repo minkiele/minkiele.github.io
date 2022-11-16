@@ -1,0 +1,87 @@
+* {
+  &,
+  &::before,
+  &::after {
+    box-sizing: border-box;
+  }
+}
+body {
+  margin: 0;
+  font-family: "Inconsolata", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: "Inconsolata", source-code-pro, Menlo, Monaco, Consolas,
+    "Courier New", monospace;
+}
+
+button {
+  border: 1px solid #000;
+  background-color: #fff;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: 700;
+  margin: 0;
+  padding: 0.5rem;
+  box-shadow: 4px 4px 0px 0px #000;
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px #000;
+  }
+}
+
+fieldset {
+  border: 1px solid #000;
+  margin: 1rem 0;
+  padding: 0.5rem;
+
+  + fieldset {
+    margin-top: 0;
+  }
+
+  legend {
+    border: 1px solid #000;
+    padding: 0.5rem;
+    box-shadow: 4px 4px 0px 0px #000;
+  }
+
+  input {
+    &:not([type="checkbox"]):not([type="radio"]) {
+      border: 1px solid #000;
+      outline: #000;
+      padding: 0.5rem;
+      font-family: inherit;
+    }
+    &[type="checkbox"], &[type="radio"] {
+      display: none;
+      + label {
+        &::before {
+          content: ' ';
+          display: inline-block;
+          width: 1rem;
+          height: 1rem;
+          border: 1px solid #000;
+          vertical-align: middle;
+          margin-right: .5rem;
+        }
+      }
+    }
+
+    &:checked + label::before {
+      background-color: #000;
+    }
+
+    &[type="radio"] + label::before {
+      border-radius: 3rem;
+    }
+  }
+
+  label {
+    line-height: 3;
+  }
+}

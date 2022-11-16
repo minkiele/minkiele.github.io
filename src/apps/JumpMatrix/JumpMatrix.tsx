@@ -78,7 +78,9 @@ const JumpMatrix: FunctionComponent = () => {
           ))}
         </tbody>
       </table>
-      <button onClick={handleUpdate}>More magic please</button>
+      <p>
+        <button onClick={handleUpdate}>More magic please</button>
+      </p>
     </div>
   );
 };

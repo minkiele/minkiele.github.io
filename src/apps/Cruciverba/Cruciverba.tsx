@@ -456,25 +456,32 @@ function Cruciverba() {
           )}
         </div>
       )}
-      <form onSubmit={handleSetSize}>
-        <fieldset>
-          <legend>Opzioni</legend>
-          <label htmlFor="rows">Numero di righe:</label>
-          <input name="rows" defaultValue={ROWS} ref={rowsRef} type="number" />
-          <label htmlFor="cols">Numero di colonne:</label>
-          <input name="cols" defaultValue={COLS} ref={colsRef} type="number" />
-          <input
-            name="showDefs"
-            checked={showDefs}
-            onChange={handleToggleDefs}
-            type="checkbox"
-            value="showDefs"
-          />
-          <label htmlFor="defs">Mostra definizioni</label>
-          <button type="submit">Update</button>
-        </fieldset>
-      </form>
     </div>
+  );
+
+  const settings = (
+    <form onSubmit={handleSetSize}>
+      <fieldset>
+        <legend>Opzioni</legend>
+        <label htmlFor="rows">Numero di righe:</label>{" "}
+        <input name="rows" defaultValue={ROWS} ref={rowsRef} type="number" />
+        {' '}
+        <label htmlFor="cols">Numero di colonne:</label>{" "}
+        <input name="cols" defaultValue={COLS} ref={colsRef} type="number" />
+        {' '}
+        <button type="submit">Update</button>
+        <br />
+        <input
+          id="showDefs"
+          name="showDefs"
+          checked={showDefs}
+          onChange={handleToggleDefs}
+          type="checkbox"
+          value="showDefs"
+        />
+        <label htmlFor="showDefs">Mostra definizioni</label>
+      </fieldset>
+    </form>
   );
 
   return (
@@ -485,6 +492,7 @@ function Cruciverba() {
         frustrate you soooo much.
       </p>
       {renderedApp}
+      {settings}
     </div>
   );
 }

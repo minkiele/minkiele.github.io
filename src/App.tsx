@@ -113,7 +113,7 @@ function App() {
                 key={route}
                 path={route}
                 element={
-                  <Suspense fallback="loading">
+                  <Suspense fallback={`Loading ${name}...`}>
                     <h1>{name}</h1>
                     <LazyComponent />
                   </Suspense>

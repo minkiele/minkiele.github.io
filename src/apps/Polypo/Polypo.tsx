@@ -1,4 +1,4 @@
-import { ChangeEventHandler, FunctionComponent, MouseEventHandler, useState } from "react";
+import { ChangeEventHandler, FunctionComponent, useState } from "react";
 import Polygon from "./components/Polygon/Polygon";
 import styles from "./Polypo.module.scss";
 
@@ -27,16 +27,17 @@ const Polypo: FunctionComponent = () => {
     }));
   };
 
-  const handleAnimate: MouseEventHandler<HTMLButtonElement> = () => {
-
-  };
-
   const renderedApp = (
     <div>
-      <Polygon sides={sides} radius={radius} className={styles.polypo_polygon} />
+      <Polygon
+        sides={sides}
+        radius={radius}
+        className={styles.polypo_polygon}
+      />
       <fieldset>
         <legend>Generator configuration</legend>
-        <label htmlFor="sides">Number of sides</label>
+        <label htmlFor="sides">Number of sides:</label>
+        {' '}
         <input
           name="sides"
           id="sides"
@@ -45,7 +46,8 @@ const Polypo: FunctionComponent = () => {
           type="number"
         />
         <br />
-        <label htmlFor="radius">Radius of the surrounding circle</label>
+        <label htmlFor="radius">Radius of the surrounding circle: </label>
+        {' '}
         <input
           name="sides"
           id="sides"
@@ -53,16 +55,19 @@ const Polypo: FunctionComponent = () => {
           onChange={handleChangeRadius}
           type="number"
         />
-        <button onClick={handleAnimate}>Animate</button>
       </fieldset>
     </div>
   );
-  return <div>
-    <p>Simple engine to print regular polygons using HTML.
-      For fun I turned on shadows to see what was drawn inside,
-      because above 20 sides they looked pretty much all the same.</p>
-    {renderedApp}
-  </div>
+  return (
+    <div>
+      <p>
+        Simple engine to print regular polygons using HTML. For fun I turned on
+        shadows to see what was drawn inside, because above 20 sides they looked
+        pretty much all the same.
+      </p>
+      {renderedApp}
+    </div>
+  );
 };
 
 export default Polypo;
