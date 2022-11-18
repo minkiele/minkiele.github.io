@@ -27,17 +27,15 @@ interface ElapsedReducerState {
   elapsed: number;
 }
 
-interface ElapsedReducerAction {
-  type: "start" | "stop" | "update" | "reset";
-}
-
-interface CaptionProps {
-  started: boolean;
-}
+type ElapsedReducerAction = "start" | "stop" | "update" | "reset";
 
 interface CaptionRef {
+  start: () => void;
+  stop: () => void;
   reset: () => void;
 }
+
+const STORAGE_KEY = "io.github.minkiele.SudokuUI.matrix";
 
 const getSudokuMatrix = (matrix: Array<Array<string>>) =>
   matrix.map((row) =>
@@ -48,12 +46,12 @@ const getSudokuMatrix = (matrix: Array<Array<string>>) =>
   );
 
 const Caption = forwardRef(function Caption(
-  { started = false }: CaptionProps,
+  _,
   forwardedRef: ForwardedRef<CaptionRef>
 ) {
   const [timeStatus, setTimeStatus] = useReducer(
     (state: ElapsedReducerState, action: ElapsedReducerAction) => {
-      switch (action.type) {
+      switch (action) {
         case "start": {
           if (state.start == null) {
             const now = dayjs();
@@ -87,43 +85,24 @@ const Caption = forwardRef(function Caption(
   useImperativeHandle(
     forwardedRef,
     () => ({
-      reset: () =>
-        setTimeStatus({
-          type: "reset",
-        }),
+      start: () => setTimeStatus("start"),
+      stop: () => setTimeStatus("stop"),
+      reset: () => setTimeStatus("reset"),
     }),
     []
   );
 
   useEffect(() => {
-    if (started === true) {
-      setTimeStatus({
-        type: "start",
-      });
-    }
-  }, [started]);
-
-  useEffect(() => {
     if (timeStatus.start != null) {
       const timerId = setInterval(() => {
-        setTimeStatus({
-          type: "update",
-        });
+        setTimeStatus("update");
       }, 1000);
       return () => {
         clearTimeout(timerId);
       };
     }
     return undefined;
-  }, [started, timeStatus.start]);
-
-  useEffect(() => {
-    if (!started && timeStatus.start != null) {
-      setTimeStatus({
-        type: "stop",
-      });
-    }
-  }, [started, timeStatus.start]);
+  }, [timeStatus.start]);
 
   return <>{timeStatus.elapsed}s</>;
 });
@@ -138,11 +117,11 @@ function SudokuUI() {
       : `${inputNumber}`;
   };
 
-  const [matrix, setValue] = useReducer(
-    (state: Array<Array<string>>, { row, col, value }: MatrixReducerAction) =>
-      assocPath([row, col], sanitizeValue(value), state),
-    repeat(repeat("", 9), 9)
+  const [matrix, setMatrix] = useState<Array<Array<string>>>(
+    times(() => repeat("", 9), 9)
   );
+  const setValue = ({ row, col, value }: MatrixReducerAction) =>
+    setMatrix((state) => assocPath([row, col], sanitizeValue(value), state));
 
   const [valid, setValid] = useState<boolean>(false);
 
@@ -151,11 +130,11 @@ function SudokuUI() {
     setValid(validator.isValid());
   }, [matrix]);
 
-  const [started, setStarted] = useState<boolean>(false);
+  const captionRef = useRef<CaptionRef | null>(null);
 
   useEffect(() => {
     if (valid) {
-      setStarted(false);
+      captionRef.current?.stop();
     }
   }, [valid]);
 
@@ -165,7 +144,7 @@ function SudokuUI() {
 
   const handleChange = (row: number, col: number) => (evt: ChangeEvent) => {
     setValue({ row, col, value: (evt.target as HTMLInputElement).value });
-    setStarted(true);
+    captionRef.current?.start();
   };
 
   const setRefFactory =
@@ -208,6 +187,26 @@ function SudokuUI() {
       }
     };
 
+  const handleStore = () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(matrix));
+  };
+
+  const handleRestore = () => {
+    const serializedMatrix = localStorage.getItem(STORAGE_KEY);
+    if (serializedMatrix != null) {
+      try {
+        const restoredMatrix = JSON.parse(serializedMatrix);
+        setMatrix(restoredMatrix);
+        captionRef.current?.reset();
+      } catch (_) {}
+    }
+  };
+
+  const handleReset = () => {
+    setMatrix(times(() => repeat("", 9), 9));
+    captionRef.current?.reset();
+  };
+
   return (
     <div>
       <p>
@@ -217,7 +216,7 @@ function SudokuUI() {
       </p>
       <table className={styles.table}>
         <caption>
-          <Caption started={started} />{" "}
+          <Caption ref={captionRef} />{" "}
           {valid && <span>Bravo, the sudoku is valid!</span>}
         </caption>
         <tbody>
@@ -252,6 +251,18 @@ function SudokuUI() {
           )}
         </tbody>
       </table>
+      <fieldset>
+        <legend>Controls</legend>
+        <button type="button" onClick={handleStore}>
+          Store
+        </button>{" "}
+        <button type="button" onClick={handleRestore}>
+          Restore
+        </button>{" "}
+        <button type="button" onClick={handleReset}>
+          Reset
+        </button>
+      </fieldset>
     </div>
   );
 }
