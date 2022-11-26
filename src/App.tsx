@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { FunctionComponent, lazy, Suspense, useEffect, useRef } from "react";
 import { Route, Routes } from "react-router";
 import { NavLink } from "react-router-dom";
 import "./App.scss";
@@ -21,6 +21,7 @@ interface LazyRouteComponent {
   route: string;
   name: string;
   component: ReturnType<typeof lazy>;
+  setTitle?: boolean;
 }
 
 const lazyRouteComponents: Array<LazyRouteComponent> = [
@@ -28,6 +29,7 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
     route: "/",
     name: "Minkiele",
     component: Info,
+    setTitle: false,
   },
   {
     route: "/sudoku",
@@ -91,6 +93,37 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
   },
 ];
 
+interface DocumentTitleProps {
+  title?: string;
+  sep?: string;
+}
+
+const DocumentTitle: FunctionComponent<DocumentTitleProps> = ({
+  title,
+  sep = " - #",
+}) => {
+  const originalTitleRef = useRef<string>(document.title);
+  useEffect(() => {
+    const originalTitle = originalTitleRef.current;
+    const titleParts = [];
+    if (originalTitle.length > 0) {
+      titleParts.push(originalTitle);
+    }
+    if (title != null && title.length > 0) {
+      titleParts.push(title);
+    }
+    if (titleParts.length > 0) {
+      document.title = titleParts.join(sep);
+    }
+    return () => {
+      if (titleParts.length > 0) {
+        document.title = originalTitle;
+      }
+    };
+  }, [title, sep]);
+  return <>{undefined}</>;
+};
+
 function App() {
   return (
     <div className="App">
@@ -108,12 +141,13 @@ function App() {
       <article>
         <Routes>
           {lazyRouteComponents.map(
-            ({ component: LazyComponent, name, route }) => (
+            ({ component: LazyComponent, name, route, setTitle = true }) => (
               <Route
                 key={route}
                 path={route}
                 element={
                   <Suspense fallback={`Loading ${name}...`}>
+                    <DocumentTitle title={setTitle ? name : undefined} />
                     <h1>{name}</h1>
                     <LazyComponent />
                   </Suspense>

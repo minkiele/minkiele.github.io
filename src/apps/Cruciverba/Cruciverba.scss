@@ -54,6 +54,9 @@
   &_definitionInput {
     font-family: serif;
     border-width: 0 0 1px;
+    @media print {
+      border-width: 0;
+    }
     min-width: 200px;
   }
 }
