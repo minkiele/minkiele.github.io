@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/655.23ee5f86.chunk.css","mappings":"AAAA,mCAEI,eADA,iBACA","sources":["apps/Triangles/Triangles.module.scss"],"sourcesContent":[".triangles_render {\n    text-align: center;\n    line-height: .6;\n}\n"],"names":[],"sourceRoot":""}

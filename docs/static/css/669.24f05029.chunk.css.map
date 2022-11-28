@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/669.24f05029.chunk.css","mappings":"AACI,gCACI,gBAEJ,+BACI","sources":["apps/Dragons/Dragons.module.scss"],"sourcesContent":[".dragons {\n    &__medium {\n        font-size: .5rem;\n    }\n    &__small {\n        font-size: .25rem;\n    }\n}\n"],"names":[],"sourceRoot":""}
