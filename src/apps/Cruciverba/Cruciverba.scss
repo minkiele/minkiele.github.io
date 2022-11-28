@@ -1,3 +1,6 @@
+@use "../../styles/colors";
+@use "../../styles/mixins";
+
 .app {
   display: flex;
   align-items: center;
@@ -6,7 +9,7 @@
     border-collapse: collapse;
   }
   &_td {
-    border: 1px solid #000;
+    border: 1px solid colors.$fg;
     border-collapse: collapse;
     width: 0;
     height: 0;
@@ -17,8 +20,8 @@
     top: 0;
     left: 0;
     font-size: 8px;
-    background-color: #fff;
-    color: #000;
+    background-color: colors.$bg;
+    color: colors.$fg;
   }
   &_input {
     border: 0;
@@ -30,13 +33,13 @@
     display: block;
     width: 100%;
     height: 100%;
-    border: 1px solid #fff;
-    background-color: #000;
+    border: 1px solid colors.$bg;
+    background-color: colors.$fg;
   }
   &_caption {
     font-size: 32px;
     font-weight: 700;
-    margin-top: .5rem;
+    margin-top: 0.5rem;
     margin-bottom: 1.5rem;
     text-transform: uppercase;
     font-family: serif;
@@ -58,5 +61,21 @@
       border-width: 0;
     }
     min-width: 200px;
+  }
+}
+
+@include mixins.when-dark() {
+  .app {
+    &_td {
+      border: 1px solid colors.$dark-fg;
+    }
+    &_input, &_definitionInput, &_definition {
+      color: inherit;
+      background-color: inherit;
+    }
+    &_black {
+      border: 1px solid colors.$dark-bg;
+      background-color: colors.$dark-fg;
+    }
   }
 }

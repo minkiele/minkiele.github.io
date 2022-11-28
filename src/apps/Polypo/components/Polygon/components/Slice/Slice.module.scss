@@ -1,14 +1,27 @@
+@use "../../../../../../styles/colors";
+@use "../../../../../../styles/mixins";
+
 .slice {
-    position: absolute;
-    border-bottom: 1px black solid;
-    bottom: 0;
-    left: 50%;
-    box-shadow: 0 0 4px 1px black;
+  position: absolute;
+  border-bottom: 1px colors.$fg solid;
+  bottom: 0;
+  left: 50%;
+  box-shadow: 0 0 4px 1px colors.$fg;
+  &__even {
+    border-top: 1px colors.$fg solid;
+    transform-origin: center;
+  }
+  &__odd {
+    transform-origin: top center;
+  }
+}
+
+@include mixins.when-dark() {
+  .slice {
+    border-bottom-color: colors.$dark-fg;
+    box-shadow: 0 0 4px 1px colors.$dark-fg;
     &__even {
-        border-top: 1px black solid;
-        transform-origin: center;
+      border-top-color: colors.$dark-fg;
     }
-    &__odd {
-        transform-origin: top center;
-    }
+  }
 }

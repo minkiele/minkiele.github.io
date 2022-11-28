@@ -1,7 +1,9 @@
 @use 'sass:math';
+@use "../../styles/colors";
+@use "../../styles/mixins";
 
 .cell {
-    border: 1px black solid;
+    border: 1px colors.$fg solid;
     border-collapse: collapse;
     text-align: center;
     vertical-align: middle;
@@ -14,5 +16,11 @@
                 transition-delay: #{math.div($cell - 1, 2)}s;
             }
         }
+    }
+}
+
+@include mixins.when-dark() {
+    .cell {
+        border-color: colors.$dark-fg;
     }
 }

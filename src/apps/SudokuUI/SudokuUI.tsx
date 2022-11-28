@@ -232,6 +232,8 @@ function SudokuUI() {
                       })}
                     >
                       <input
+                        // It will spawn the phone input in mobile
+                        type="tel"
                         id={`input-${row}-${col}`}
                         value={matrix[row][col]}
                         onChange={handleChange(row, col)}

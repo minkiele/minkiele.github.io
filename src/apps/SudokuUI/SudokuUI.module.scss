@@ -1,53 +1,70 @@
-@use 'sass:math';
+@use "sass:math";
+@use "../../styles/colors";
+@use "../../styles/mixins";
 
 .cell {
-    $side: math.div(100%, 9);
-    width: $side;
-    height: $side;
-    border: 1px black solid;
+  $side: math.div(100%, 9);
+  width: $side;
+  height: $side;
+  border: 1px colors.$fg solid;
 }
 
 .input {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    border: 0;
-    text-align: center;
-    font-size: 20px;
-    font-weight: 900;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 900;
 }
 
 .table {
-    border-collapse: collapse;
-    border: 2px black solid;
-    > tbody {
-        $side: calc(100vw - #{2 * 20px});
-        width: $side;
-        height: $side;
-        > tr {
-            &:nth-child(3n):not(:last-child) > td {
-                border-bottom-width: 2px;
-            }
-            > td:nth-child(3n):not(:last-child) {
-                border-right-width: 2px;
-            }
-        }
+  border-collapse: collapse;
+  border: 2px colors.$fg solid;
+  > tbody {
+    $side: calc(100vw - #{2 * 20px});
+    width: $side;
+    height: $side;
+    > tr {
+      &:nth-child(3n):not(:last-child) > td {
+        border-bottom-width: 2px;
+      }
+      > td:nth-child(3n):not(:last-child) {
+        border-right-width: 2px;
+      }
     }
+  }
 }
 
 @media (min-width: 768px) {
-    .cell {
-        $side: 30px;
-        width: $side;
-        height: $side;
-    }
+  .cell {
+    $side: 30px;
+    width: $side;
+    height: $side;
+  }
 
-    .table {
-        > tbody {
-            $side: auto;
-            width: $side;
-            height: $side;
-        }
+  .table {
+    > tbody {
+      $side: auto;
+      width: $side;
+      height: $side;
     }
+  }
+}
+
+@include mixins.when-dark() {
+  .cell {
+    border-color: colors.$dark-fg;
+  }
+
+  .input {
+    color: inherit;
+    background-color: inherit;
+  }
+
+  .table {
+    border-color: colors.$dark-fg;
+  }
 }
