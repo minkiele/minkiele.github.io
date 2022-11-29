@@ -69,7 +69,9 @@
     &_td {
       border: 1px solid colors.$dark-fg;
     }
-    &_input, &_definitionInput, &_definition {
+    &_input,
+    &_definitionInput,
+    &_definition {
       color: inherit;
       background-color: inherit;
     }

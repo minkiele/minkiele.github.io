@@ -10,9 +10,12 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
+    "@types/lodash.debounce": "^4.0.7",
     "@types/node": "^16.18.0",
+    "@types/ramda": "^0.28.18",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "@types/uuid": "^8.3.4",
     "anagrammator-minkiele": "github:minkiele/anagrammator",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
@@ -38,6 +41,7 @@
     "jest": "^27.4.3",
     "jest-resolve": "^27.4.2",
     "jest-watch-typeahead": "^1.0.0",
+    "loader-utils": "^3.2.1",
     "mini-css-extract-plugin": "^2.4.5",
     "minkiele-sudoku-matrix": "github:minkiele/sudoku-matrix",
     "postcss": "^8.4.4",
@@ -45,6 +49,7 @@
     "postcss-loader": "^6.2.1",
     "postcss-normalize": "^10.0.1",
     "postcss-preset-env": "^7.0.1",
+    "prettier": "^2.8.0",
     "prompts": "^2.4.2",
     "ramda": "^0.28.0",
     "react": "^18.2.0",
@@ -68,16 +73,16 @@
     "webpack": "^5.64.4",
     "webpack-dev-server": "^4.6.0",
     "webpack-manifest-plugin": "^4.0.2",
-    "workbox-webpack-plugin": "^6.4.1",
-    "@types/lodash.debounce": "^4.0.7",
-    "@types/ramda": "^0.28.18",
-    "@types/uuid": "^8.3.4",
-    "loader-utils": "^3.2.1"
+    "workbox-webpack-plugin": "^6.4.1"
   },
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "typecheck": "tsc --noemit",
+    "lint": "eslint src --quiet --fix --ext .js,.ts,.jsx,.tsx",
+    "format:nonlinted": "prettier --write --check \"src/**/*.scss\" \"src/**/*.css\"  --no-error-on-unmatched-pattern",
+    "husky-pre-commit": "npm run lint && npm run typecheck && npm run format:nonlinted"
   },
   "eslintConfig": {
     "extends": [
