@@ -1,5 +1,7 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { pronunciaDataOra } from "../../lib/EnunciateNumbers";
+import Markdown from "../../shared/Markdown/Markdown";
+import OraInParoleMd from './OraInParole.md';
 
 const orora = () => pronunciaDataOra(new Date());
 
@@ -17,8 +19,7 @@ const OraInParole: FunctionComponent = () => {
 
   return (
     <div>
-      <p>Similarly to the number enunciation here a full date is enunciated in italian.
-        Here I had to accomodate some exceptions for the name of the hours.</p>
+      <Markdown>{OraInParoleMd}</Markdown>
       <h2>{oraInParole}</h2>
     </div>
   );

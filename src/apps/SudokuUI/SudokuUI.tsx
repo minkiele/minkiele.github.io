@@ -14,6 +14,8 @@ import {
 import generateClassName from "../../lib/generateClassName";
 import styles from "./SudokuUI.module.scss";
 import { SudokuMatrix } from "minkiele-sudoku-matrix";
+import Markdown from "../../shared/Markdown/Markdown";
+import SudokuUIMd from './SudokuUI.md';
 
 interface MatrixReducerAction {
   row: number;
@@ -209,11 +211,7 @@ function SudokuUI() {
 
   return (
     <div>
-      <p>
-        Simple Sudoku matrix. This whole application was born to actually
-        integrate yet another library I wrote to check the correctness of the
-        sudoku.
-      </p>
+      <Markdown>{SudokuUIMd}</Markdown>
       <table className={styles.table}>
         <caption>
           <Caption ref={captionRef} />{" "}

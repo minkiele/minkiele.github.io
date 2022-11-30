@@ -1,6 +1,8 @@
 import { ChangeEventHandler, FunctionComponent, useState } from "react";
+import Markdown from "../../shared/Markdown/Markdown";
 import Polygon from "./components/Polygon/Polygon";
 import styles from "./Polypo.module.scss";
+import PolypoMd from './Polypo.md';
 
 const castInput = (input: string, deft: number): number => {
   const cast = parseInt(input);
@@ -60,11 +62,7 @@ const Polypo: FunctionComponent = () => {
   );
   return (
     <div>
-      <p>
-        Simple engine to print regular polygons using HTML. For fun I turned on
-        shadows to see what was drawn inside, because above 20 sides they looked
-        pretty much all the same.
-      </p>
+      <Markdown>{PolypoMd}</Markdown>
       {renderedApp}
     </div>
   );

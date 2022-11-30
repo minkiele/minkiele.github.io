@@ -9,6 +9,8 @@ import {
   useReducer,
   useRef,
 } from "react";
+import Markdown from "../../shared/Markdown/Markdown";
+import CruciverbaMd from './Cruciverba.md';
 
 const DEFAULT_ROWS = 12;
 const DEFAULT_COLS = 22;
@@ -486,11 +488,7 @@ function Cruciverba() {
 
   return (
     <div>
-      <p>
-        An implementation of the crosswords schema with automatic calculation of
-        definitions number. Definitely not suitable for mobile devices, it will
-        frustrate you soooo much.
-      </p>
+      <Markdown>{CruciverbaMd}</Markdown>
       {renderedApp}
       {settings}
     </div>

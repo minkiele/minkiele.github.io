@@ -1,10 +1,12 @@
-# About the author
+# Minkiele
+
+## About the author
 
 Hi there, my name is Michele, I'm 38.
 I was born and raised in Italy, in a small town nearby Venice lagoon and I
 still live there.
 
-## That article that never got published
+### That article that never got published
 
 Some years ago I wrote a little profile article about myself, just as I
 switched jobs, and it was going to be published in my current company's

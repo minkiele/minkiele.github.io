@@ -4,6 +4,8 @@ import anagrammator, { countAnagrams } from "anagrammator-minkiele";
 import { UberMath } from "../../lib/ubermath";
 import { isValidWord } from "../../lib/stupid-abc";
 import { T } from "ramda";
+import Markdown from "../../shared/Markdown/Markdown";
+import AnagrammatorMd from './Anagrammator.md';
 
 interface AnagrammatorState {
   value: string;
@@ -93,20 +95,7 @@ function Anagrammator() {
 
   return (
     <div>
-      <p>Get anagrams for the provided input.</p>
-      <p>
-        <strong>Warning</strong>: since the growth of the number is almost
-        exponential I capped the generator. If total number of anagrams exceed
-        10000 they won't be generated, but you can see stats about them.
-      </p>
-      <p>Added a very stupid control to print only words that can be valid italian
-        words. It will skip couples of words that are evidently invalid in the italian
-        grammar (e.g. A <em>Q</em> can be followed only by a <em>U</em> or by another <em>U</em>).
-        This is just a first -admittedly- very stupid screening as rules generally involve
-        groups of 3 or more letters, here repeating the same consonant thrice will result in a valid
-        word. Unfortunately rules are extremely complex, groups could be of 2, 3 or 4 letters,
-        as we have many words borrowed from greek, latin, french, english and german.
-      </p>
+      <Markdown>{AnagrammatorMd}</Markdown>
       <fieldset>
         <legend>Generator controls</legend>
         <label htmlFor="input">Type in a word:</label>{" "}

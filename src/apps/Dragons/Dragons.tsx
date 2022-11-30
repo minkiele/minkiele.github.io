@@ -3,6 +3,8 @@ import { ChangeEventHandler, FunctionComponent, useState } from "react";
 import { getDragonFractal, L, R } from "../../lib/triangles-dragons/dragons";
 import { Plane } from "../../lib/triangles-dragons/matrix/plane";
 import styles from "./Dragons.module.scss";
+import DragonsMd from './Dragons.md';
+import Markdown from "../../shared/Markdown/Markdown";
 
 const Dragons: FunctionComponent = () => {
   const [dragons, setDragons] = useState<{
@@ -67,14 +69,7 @@ const Dragons: FunctionComponent = () => {
 
   return (
     <div>
-      <p>
-        The Dragon fractal is a fractal obtained by (ideally) folding a piece of
-        paper in half in the same direction for a number of times. The figure is
-        obtained by unfolding every fold at 90°. I was obsessed with this
-        picture since I saw it at the beginning of the chapters in Jurassic
-        Park. Twenty years later I searched for it in the Internet and found the
-        explanation.
-      </p>
+      <Markdown>{DragonsMd}</Markdown>
       <div>
         <fieldset>
           <legend>Iterations</legend>

@@ -3,7 +3,9 @@ import {
   getTriangle,
   triangleToString,
 } from "../../lib/triangles-dragons/triangles";
+import Markdown from "../../shared/Markdown/Markdown";
 import styles from './Triangles.module.scss';
+import TrianglesMd from './Triangles.md';
 
 const Triangles: FunctionComponent = () => {
   const [triangles, setTriangles] = useState<number>(4);
@@ -18,10 +20,7 @@ const Triangles: FunctionComponent = () => {
 
   return (
     <div>
-      <p>This is a graphic representation of the Fibonacci sequence, where the
-        fillings are odd numbers and the void are even numbers. Using 2<sup>n</sup> steps
-        helps rendering full triangles.
-      </p>
+      <Markdown>{TrianglesMd}</Markdown>
       <fieldset>
         <legend>Generator controls</legend>
         <label htmlFor="newTriangles">

@@ -1,7 +1,9 @@
 import classNames from "classnames";
 import { FunctionComponent, useEffect, useState } from "react";
 import { JumpMatrix as JumpMatrixLogic } from "../../lib/JumpMatrix";
+import Markdown from "../../shared/Markdown/Markdown";
 import styles from './JumpMatrix.module.scss';
+import JumpMatrixMd from './JumpMatrix.md';
 
 interface JumpMatrixState {
   matrix: JumpMatrixLogic;
@@ -50,13 +52,7 @@ const JumpMatrix: FunctionComponent = () => {
 
   return (
     <div>
-      <h2>The game</h2>
-      <p>This is a game I did learn in middle school, you have a 5x5 square, and you must fill the
-        square with the numbers from 1 to 25. You can start wherever you want but you can move from cell
-        to cell following these rules: moving horizontally or vertically you must jump 2 cells,
-        moving diagonally you must jump 1 cell. It seems hard but you average 19 moves before
-        ending.
-      </p>
+      <Markdown>{JumpMatrixMd}</Markdown>
       <h3>Facts</h3>
       <dl>
         <dt>Total tries:</dt>
