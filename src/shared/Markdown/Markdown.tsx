@@ -1,11 +1,11 @@
 import { FunctionComponent, memo } from "react";
 import ReactMarkdown from "react-markdown";
 import { MarkdownProps } from "./Markdown.models";
-import { getMarkdownComponentsMap } from "./Markdown.utils";
+import { getMarkdownComponentsMap, sup } from "./Markdown.utils";
 
 const Markdown: FunctionComponent<MarkdownProps> = memo(
   ({ children }) => (
-    <ReactMarkdown components={getMarkdownComponentsMap()}>
+    <ReactMarkdown components={getMarkdownComponentsMap()} remarkPlugins={[sup]}>
       {children}
     </ReactMarkdown>
   )
