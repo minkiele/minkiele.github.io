@@ -87,7 +87,6 @@ const Vietnam: FunctionComponent = () => {
           <div
             key={col}
             className={styles.vietnam_column}
-            data-drag-to={col}
             onDragOver={handleDragOver}
             onDrop={handleDrop(col)}
           >
@@ -97,7 +96,6 @@ const Vietnam: FunctionComponent = () => {
                 className={styles.vietnam_stone}
                 style={getStoneStyle(stone, size, 30)}
                 draggable={index === 0}
-                data-drag-from={col}
                 onDragStart={handleDragStart(col)}
               ></div>
             ))}
