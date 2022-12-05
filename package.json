@@ -56,7 +56,6 @@
     "react-app-polyfill": "^3.0.0",
     "react-dev-utils": "^12.0.1",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.38.0",
     "react-markdown": "^8.0.3",
     "react-refresh": "^0.11.0",
     "react-router-dom": "^6.4.2",
@@ -83,7 +82,7 @@
     "typecheck": "tsc --noemit",
     "lint": "eslint src --quiet --fix --ext .js,.ts,.jsx,.tsx",
     "format:nonlinted": "prettier --write --check \"src/**/*.scss\" \"src/**/*.css\"  --no-error-on-unmatched-pattern",
-    "husky-pre-commit": "npm run lint && npm run typecheck && npm run format:nonlinted"
+    "pre-commit": "npm run lint && npm run typecheck && npm run format:nonlinted"
   },
   "eslintConfig": {
     "extends": [

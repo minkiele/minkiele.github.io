@@ -1,0 +1,35 @@
+@use "sass:math";
+@use "../../styles/colors";
+@use "../../styles/mixins";
+
+.vietnam {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 30px;
+  &_column {
+    min-height: 300px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    border: 1px dashed colors.$fg;
+  }
+  &_stone {
+    height: 30px;
+    background-color: colors.$fg;
+  }
+}
+
+@include mixins.when-dark() {
+  .vietnam {
+    &_column {
+      border-color: colors.$dark-fg;
+    }
+    &_stone {
+      background-color: colors.$dark-fg;
+    }
+  }
+}

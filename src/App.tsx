@@ -16,6 +16,7 @@ const Dragons = lazy(() => import("./apps/Dragons/Dragons"));
 const DemoDogs = lazy(() => import("./apps/DemoDogs/DemoDogs"));
 const Polypo = lazy(() => import("./apps/Polypo/Polypo"));
 const Factorizer = lazy(() => import("./apps/Factorizer/Factorizer"));
+const Vietnam = lazy(() => import("./apps/Vietnam/Vietnam"));
 
 interface LazyRouteComponent {
   route: string;
@@ -90,6 +91,11 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
     route: "/factorize",
     name: "Factorizer",
     component: Factorizer,
+  },
+  {
+    route: "/vietnam",
+    name: "Vietnam",
+    component: Vietnam,
   },
 ];
 

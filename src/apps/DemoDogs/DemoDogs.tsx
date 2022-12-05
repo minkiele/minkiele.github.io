@@ -6,7 +6,7 @@ import DemoDogsMd from './DemoDogs.md';
 // DEMODOGS :D
 
 const barbon = join("Barbon", pickOne("e", "cino"));
-const volp = join("Volp", pickOne("ino", "one"));
+const volp = join("Volp", pickOne("ino", "e"));
 
 const races = pickOne(
   "Carlino",
