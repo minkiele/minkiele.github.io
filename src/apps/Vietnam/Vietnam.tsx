@@ -35,7 +35,9 @@ const Vietnam: FunctionComponent = () => {
       evt.preventDefault();
       const fromColumn = evt.dataTransfer.getData("text/plain") as Column;
       move(fromColumn, toColumn);
-      setMoves((oldMoves) => oldMoves + 1);
+      if(fromColumn !== toColumn) {
+        setMoves((oldMoves) => oldMoves + 1);
+      }
     };
 
   const resetTimer = () => {

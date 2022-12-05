@@ -20,6 +20,11 @@
   &_stone {
     height: 30px;
     background-color: colors.$fg;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    &:not(:last-child) {
+      border-bottom: 1px colors.$bg solid;
+    }
   }
 }
 
@@ -30,6 +35,9 @@
     }
     &_stone {
       background-color: colors.$dark-fg;
+      &:not(:last-child) {
+        border-bottom-color: colors.$dark-bg;
+      }
     }
   }
 }
