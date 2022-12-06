@@ -20,3 +20,7 @@ to another you must:
 3. Move the sub-stack of size n - 1 from the third to the second column;
 
 Apply recursively this sequence to any sub stack you're trying to move.
+
+To play on desktop drag & drop the top stones where you need them; to
+play on mobile tap the stack you're taking the stone from then tap the
+column where you're leaving it.
