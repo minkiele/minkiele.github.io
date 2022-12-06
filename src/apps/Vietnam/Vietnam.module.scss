@@ -16,6 +16,9 @@
     justify-content: flex-end;
     align-items: center;
     border: 1px dashed colors.$fg;
+    &__touchSelected {
+      background-color: rgba(colors.$fg, 20%);
+    }
   }
   &_stone {
     height: 30px;
@@ -32,6 +35,9 @@
   .vietnam {
     &_column {
       border-color: colors.$dark-fg;
+      &__touchSelected {
+        background-color: rgba(colors.$dark-fg, 20%);
+      }
     }
     &_stone {
       background-color: colors.$dark-fg;

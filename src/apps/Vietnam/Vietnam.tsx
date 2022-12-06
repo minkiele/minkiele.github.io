@@ -7,9 +7,16 @@ import {
 } from "react";
 import { Column, Move } from "./Vietnam.models";
 import styles from "./Vietnam.module.scss";
-import { getMoves, getStoneStyle, useVietnam } from "./Vietnam.utils";
+import {
+  getMoves,
+  getStoneStyle,
+  useTouchSelect,
+  useVietnam,
+} from "./Vietnam.utils";
 import VietnamMd from "./Vietnam.md";
 import Markdown from "../../shared/Markdown/Markdown";
+import { thunkify } from "ramda";
+import classNames from "classnames";
 
 const COLS: Array<Column> = ["left", "center", "right"];
 
@@ -17,6 +24,7 @@ const Vietnam: FunctionComponent = () => {
   const [size, setSize] = useState(3);
   const [moves, setMoves] = useState(0);
   const { board, move, reset } = useVietnam(size);
+  const { touchSelected, touchSelect } = useTouchSelect(move);
   const timerRef = useRef<ReturnType<typeof setInterval>>();
 
   const handleDragStart =
@@ -35,7 +43,7 @@ const Vietnam: FunctionComponent = () => {
       evt.preventDefault();
       const fromColumn = evt.dataTransfer.getData("text/plain") as Column;
       move(fromColumn, toColumn);
-      if(fromColumn !== toColumn) {
+      if (fromColumn !== toColumn) {
         setMoves((oldMoves) => oldMoves + 1);
       }
     };
@@ -79,6 +87,8 @@ const Vietnam: FunctionComponent = () => {
     }, intervalLength);
   };
 
+  const handleTouchSelect = thunkify(touchSelect);
+
   return (
     <div>
       <Markdown>{VietnamMd}</Markdown>
@@ -86,9 +96,13 @@ const Vietnam: FunctionComponent = () => {
         {COLS.map((col) => (
           <div
             key={col}
-            className={styles.vietnam_column}
+            className={classNames({
+              [styles.vietnam_column]: true,
+              [styles.vietnam_column__touchSelected]: touchSelected.includes(col)
+            })}
             onDragOver={handleDragOver}
             onDrop={handleDrop(col)}
+            onTouchEnd={handleTouchSelect(col)}
           >
             {board[col].map((stone, index) => (
               <div
