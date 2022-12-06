@@ -574,6 +574,9 @@ module.exports = function (webpackEnv) {
           {
             inject: true,
             template: paths.appHtml,
+            templateParameters: {
+              isEnvProduction,
+            },
           },
           isEnvProduction
             ? {
@@ -588,9 +591,6 @@ module.exports = function (webpackEnv) {
                   minifyJS: true,
                   minifyCSS: true,
                   minifyURLs: true,
-                },
-                templateParameters: {
-                  isEnvProduction,
                 },
               }
             : undefined
