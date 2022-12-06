@@ -589,6 +589,9 @@ module.exports = function (webpackEnv) {
                   minifyCSS: true,
                   minifyURLs: true,
                 },
+                templateParameters: {
+                  isEnvProduction,
+                },
               }
             : undefined
         )
@@ -752,6 +755,12 @@ module.exports = function (webpackEnv) {
           },
         }),
     ].filter(Boolean),
+    externals: isEnvProduction
+      ? {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+        }
+      : undefined,
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,
