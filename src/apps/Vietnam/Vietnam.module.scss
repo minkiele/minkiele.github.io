@@ -25,6 +25,9 @@
     background-color: colors.$fg;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+    &[draggable="true"] {
+      cursor: pointer;
+    }
     &:not(:last-child) {
       border-bottom: 1px colors.$bg solid;
     }
