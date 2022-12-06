@@ -2,6 +2,7 @@ import {
   ChangeEventHandler,
   DragEventHandler,
   FunctionComponent,
+  useCallback,
   useRef,
   useState,
 } from "react";
@@ -24,7 +25,11 @@ const Vietnam: FunctionComponent = () => {
   const [size, setSize] = useState(3);
   const [moves, setMoves] = useState(0);
   const { board, move, reset } = useVietnam(size);
-  const { touchSelected, touchSelect } = useTouchSelect(move);
+  const touchMove = useCallback((from: Column, to: Column) => {
+    move(from, to);
+    setMoves((current) => current + 1);
+  }, [move, setMoves]);
+  const { touchSelected, touchSelect } = useTouchSelect(touchMove);
   const timerRef = useRef<ReturnType<typeof setInterval>>();
 
   const handleDragStart =
