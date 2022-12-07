@@ -31,6 +31,9 @@
     &:not(:last-child) {
       border-bottom: 1px colors.$bg solid;
     }
+    &:hover {
+      background-color: rgba(colors.$fg, 80%);
+    }
   }
 }
 

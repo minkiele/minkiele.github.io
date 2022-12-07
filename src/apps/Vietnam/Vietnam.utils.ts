@@ -9,46 +9,57 @@ import {
 } from "react";
 import { Column, Move, ReducerAction, ReducerState } from "./Vietnam.models";
 
-export const useVietnam = (currentSize: number) => {
-  const [{ board }, dispatch] = useReducer(
+const getInitialState = (size: number): ReducerState => ({
+  size,
+  board: { left: range(1, size + 1), center: [], right: [] },
+  isValid: false,
+  moves: 0,
+});
+
+export const useVietnam = (defaultSize: number) => {
+  const [currentState, dispatch] = useReducer(
     (state: ReducerState, action: ReducerAction) => {
       switch (action.type) {
         case "move": {
-          return {
-            ...state,
-            board:
-              action.from !== action.to &&
-              state.board[action.from].length > 0 &&
-              (state.board[action.to].length === 0 ||
-                state.board[action.from][0] < state.board[action.to][0])
-                ? {
-                    ...state.board,
-                    [action.from]: state.board[action.from].slice(1),
-                    [action.to]: [
-                      state.board[action.from][0],
-                      ...state.board[action.to],
-                    ],
-                  }
-                : state.board,
-          };
+          const isValidMove =
+            action.from !== action.to &&
+            state.board[action.from].length > 0 &&
+            (state.board[action.to].length === 0 ||
+              state.board[action.from][0] < state.board[action.to][0]);
+          if (isValidMove) {
+            const newBoard: ReducerState["board"] = {
+              ...state.board,
+              [action.from]: state.board[action.from].slice(1),
+              [action.to]: [
+                state.board[action.from][0],
+                ...state.board[action.to],
+              ],
+            };
+            const isValid =
+              newBoard.center.length === state.size ||
+              newBoard.right.length === state.size;
+            return {
+              ...state,
+              board: newBoard,
+              isValid,
+              moves: state.moves + 1,
+            };
+          }
+          return state;
         }
         case "setSize": {
-          return {
-            size: action.size,
-            board: { left: range(1, action.size + 1), center: [], right: [] },
-          };
+          return getInitialState(action.size);
         }
         case "reset": {
-          return {
-            ...state,
-            board: { left: range(1, state.size + 1), center: [], right: [] },
-          };
+          return getInitialState(state.size);
         }
       }
     },
     {
-      size: currentSize,
-      board: { left: range(1, currentSize + 1), center: [], right: [] },
+      size: defaultSize,
+      board: { left: range(1, defaultSize + 1), center: [], right: [] },
+      isValid: false,
+      moves: 0,
     }
   );
 
@@ -63,17 +74,17 @@ export const useVietnam = (currentSize: number) => {
   const reset = useCallback(() => dispatch({ type: "reset" }), []);
 
   useEffect(() => {
-    setSize(currentSize);
-  }, [currentSize, setSize]);
+    setSize(defaultSize);
+  }, [defaultSize, setSize]);
 
   return useMemo(
     () => ({
-      board,
+      ...currentState,
       setSize,
       move,
       reset,
     }),
-    [board, setSize, move, reset]
+    [currentState, setSize, move, reset]
   );
 };
 

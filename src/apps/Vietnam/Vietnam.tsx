@@ -4,7 +4,6 @@ import {
   FunctionComponent,
   useCallback,
   useRef,
-  useState,
 } from "react";
 import { Column, Move } from "./Vietnam.models";
 import styles from "./Vietnam.module.scss";
@@ -20,16 +19,18 @@ import { thunkify } from "ramda";
 import classNames from "classnames";
 
 const COLS: Array<Column> = ["left", "center", "right"];
+const DEFAULT_SIZE = 3;
 
 const Vietnam: FunctionComponent = () => {
-  const [size, setSize] = useState(3);
-  const [moves, setMoves] = useState(0);
-  const { board, move, reset } = useVietnam(size);
-  const touchMove = useCallback((from: Column, to: Column) => {
-    move(from, to);
-    setMoves((current) => current + 1);
-  }, [move, setMoves]);
-  const { touchSelected, touchSelect } = useTouchSelect(touchMove);
+  const { board, moves, isValid, size, setSize, move, reset } = useVietnam(DEFAULT_SIZE);
+  const { touchSelected, touchSelect } = useTouchSelect(
+    useCallback(
+      (from: Column, to: Column) => {
+        move(from, to);
+      },
+      [move]
+    )
+  );
   const timerRef = useRef<ReturnType<typeof setInterval>>();
 
   const handleDragStart =
@@ -48,20 +49,12 @@ const Vietnam: FunctionComponent = () => {
       evt.preventDefault();
       const fromColumn = evt.dataTransfer.getData("text/plain") as Column;
       move(fromColumn, toColumn);
-      if (fromColumn !== toColumn) {
-        setMoves((oldMoves) => oldMoves + 1);
-      }
     };
 
-  const resetTimer = () => {
+  const resetProgress = () => {
     if (timerRef.current != null) {
       clearInterval(timerRef.current);
     }
-  };
-
-  const resetProgress = () => {
-    setMoves(0);
-    resetTimer();
   };
 
   const handleSetSize: ChangeEventHandler<HTMLInputElement> = (evt) => {
@@ -85,9 +78,8 @@ const Vietnam: FunctionComponent = () => {
       if (moves.length > 0) {
         const { from, to } = moves.shift() as Move;
         move(from, to);
-        setMoves((oldMoves) => oldMoves + 1);
       } else {
-        resetTimer();
+        resetProgress();
       }
     }, intervalLength);
   };
@@ -103,7 +95,8 @@ const Vietnam: FunctionComponent = () => {
             key={col}
             className={classNames({
               [styles.vietnam_column]: true,
-              [styles.vietnam_column__touchSelected]: touchSelected.includes(col)
+              [styles.vietnam_column__touchSelected]:
+                touchSelected.includes(col),
             })}
             onDragOver={handleDragOver}
             onDrop={handleDrop(col)}
@@ -125,6 +118,7 @@ const Vietnam: FunctionComponent = () => {
         To move this tower you'll need 2<sup>{size}</sup> - 1 = {2 ** size - 1}{" "}
         moves, so far you made {moves} moves.
       </p>
+      {isValid && ((moves === 2 ** size - 1) ? <p>You solved it with maximum effort!</p> : <p>You solved it, but you can do better.</p>)}
       <div>
         <fieldset>
           <legend>Controls</legend>

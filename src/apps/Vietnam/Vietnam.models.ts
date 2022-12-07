@@ -2,6 +2,8 @@ export type Column = "left" | "center" | "right";
 export type ReducerState = {
   size: number;
   board: Record<Column, Array<number>>;
+  isValid: boolean;
+  moves: number;
 };
 export type ReducerAction =
   | {
