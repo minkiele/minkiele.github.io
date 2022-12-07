@@ -22,15 +22,9 @@ const COLS: Array<Column> = ["left", "center", "right"];
 const DEFAULT_SIZE = 3;
 
 const Vietnam: FunctionComponent = () => {
-  const { board, moves, isValid, size, setSize, move, reset } = useVietnam(DEFAULT_SIZE);
-  const { touchSelected, touchSelect } = useTouchSelect(
-    useCallback(
-      (from: Column, to: Column) => {
-        move(from, to);
-      },
-      [move]
-    )
-  );
+  const { board, moves, isValid, size, setSize, move, reset } =
+    useVietnam(DEFAULT_SIZE);
+  const { touchSelected, touchSelect } = useTouchSelect(move);
   const timerRef = useRef<ReturnType<typeof setInterval>>();
 
   const handleDragStart =
@@ -118,7 +112,12 @@ const Vietnam: FunctionComponent = () => {
         To move this tower you'll need 2<sup>{size}</sup> - 1 = {2 ** size - 1}{" "}
         moves, so far you made {moves} moves.
       </p>
-      {isValid && ((moves === 2 ** size - 1) ? <p>You solved it with maximum effort!</p> : <p>You solved it, but you can do better.</p>)}
+      {isValid &&
+        (moves === 2 ** size - 1 ? (
+          <p>You solved it with maximum effort!</p>
+        ) : (
+          <p>You solved it, but you can do better.</p>
+        ))}
       <div>
         <fieldset>
           <legend>Controls</legend>
