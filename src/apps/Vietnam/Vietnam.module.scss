@@ -50,6 +50,9 @@
       &:not(:last-child) {
         border-bottom-color: colors.$dark-bg;
       }
+      &:hover {
+        background-color: rgba(colors.$dark-fg, 80%);
+      }
     }
   }
 }
