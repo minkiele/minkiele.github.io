@@ -1,5 +1,4 @@
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
-import Markdown from "../../shared/Markdown/Markdown";
 import styles from "./Circles.module.scss";
 import {
   CIRCLES,
@@ -58,7 +57,7 @@ const Circles: FunctionComponent = () => {
   );
   return (
     <div>
-      <Markdown>{CirclesMd}</Markdown>
+      <CirclesMd />
       {renderedApp}
     </div>
   );

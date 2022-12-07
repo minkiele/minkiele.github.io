@@ -1,7 +1,6 @@
 import classNames from "classnames";
 import { FunctionComponent, useEffect, useState } from "react";
 import { JumpMatrix as JumpMatrixLogic } from "../../lib/JumpMatrix";
-import Markdown from "../../shared/Markdown/Markdown";
 import styles from './JumpMatrix.module.scss';
 import JumpMatrixMd from './JumpMatrix.md';
 
@@ -52,7 +51,7 @@ const JumpMatrix: FunctionComponent = () => {
 
   return (
     <div>
-      <Markdown>{JumpMatrixMd}</Markdown>
+      <JumpMatrixMd />
       <h3>Facts</h3>
       <dl>
         <dt>Total tries:</dt>

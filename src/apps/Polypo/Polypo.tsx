@@ -1,5 +1,4 @@
 import { ChangeEventHandler, FunctionComponent, useState } from "react";
-import Markdown from "../../shared/Markdown/Markdown";
 import Polygon from "./components/Polygon/Polygon";
 import styles from "./Polypo.module.scss";
 import PolypoMd from './Polypo.md';
@@ -62,7 +61,7 @@ const Polypo: FunctionComponent = () => {
   );
   return (
     <div>
-      <Markdown>{PolypoMd}</Markdown>
+      <PolypoMd />
       {renderedApp}
     </div>
   );

@@ -4,7 +4,6 @@ import anagrammator, { countAnagrams } from "anagrammator-minkiele";
 import { UberMath } from "../../lib/ubermath";
 import { isValidWord } from "../../lib/stupid-abc";
 import { T } from "ramda";
-import Markdown from "../../shared/Markdown/Markdown";
 import AnagrammatorMd from './Anagrammator.md';
 
 interface AnagrammatorState {
@@ -95,7 +94,7 @@ function Anagrammator() {
 
   return (
     <div>
-      <Markdown>{AnagrammatorMd}</Markdown>
+      <AnagrammatorMd />
       <fieldset>
         <legend>Generator controls</legend>
         <label htmlFor="input">Type in a word:</label>{" "}

@@ -9,7 +9,6 @@ import {
   useReducer,
   useRef,
 } from "react";
-import Markdown from "../../shared/Markdown/Markdown";
 import CruciverbaMd from './Cruciverba.md';
 
 const DEFAULT_ROWS = 12;
@@ -488,7 +487,7 @@ function Cruciverba() {
 
   return (
     <div>
-      <Markdown>{CruciverbaMd}</Markdown>
+      <CruciverbaMd />
       {renderedApp}
       {settings}
     </div>

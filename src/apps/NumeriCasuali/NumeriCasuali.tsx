@@ -1,6 +1,5 @@
 import { FunctionComponent, useState } from "react";
 import { pronunciaNumero } from "../../lib/EnunciateNumbers";
-import Markdown from "../../shared/Markdown/Markdown";
 import NumeriCasualiMd from './NumeriCasuali.md';
 
 const NUMBER_LENGTH = 32;
@@ -39,7 +38,7 @@ const NumeriCasuali: FunctionComponent = () => {
 
   return (
     <div>
-      <Markdown>{NumeriCasualiMd}</Markdown>
+      <NumeriCasualiMd />
       <h2>{numeroCasuale.aParole} (<small>{numeroCasuale.inNumero}</small>)</h2>
       <button onClick={handleNextRandom}>Prossimo numero</button>
     </div>

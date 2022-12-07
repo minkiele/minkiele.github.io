@@ -1,6 +1,5 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { pronunciaDataOra } from "../../lib/EnunciateNumbers";
-import Markdown from "../../shared/Markdown/Markdown";
 import OraInParoleMd from './OraInParole.md';
 
 const orora = () => pronunciaDataOra(new Date());
@@ -19,7 +18,7 @@ const OraInParole: FunctionComponent = () => {
 
   return (
     <div>
-      <Markdown>{OraInParoleMd}</Markdown>
+      <OraInParoleMd />
       <h2>{oraInParole}</h2>
     </div>
   );

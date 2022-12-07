@@ -28,6 +28,8 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 
 const createEnvironmentHash = require('./webpack/persistentCache/createEnvironmentHash');
 
+const remarkPluginRemoveH1 = require('./remark/remarkPluginRemoveH1');
+
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
@@ -544,8 +546,13 @@ module.exports = function (webpackEnv) {
               ),
             },
             {
-              test: /\.md$/,
-              type: 'asset/source',
+              test: /\.mdx?$/,
+              use: [{
+                loader: '@mdx-js/loader',
+                options: {
+                  remarkPlugins: [[remarkPluginRemoveH1, { after: 0, minDepth: 2 }]]
+                }
+              }],
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.

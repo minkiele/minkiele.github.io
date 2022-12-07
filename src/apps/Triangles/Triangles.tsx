@@ -3,7 +3,6 @@ import {
   getTriangle,
   triangleToString,
 } from "../../lib/triangles-dragons/triangles";
-import Markdown from "../../shared/Markdown/Markdown";
 import styles from './Triangles.module.scss';
 import TrianglesMd from './Triangles.md';
 
@@ -20,7 +19,7 @@ const Triangles: FunctionComponent = () => {
 
   return (
     <div>
-      <Markdown>{TrianglesMd}</Markdown>
+      <TrianglesMd />
       <fieldset>
         <legend>Generator controls</legend>
         <label htmlFor="newTriangles">

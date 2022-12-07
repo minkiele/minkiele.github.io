@@ -7,7 +7,6 @@ import {
 } from "react";
 import { getGroupedFactors } from "./Factorizer.utils";
 import FactorizerMd from './Factorizer.md';
-import Markdown from "../../shared/Markdown/Markdown";
 
 const Factorizer: FunctionComponent = () => {
   const [input, setInput] = useState<number>(2);
@@ -21,7 +20,7 @@ const Factorizer: FunctionComponent = () => {
   };
   return (
     <div>
-      <Markdown>{FactorizerMd}</Markdown>
+      <FactorizerMd />
       <fieldset>
         <legend>Factorize</legend>
         <label htmlFor="input">Input number: </label>

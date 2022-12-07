@@ -14,7 +14,6 @@ import {
 import generateClassName from "../../lib/generateClassName";
 import styles from "./SudokuUI.module.scss";
 import { SudokuMatrix } from "minkiele-sudoku-matrix";
-import Markdown from "../../shared/Markdown/Markdown";
 import SudokuUIMd from './SudokuUI.md';
 
 interface MatrixReducerAction {
@@ -211,7 +210,7 @@ function SudokuUI() {
 
   return (
     <div>
-      <Markdown>{SudokuUIMd}</Markdown>
+      <SudokuUIMd />
       <table className={styles.table}>
         <caption>
           <Caption ref={captionRef} />{" "}

@@ -4,7 +4,6 @@ import { getDragonFractal, L, R } from "../../lib/triangles-dragons/dragons";
 import { Plane } from "../../lib/triangles-dragons/matrix/plane";
 import styles from "./Dragons.module.scss";
 import DragonsMd from './Dragons.md';
-import Markdown from "../../shared/Markdown/Markdown";
 
 const Dragons: FunctionComponent = () => {
   const [dragons, setDragons] = useState<{
@@ -69,7 +68,7 @@ const Dragons: FunctionComponent = () => {
 
   return (
     <div>
-      <Markdown>{DragonsMd}</Markdown>
+      <DragonsMd />
       <div>
         <fieldset>
           <legend>Iterations</legend>

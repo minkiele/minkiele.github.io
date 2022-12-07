@@ -2,7 +2,6 @@ import {
   ChangeEventHandler,
   DragEventHandler,
   FunctionComponent,
-  useCallback,
   useRef,
 } from "react";
 import { Column, Move } from "./Vietnam.models";
@@ -14,7 +13,6 @@ import {
   useVietnam,
 } from "./Vietnam.utils";
 import VietnamMd from "./Vietnam.md";
-import Markdown from "../../shared/Markdown/Markdown";
 import { thunkify } from "ramda";
 import classNames from "classnames";
 
@@ -82,7 +80,7 @@ const Vietnam: FunctionComponent = () => {
 
   return (
     <div>
-      <Markdown>{VietnamMd}</Markdown>
+      <VietnamMd />
       <div className={styles.vietnam}>
         {COLS.map((col) => (
           <div

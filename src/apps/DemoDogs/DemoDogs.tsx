@@ -1,6 +1,5 @@
 import { FunctionComponent, useState } from "react";
 import { join, pickOne, weight } from "../../lib/polygram/Collection";
-import Markdown from "../../shared/Markdown/Markdown";
 import DemoDogsMd from './DemoDogs.md';
 
 // DEMODOGS :D
@@ -82,7 +81,7 @@ const DemoDogs: FunctionComponent = () => {
   };
   return (
     <div>
-      <Markdown>{DemoDogsMd}</Markdown>
+      <DemoDogsMd />
       <div>
         <h3>Dog breeds</h3>
         <ul>
