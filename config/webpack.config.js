@@ -550,7 +550,7 @@ module.exports = function (webpackEnv) {
               use: [{
                 loader: '@mdx-js/loader',
                 options: {
-                  remarkPlugins: [[remarkPluginRemoveH1, { after: 0, minDepth: 2 }]]
+                  remarkPlugins: [remarkPluginRemoveH1]
                 }
               }],
             },

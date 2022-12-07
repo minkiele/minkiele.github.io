@@ -79,6 +79,9 @@ function Anagrammator() {
 
   useEffect(() => {
     debounceGenerateAnagrams(value);
+    return () => {
+      debounceGenerateAnagrams.cancel();
+    };
   }, [debounceGenerateAnagrams, value]);
 
   const handleChangeValue = (evt: ChangeEvent<HTMLInputElement>) => {
