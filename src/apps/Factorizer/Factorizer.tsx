@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { getGroupedFactors } from "./Factorizer.utils";
-import FactorizerMd from './Factorizer.md';
+import FactorizerMd from './README.md';
 
 const Factorizer: FunctionComponent = () => {
   const [input, setInput] = useState<number>(2);

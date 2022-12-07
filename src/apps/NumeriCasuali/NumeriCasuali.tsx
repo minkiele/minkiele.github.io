@@ -1,6 +1,6 @@
 import { FunctionComponent, useState } from "react";
 import { pronunciaNumero } from "../../lib/EnunciateNumbers";
-import NumeriCasualiMd from './NumeriCasuali.md';
+import NumeriCasualiMd from './README.md';
 
 const NUMBER_LENGTH = 32;
 

@@ -3,7 +3,7 @@ import { ChangeEventHandler, FunctionComponent, useState } from "react";
 import { getDragonFractal, L, R } from "../../lib/triangles-dragons/dragons";
 import { Plane } from "../../lib/triangles-dragons/matrix/plane";
 import styles from "./Dragons.module.scss";
-import DragonsMd from './Dragons.md';
+import DragonsMd from './README.md';
 
 const Dragons: FunctionComponent = () => {
   const [dragons, setDragons] = useState<{

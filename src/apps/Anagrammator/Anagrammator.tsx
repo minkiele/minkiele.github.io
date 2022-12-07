@@ -4,7 +4,7 @@ import anagrammator, { countAnagrams } from "anagrammator-minkiele";
 import { UberMath } from "../../lib/ubermath";
 import { isValidWord } from "../../lib/stupid-abc";
 import { T } from "ramda";
-import AnagrammatorMd from './Anagrammator.md';
+import AnagrammatorMd from './README.md';
 
 interface AnagrammatorState {
   value: string;

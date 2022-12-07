@@ -7,7 +7,7 @@ import {
   getClockSizes,
   getGetCircleSize,
 } from "./Circles.utils";
-import CirclesMd from './Circles.md';
+import CirclesMd from './README.md';
 
 const getCircleSizes = () => getClockSizes(new Date());
 

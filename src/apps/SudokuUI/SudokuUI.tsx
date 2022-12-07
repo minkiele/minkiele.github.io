@@ -14,7 +14,7 @@ import {
 import generateClassName from "../../lib/generateClassName";
 import styles from "./SudokuUI.module.scss";
 import { SudokuMatrix } from "minkiele-sudoku-matrix";
-import SudokuUIMd from './SudokuUI.md';
+import SudokuUIMd from './README.md';
 
 interface MatrixReducerAction {
   row: number;

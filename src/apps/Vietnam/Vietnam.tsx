@@ -12,7 +12,7 @@ import {
   useTouchSelect,
   useVietnam,
 } from "./Vietnam.utils";
-import VietnamMd from "./Vietnam.md";
+import VietnamMd from "./README.md";
 import { thunkify } from "ramda";
 import classNames from "classnames";
 

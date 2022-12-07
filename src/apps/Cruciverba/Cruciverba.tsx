@@ -9,7 +9,7 @@ import {
   useReducer,
   useRef,
 } from "react";
-import CruciverbaMd from './Cruciverba.md';
+import CruciverbaMd from './README.md';
 
 const DEFAULT_ROWS = 12;
 const DEFAULT_COLS = 22;

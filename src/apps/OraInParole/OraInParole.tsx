@@ -1,6 +1,6 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { pronunciaDataOra } from "../../lib/EnunciateNumbers";
-import OraInParoleMd from './OraInParole.md';
+import OraInParoleMd from './README.md';
 
 const orora = () => pronunciaDataOra(new Date());
 

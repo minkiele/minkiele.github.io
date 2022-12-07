@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import InfoMd from './Info.md';
+import InfoMd from './README.md';
 
 const Info: FunctionComponent = () => (
   <div>

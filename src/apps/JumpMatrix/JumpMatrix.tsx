@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { FunctionComponent, useEffect, useState } from "react";
 import { JumpMatrix as JumpMatrixLogic } from "../../lib/JumpMatrix";
 import styles from './JumpMatrix.module.scss';
-import JumpMatrixMd from './JumpMatrix.md';
+import JumpMatrixMd from './README.md';
 
 interface JumpMatrixState {
   matrix: JumpMatrixLogic;

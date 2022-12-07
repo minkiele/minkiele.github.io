@@ -1,7 +1,7 @@
 import { ChangeEventHandler, FunctionComponent, useState } from "react";
 import Polygon from "./components/Polygon/Polygon";
 import styles from "./Polypo.module.scss";
-import PolypoMd from './Polypo.md';
+import PolypoMd from './README.md';
 
 const castInput = (input: string, deft: number): number => {
   const cast = parseInt(input);

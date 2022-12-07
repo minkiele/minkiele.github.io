@@ -1,6 +1,6 @@
 import { FunctionComponent, useState } from "react";
 import { join, pickOne, weight } from "../../lib/polygram/Collection";
-import DemoDogsMd from './DemoDogs.md';
+import DemoDogsMd from './README.md';
 
 // DEMODOGS :D
 

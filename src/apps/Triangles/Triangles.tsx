@@ -4,7 +4,7 @@ import {
   triangleToString,
 } from "../../lib/triangles-dragons/triangles";
 import styles from './Triangles.module.scss';
-import TrianglesMd from './Triangles.md';
+import TrianglesMd from './README.md';
 
 const Triangles: FunctionComponent = () => {
   const [triangles, setTriangles] = useState<number>(4);
