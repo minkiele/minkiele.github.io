@@ -18,7 +18,7 @@ interface SnakeGameData extends SnakeGameCoords {
 /**
  * @link https://galeri12.uludagsozluk.com/596/nokia-3210_707680.jpg For the board size
  */
-export class SnakeGame extends EventEmitter {
+export class SnakeGame {
     public static readonly WIDTH = 24;
     public static readonly HEIGHT = 17;
     public static readonly INITIAL_LENGTH = 5;
@@ -35,6 +35,8 @@ export class SnakeGame extends EventEmitter {
     public static readonly EVENT: SnakeGameEvent = SnakeGame.getSnakeGameEnum('ADVANCE', 'STOP', 'RESET', 'STATUS');
 
     private static readonly AREA = SnakeGame.WIDTH * SnakeGame.HEIGHT;
+
+    private eventEmitter = new EventEmitter();
 
     // Speed in Hz (refreshes per second)
     private speed = 1;
@@ -53,7 +55,6 @@ export class SnakeGame extends EventEmitter {
     private hasWalls = true;
 
     public constructor(speed?: number, hasWalls?: boolean) {
-        super();
         if(speed != null) {
             this.setSpeed(speed);
         }
@@ -291,6 +292,18 @@ export class SnakeGame extends EventEmitter {
 
     public setWalls(hasWalls: boolean) {
         this.hasWalls = hasWalls;
+    }
+
+    public on(evt: symbol, listener: (...args: Array<any>) => void) {
+        this.eventEmitter.on(evt, listener);
+    }
+
+    public off(evt: symbol, listener: (...args: Array<any>) => void) {
+        this.eventEmitter.off(evt, listener);
+    }
+
+    private emit(evt: symbol, ...data: Array<any>) {
+        this.eventEmitter.emit(evt, ...data);
     }
 
 }

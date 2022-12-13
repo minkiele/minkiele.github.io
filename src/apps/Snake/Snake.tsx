@@ -30,12 +30,12 @@ const Snake: FunctionComponent = () => {
       setSnake(getSortedSnake(snakeGame.current.getSnake()));
       setApple(snakeGame.current.getApple());
     };
-    snakeGame.current.addListener(SnakeGame.EVENT.ADVANCE, updateData);
-    snakeGame.current.addListener(SnakeGame.EVENT.RESET, updateData);
+    snakeGame.current.on(SnakeGame.EVENT.ADVANCE, updateData);
+    snakeGame.current.on(SnakeGame.EVENT.RESET, updateData);
     const updateStatus = (statusVariation: symbol) => {
       setStatus(statusVariation);
     };
-    snakeGame.current.addListener(SnakeGame.EVENT.STATUS, updateStatus);
+    snakeGame.current.on(SnakeGame.EVENT.STATUS, updateStatus);
 
     const handleKeyUp = (evt: KeyboardEvent) => {
       evt.preventDefault();
@@ -104,11 +104,11 @@ const Snake: FunctionComponent = () => {
     document.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      snakeGame.current.removeListener(SnakeGame.EVENT.ADVANCE, updateData);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      snakeGame.current.addListener(SnakeGame.EVENT.STATUS, updateStatus);
       document.removeEventListener("keyup", handleKeyUp);
+      snakeGame.current.off(SnakeGame.EVENT.STATUS, updateStatus);
+      snakeGame.current.off(SnakeGame.EVENT.RESET, updateData);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      snakeGame.current.off(SnakeGame.EVENT.ADVANCE, updateData);
     };
   }, []);
 
