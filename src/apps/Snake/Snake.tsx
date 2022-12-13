@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { repeat, times } from "ramda";
+import { times } from "ramda";
 import {
   ChangeEventHandler,
   FunctionComponent,
@@ -7,27 +7,24 @@ import {
   useRef,
   useState,
 } from "react";
-import { SnakeGame, SnakeGameCoords } from "./Snake.lib";
+import { SnakeGame } from "./Snake.lib";
 import styles from "./Snake.module.scss";
 import SnakeMd from "./README.md";
+import { A, getBoard, S } from "./Snake.utils";
 
 const Snake: FunctionComponent = () => {
   const [speed, setSpeed] = useState<number>(10);
   const [status, setStatus] = useState<symbol>(SnakeGame.STATUS.IDLE);
-
   const snakeGame = useRef<SnakeGame>(new SnakeGame());
-
-  const [snake, setSnake] = useState<Array<SnakeGameCoords>>(
-    snakeGame.current.getSnake()
-  );
-  const [apple, setApple] = useState<SnakeGameCoords | undefined>(
-    snakeGame.current.getApple()
+  const [board, setBoard] = useState<Array<Array<symbol>>>(
+    getBoard(snakeGame.current.getSnake(), snakeGame.current.getApple())
   );
 
   useEffect(() => {
     const updateData = () => {
-      setSnake(snakeGame.current.getSnake());
-      setApple(snakeGame.current.getApple());
+      setBoard(
+        getBoard(snakeGame.current.getSnake(), snakeGame.current.getApple())
+      );
     };
     snakeGame.current.addListener(SnakeGame.EVENT.ADVANCE, updateData);
     snakeGame.current.addListener(SnakeGame.EVENT.RESET, updateData);
@@ -39,55 +36,48 @@ const Snake: FunctionComponent = () => {
     const handleKeyUp = (evt: KeyboardEvent) => {
       evt.preventDefault();
       const gameStatus = snakeGame.current.getStatus();
+      const isWaiting =
+        gameStatus === SnakeGame.STATUS.IDLE ||
+        gameStatus === SnakeGame.STATUS.PAUSE;
+      const isGameNotEnded =
+        isWaiting || gameStatus === SnakeGame.STATUS.RUNNING;
       switch (evt.key) {
         case "ArrowUp":
         case "w": {
-          if (
-            gameStatus === SnakeGame.STATUS.IDLE ||
-            SnakeGame.STATUS.RUNNING
-          ) {
+          if (isGameNotEnded) {
             snakeGame.current.goUp();
           }
-          if (gameStatus === SnakeGame.STATUS.IDLE) {
+          if (isWaiting) {
             snakeGame.current.start();
           }
           break;
         }
         case "ArrowDown":
         case "s": {
-          if (
-            gameStatus === SnakeGame.STATUS.IDLE ||
-            SnakeGame.STATUS.RUNNING
-          ) {
+          if (isGameNotEnded) {
             snakeGame.current.goDown();
           }
-          if (gameStatus === SnakeGame.STATUS.IDLE) {
+          if (isWaiting) {
             snakeGame.current.start();
           }
           break;
         }
         case "ArrowLeft":
         case "a": {
-          if (
-            gameStatus === SnakeGame.STATUS.IDLE ||
-            SnakeGame.STATUS.RUNNING
-          ) {
+          if (isGameNotEnded) {
             snakeGame.current.goLeft();
           }
-          if (gameStatus === SnakeGame.STATUS.IDLE) {
+          if (isWaiting) {
             snakeGame.current.start();
           }
           break;
         }
         case "ArrowRight":
         case "d": {
-          if (
-            gameStatus === SnakeGame.STATUS.IDLE ||
-            SnakeGame.STATUS.RUNNING
-          ) {
+          if (isGameNotEnded) {
             snakeGame.current.goRight();
           }
-          if (gameStatus === SnakeGame.STATUS.IDLE) {
+          if (isWaiting) {
             snakeGame.current.start();
           }
           break;
@@ -95,12 +85,9 @@ const Snake: FunctionComponent = () => {
         case " ":
         case "Space":
         case "Enter": {
-          if (
-            gameStatus === SnakeGame.STATUS.IDLE ||
-            gameStatus === SnakeGame.STATUS.PAUSE
-          ) {
+          if (isWaiting) {
             snakeGame.current.start();
-          } else if (gameStatus === SnakeGame.STATUS.RUNNING) {
+          } else if (isGameNotEnded) {
             snakeGame.current.stop();
           } else {
             snakeGame.current.reset();
@@ -155,14 +142,11 @@ const Snake: FunctionComponent = () => {
                 {times(
                   (x) => (
                     <td
-                      key={`row-${y}-col-${x}`}
+                      key={`row-${y}-col-${x}-board-${board[y][x].toString()}`}
                       className={classNames({
                         [styles.cell]: true,
-                        [styles.cell__snake]: snake.some(
-                          (tract) => tract.x === x && tract.y === y
-                        ),
-                        [styles.cell__apple]:
-                          apple != null && apple.x === x && apple.y === y,
+                        [styles.cell__snake]: board[y][x] === S,
+                        [styles.cell__apple]: board[y][x] === A,
                       })}
                     >
                       &nbsp;
@@ -185,41 +169,13 @@ const Snake: FunctionComponent = () => {
         )}
         {status === SnakeGame.STATUS.COMPLETE && (
           <p>
-            <strong>BRAVO!</strong>
+            <strong>And that's how it's done.</strong>
           </p>
         )}
         {status === SnakeGame.STATUS.PAUSE && (
-          <p>Do your thing, I'll wait here</p>
+          <p>Do your thing, I'll wait here...</p>
         )}
-        {status === SnakeGame.STATUS.RUNNING && (
-          <>
-            {snake.length % 5 === 0 && (
-              <p>
-                <strong>FAST{repeat("E", snake.length)}R!</strong>
-              </p>
-            )}
-            {snake.length % 5 === 1 && (
-              <p>
-                <strong>Y{repeat("E", snake.length)}!</strong>
-              </p>
-            )}
-            {snake.length % 5 === 2 && (
-              <p>
-                <strong>U{repeat("I", snake.length)}!</strong>
-              </p>
-            )}
-            {snake.length % 5 === 3 && (
-              <p>
-                <strong>OPL{repeat("A", snake.length)}!</strong>
-              </p>
-            )}
-            {snake.length % 5 === 4 && (
-              <p>
-                <strong>WOOH{repeat("O", snake.length)}!</strong>
-              </p>
-            )}
-          </>
-        )}
+        {status === SnakeGame.STATUS.RUNNING && <p>Run Forrest, Run!</p>}
       </div>
       <div>
         <fieldset>
