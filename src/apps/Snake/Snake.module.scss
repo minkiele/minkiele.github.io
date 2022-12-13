@@ -1,0 +1,43 @@
+@use "../../styles/colors";
+@use "../../styles/mixins";
+
+:global {
+    html, body {
+        &.stopScrolling {
+            overflow: hidden;
+        }
+    }
+}
+
+.table {
+    border: 1px solid colors.$fg;
+    padding: 5px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.cell {
+    width: 20px;
+    height: 20px;
+    background-color: colors.$bg;
+    &#{&}__snake {
+        background-color: colors.$fg;
+    }
+    &#{&}__apple {
+        background-color: #f00;
+    }
+}
+
+@include mixins.when-dark() {
+
+    .table {
+        border: 1px solid colors.$dark-fg;
+    }
+
+    .cell {
+        background-color: colors.$dark-bg;
+        &#{&}__snake {
+            background-color: colors.$dark-fg;
+        }
+    }
+}
