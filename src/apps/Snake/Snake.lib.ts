@@ -12,10 +12,7 @@ type SnakeGameStatus = SnakeGameEnum<'IDLE' | 'RUNNING' | 'PAUSE' | 'OVER' | 'CO
 type SnakeGameEvent = SnakeGameEnum<'ADVANCE' | 'STOP' | 'RESET' | 'STATUS'>;
 
 interface SnakeGameData extends SnakeGameCoords {
-    direction: symbol;
     eating: boolean;
-    head: boolean;
-    tail: boolean;
 }
 
 /**
@@ -48,6 +45,23 @@ export class SnakeGame extends EventEmitter {
 
     private status: symbol = SnakeGame.STATUS.IDLE;
 
+    private readonly headIndex = 0;
+    private get tailIndex(): number {
+        return this.snake.length - 1;
+    }
+
+    private hasWalls = true;
+
+    public constructor(speed?: number, hasWalls?: boolean) {
+        super();
+        if(speed != null) {
+            this.setSpeed(speed);
+        }
+        if(hasWalls != null) {
+            this.setWalls(hasWalls);
+        }
+    }
+
     public getStatus() {
         return this.status;
     }
@@ -62,10 +76,7 @@ export class SnakeGame extends EventEmitter {
             // it's like rendering from right to left
             x: SnakeGame.INITIAL_LENGTH + 3 - x,
             y: Math.floor(SnakeGame.HEIGHT / 2),
-            direction: SnakeGame.DIRECTION.R,
             eating: false,
-            head: x === 0,
-            tail: x === SnakeGame.INITIAL_LENGTH - 1,
         }), SnakeGame.INITIAL_LENGTH);
     }
 
@@ -100,6 +111,7 @@ export class SnakeGame extends EventEmitter {
 
     private apple: SnakeGameCoords | undefined = this.getNewAppleCoords();
 
+    private currentDirection = SnakeGame.DIRECTION.R;
     private nextDirection: symbol | undefined;
 
     private advance() {
@@ -111,13 +123,13 @@ export class SnakeGame extends EventEmitter {
         // Next direction is dictated if there's an interrupt (arrows were pressed)
         // otherwise we'll replicate head's direction
         const snakeHead = this.getSnakeHead();
-        const nextDirection = this.nextDirection ?? snakeHead.direction;
+        const nextDirection = this.nextDirection ?? this.currentDirection;
         const nextHeadPosition = this.getNextHeadPosition(nextDirection);
         // If next head position is a wall stop
         if (this.isHittingWall(nextHeadPosition)) {
             this.stopAdvancing(SnakeGame.STATUS.OVER);
             // GAME OVER
-        } else 
+        } else
         // If next head position is a snake tract stop
         if(this.isHittingItself(nextHeadPosition)) {
             this.stopAdvancing(SnakeGame.STATUS.OVER);
@@ -129,62 +141,62 @@ export class SnakeGame extends EventEmitter {
             for(let i = this.snake.length - 1; i > 0; i -= 1) {
                 const tract = this.snake[i];
                 // An apple has reached the snake tail, make it grow
-                if(tract.tail && tract.eating) {
+                if(i === this.tailIndex && tract.eating) {
                     // Copy the last element
                     this.snake.push({
                         ...tract,
-                        tail: true,
                         eating: false,
                     });
-                    tract.tail = false;
                 }
                 const nextTract = this.snake[i - 1];
                 tract.x = nextTract.x;
                 tract.y = nextTract.y;
-                tract.direction = nextTract.direction;
                 tract.eating = nextTract.eating;
             }
             snakeHead.x = nextHeadPosition.x;
             snakeHead.y = nextHeadPosition.y;
             // If next head position is an apple eat it
             snakeHead.eating = this.apple != null && this.apple.x === nextHeadPosition.x && this.apple.y === nextHeadPosition.y;
-            // If the snake ate then 
+            // If the snake ate then
             if(snakeHead.eating) {
                 this.apple = this.getNewAppleCoords();
             }
-            snakeHead.direction = nextDirection;
             this.nextDirection = undefined;
+            this.currentDirection = nextDirection;
             this.emit(SnakeGame.EVENT.ADVANCE);
         }
     }
 
     private getSnakeHead(): SnakeGameData {
         // Can cast because we can assume there is always a head
-        return this.snake.find((tract) => tract.head) as SnakeGameData;
+        return this.snake[this.headIndex];
     }
 
     private isHittingWall(nextHeadPosition: SnakeGameCoords): boolean {
-        return nextHeadPosition.x < 0 || nextHeadPosition.x >= SnakeGame.WIDTH || nextHeadPosition.y < 0 || nextHeadPosition.y >= SnakeGame.HEIGHT;
+        return this.hasWalls && (nextHeadPosition.x < 0 || nextHeadPosition.x >= SnakeGame.WIDTH || nextHeadPosition.y < 0 || nextHeadPosition.y >= SnakeGame.HEIGHT);
     }
 
     private isHittingItself(nextHeadPosition: SnakeGameCoords): boolean {
-        return this.snake.reduce((isColliding, tract) => isColliding || (!tract.head && tract.x === nextHeadPosition.x && tract.y === nextHeadPosition.y), false);
+        // There is one exception: when the head is hitting the tail
+        // but the tail is not eating an apple then it will move away
+        // the next refresh so it does not count as a hit.
+        return this.snake.reduce((isColliding, tract, index) => isColliding || ((this.tailIndex !== index || tract.eating) && tract.x === nextHeadPosition.x && tract.y === nextHeadPosition.y), false);
     }
 
     private getNextHeadPosition(nextDirection: symbol): SnakeGameCoords {
         const head = this.getSnakeHead();
         switch (nextDirection) {
             case SnakeGame.DIRECTION.U: {
-                return { x: head.x, y: head.y - 1 };
+                return { x: head.x, y: this.hasWalls ? (head.y - 1) : ((head.y + SnakeGame.HEIGHT - 1) % SnakeGame.HEIGHT) };
             }
             case SnakeGame.DIRECTION.D: {
-                return { x: head.x, y: head.y + 1 };
+                return { x: head.x, y: this.hasWalls ? (head.y + 1) : ((head.y + 1) % SnakeGame.HEIGHT) };
             }
             case SnakeGame.DIRECTION.L: {
-                return { x: head.x - 1, y: head.y };
+                return { x: this.hasWalls ? (head.x - 1) : ((head.x + SnakeGame.WIDTH - 1) % SnakeGame.WIDTH), y: head.y };
             }
             case SnakeGame.DIRECTION.R: {
-                return { x: head.x + 1, y: head.y };
+                return { x: this.hasWalls ? (head.x + 1) : ((head.x + 1) % SnakeGame.WIDTH), y: head.y };
             }
             default: {
                 throw new Error('Unrecognized direction');
@@ -225,9 +237,8 @@ export class SnakeGame extends EventEmitter {
     }
 
     public setDirection(nextDirection: symbol) {
-        const currentDirection = this.getSnakeHead().direction;
         // Direction must not be opposite
-        if(this.isNewDirectionValid(nextDirection, currentDirection)) {
+        if(this.isNewDirectionValid(nextDirection, this.currentDirection)) {
             this.nextDirection = nextDirection;
         }
     }
@@ -273,7 +284,12 @@ export class SnakeGame extends EventEmitter {
         this.stopAdvancing(SnakeGame.STATUS.IDLE);
         this.snake = this.getNewSnake();
         this.apple = this.getNewAppleCoords();
+        this.nextDirection = SnakeGame.DIRECTION.R;
         this.emit(SnakeGame.EVENT.RESET);
+    }
+
+    public setWalls(hasWalls: boolean) {
+        this.hasWalls = hasWalls;
     }
 
 }

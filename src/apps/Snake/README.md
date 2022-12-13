@@ -11,11 +11,13 @@ mostly because we didn't have cellphones.
 
 ## The process
 So I started by stating facts, I found some pictures of Snake being played on the 3210,
-and I wrote them down. 
+and I wrote them down.
 
 ## Instructions
 
-To play press the *arrows*, *WSAD*, spacebar or
+To play on desktop press the *arrows*, *WSAD*, spacebar or
 enter. To pause the game press spacebar or enter, to resume it press
 the *arrows*, *WSAD*, spacebar or enter. When game is over you can reset
 it by pressing the Reset button or spacebar or enter.
+
+To play on mobile just press the buttons (swipe would be too slow to capture).

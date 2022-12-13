@@ -4,7 +4,7 @@
 :global {
     html, body {
         &.stopScrolling {
-            overflow: hidden;
+            overflow: hidden !important;
         }
     }
 }
@@ -14,6 +14,9 @@
     padding: 5px;
     pointer-events: none;
     user-select: none;
+    &#{&}__noWalls {
+        border-style: dashed;
+    }
 }
 
 .cell {
@@ -25,6 +28,24 @@
     }
     &#{&}__apple {
         background-color: #f00;
+    }
+}
+
+.gamepad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &_center {
+        display: flex;
+    }
+
+}
+
+@media(min-width: 768px) {
+    .gamepad {
+        display: none;
     }
 }
 
