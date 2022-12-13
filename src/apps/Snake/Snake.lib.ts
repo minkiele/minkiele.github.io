@@ -71,11 +71,12 @@ export class SnakeGame extends EventEmitter {
     }
 
     private getNewSnake(): Array<SnakeGameData> {
+        const y = Math.floor(SnakeGame.HEIGHT / 2);
         return this.times<SnakeGameData>((x) => ({
             // Index 0 is the head,
             // it's like rendering from right to left
             x: SnakeGame.INITIAL_LENGTH + 3 - x,
-            y: Math.floor(SnakeGame.HEIGHT / 2),
+            y,
             eating: false,
         }), SnakeGame.INITIAL_LENGTH);
     }
