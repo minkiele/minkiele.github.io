@@ -9,19 +9,36 @@
     }
 }
 
-.table {
+$cols: 24;
+$rows: 17;
+
+:root {
+    --snake-game-spacing: 3px;
+    --snake-game-cell-width: 10px;
+    --snake-game-cell-height: 10px;
+    --snake-game-gutter: 2px;
+}
+
+$boardWidth: calc((var(--snake-game-cell-width) * #{$cols}) + (var(--snake-game-gutter) * #{($cols - 1)}) + (2 * var(--snake-game-spacing)));
+$boardHeight: calc((var(--snake-game-cell-height) * #{$rows}) + (var(--snake-game-gutter) * #{($rows - 1)}) + (2 * var(--snake-game-spacing)));
+
+.board {
+    width: $boardWidth;
+    height: $boardHeight;
+    position: relative;
     border: 1px solid colors.$fg;
-    padding: 5px;
     pointer-events: none;
     user-select: none;
     &#{&}__noWalls {
         border-style: dashed;
     }
+    margin: 0 auto;
 }
 
 .cell {
-    width: 20px;
-    height: 20px;
+    width: var(--snake-game-cell-width);
+    height: var(--snake-game-cell-height);
+    position: absolute;
     background-color: colors.$bg;
     &#{&}__snake {
         background-color: colors.$fg;
@@ -44,6 +61,11 @@
 }
 
 @media(min-width: 768px) {
+    :root {
+        --snake-game-spacing: 6px;
+        --snake-game-cell-width: 20px;
+        --snake-game-cell-height: 20px;
+    }
     .gamepad {
         display: none;
     }
@@ -51,7 +73,7 @@
 
 @include mixins.when-dark() {
 
-    .table {
+    .board {
         border: 1px solid colors.$dark-fg;
     }
 

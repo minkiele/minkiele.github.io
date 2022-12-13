@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { thunkify, times } from "ramda";
+import { thunkify } from "ramda";
 import {
   ChangeEventHandler,
   FunctionComponent,
@@ -8,25 +8,27 @@ import {
   useRef,
   useState,
 } from "react";
-import { SnakeGame } from "./Snake.lib";
+import { SnakeGame, SnakeGameCoords } from "./Snake.lib";
 import styles from "./Snake.module.scss";
 import SnakeMd from "./README.md";
-import { A, getBoard, S } from "./Snake.utils";
+import { getCellStyle, getSortedSnake } from "./Snake.utils";
 
 const Snake: FunctionComponent = () => {
   const [speed, setSpeed] = useState<number>(10);
   const [hasWalls, setWalls] = useState<boolean>(true);
   const [status, setStatus] = useState<symbol>(SnakeGame.STATUS.IDLE);
   const snakeGame = useRef<SnakeGame>(new SnakeGame(speed, hasWalls));
-  const [board, setBoard] = useState<Array<Array<symbol>>>(
-    getBoard(snakeGame.current.getSnake(), snakeGame.current.getApple())
+  const [snake, setSnake] = useState<Array<SnakeGameCoords>>(
+    getSortedSnake(snakeGame.current.getSnake())
+  );
+  const [apple, setApple] = useState<SnakeGameCoords | undefined>(
+    snakeGame.current.getApple()
   );
 
   useEffect(() => {
     const updateData = () => {
-      setBoard(
-        getBoard(snakeGame.current.getSnake(), snakeGame.current.getApple())
-      );
+      setSnake(getSortedSnake(snakeGame.current.getSnake()));
+      setApple(snakeGame.current.getApple());
     };
     snakeGame.current.addListener(SnakeGame.EVENT.ADVANCE, updateData);
     snakeGame.current.addListener(SnakeGame.EVENT.RESET, updateData);
@@ -142,55 +144,51 @@ const Snake: FunctionComponent = () => {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleGamepadThunk = useCallback(thunkify((direction: symbol) => {
-    const gameStatus = snakeGame.current.getStatus();
-    const isWaiting =
-      gameStatus === SnakeGame.STATUS.IDLE ||
-      gameStatus === SnakeGame.STATUS.PAUSE;
-    const isGameNotEnded =
-      isWaiting || gameStatus === SnakeGame.STATUS.RUNNING;
+  const handleGamepadThunk = useCallback(
+    thunkify((direction: symbol) => {
+      const gameStatus = snakeGame.current.getStatus();
+      const isWaiting =
+        gameStatus === SnakeGame.STATUS.IDLE ||
+        gameStatus === SnakeGame.STATUS.PAUSE;
+      const isGameNotEnded =
+        isWaiting || gameStatus === SnakeGame.STATUS.RUNNING;
       if (isGameNotEnded) {
         snakeGame.current.setDirection(direction);
       }
       if (isWaiting) {
         snakeGame.current.start();
       }
-  }), []);
+    }),
+    []
+  );
 
   return (
     <div>
       <SnakeMd />
-      <table
+      <div
         className={classNames({
-          [styles.table]: true,
-          [styles.table__noWalls]: !hasWalls,
+          [styles.board]: true,
+          [styles.board__noWalls]: !hasWalls,
         })}
       >
-        <tbody>
-          {times(
-            (y) => (
-              <tr key={`row-${y}`}>
-                {times(
-                  (x) => (
-                    <td
-                      key={`row-${y}-col-${x}-board-${board[y][x].toString()}`}
-                      className={classNames({
-                        [styles.cell]: true,
-                        [styles.cell__snake]: board[y][x] === S,
-                        [styles.cell__apple]: board[y][x] === A,
-                      })}
-                    >
-                      &nbsp;
-                    </td>
-                  ),
-                  SnakeGame.WIDTH
-                )}
-              </tr>
-            ),
-            SnakeGame.HEIGHT
-          )}
-        </tbody>
-      </table>
+        {snake.map((tract) => (
+          <div
+            key={`tract-x-${tract.x}-y-${tract.y}`}
+            className={`${styles.cell} ${styles.cell__snake}`}
+            style={getCellStyle(tract)}
+          >
+            &nbsp;
+          </div>
+        ))}
+        {apple != null && (
+          <div
+            className={`${styles.cell} ${styles.cell__apple}`}
+            style={getCellStyle(apple)}
+          >
+            &nbsp;
+          </div>
+        )}
+      </div>
       <div>
         {status === SnakeGame.STATUS.IDLE && <p>Insert coin to play...</p>}
         {status === SnakeGame.STATUS.OVER && (
@@ -210,18 +208,26 @@ const Snake: FunctionComponent = () => {
       </div>
       <div className={styles.gamepad}>
         <div>
-          <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.U)}>Up</button>
+          <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.U)}>
+            Up
+          </button>
         </div>
         <div className={styles.gamepad_center}>
           <div>
-            <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.L)}>Left</button>
+            <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.L)}>
+              Left
+            </button>
           </div>
           <div>
-            <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.R)}>Right</button>
+            <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.R)}>
+              Right
+            </button>
           </div>
         </div>
         <div>
-          <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.D)}>Down</button>
+          <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.D)}>
+            Down
+          </button>
         </div>
       </div>
       <div>

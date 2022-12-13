@@ -16,12 +16,9 @@ and I wrote them down. Measuring the picture I found out that the board is 24x17
 I remembered that the snake got longer only when the eaten fruit reached its tail.
 I cannot recall how it started so I put the snake on the most probable location.
 
-Through some iterations I then simplified the calculations. The simplest way to print
-the game was through a table representing each pixel of the game, unfortunately this
-is pretty heavy (you need to re-render a 308 matrix every iteration knowing that
-graphically only 3 elements change at most),
-so the next optimization will be to get rid of the table and draw only the elements
-that need to be changed.
+Through some iterations I then simplified the calculations. For this iteration I devised
+a way in which we have to draw only the snake and apple squares. I think it needs some sorting
+before printing it
 
 ## Instructions
 
