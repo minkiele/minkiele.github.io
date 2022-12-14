@@ -1,0 +1,36 @@
+@use "../../styles/colors";
+@use "../../styles/mixins";
+
+.table {
+    border-collapse: collapse;
+}
+
+.tile {
+    width: 20px;
+    height: 20px;
+    border: 1px solid colors.$fg;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    &:hover {
+        cursor: pointer;
+    }
+    &__unstepped {
+        background-color: rgba(colors.$fg, .2);
+    }
+    &__flag, &__falseFlag {
+        color: #f00;
+    }
+    &__steppedOnMine {
+        background-color: #f00;
+    }
+}
+
+@include mixins.when-dark() {
+    .tile {
+        border-color: colors.$dark-fg;
+        &__unstepped {
+            background-color: rgba(colors.$dark-fg, .2);
+        }
+    }
+}
