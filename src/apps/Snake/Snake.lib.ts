@@ -1,4 +1,5 @@
 import EventEmitter from "events";
+import times from 'lodash.times';
 
 export interface SnakeGameCoords {
     x: number;
@@ -17,6 +18,16 @@ interface SnakeGameData extends SnakeGameCoords {
 
 /**
  * @link https://galeri12.uludagsozluk.com/596/nokia-3210_707680.jpg For the board size
+ * To improve reactivity and performance I tried a few tricks:
+ * First attempt was to throttle the advance and flush the calls every direction change
+ * but it got skipped too many times during the update cycle, completely unreliable.
+ * Second attempt was to call advance() every direction change without attempting any
+ * throttle, with calls too close to the next update cycle you'd have this sensation of
+ * doing 2 interactions instead of one. Also, a 180 turn became impossible.
+ * Third attempt was to call advance() every direction change but adding a flag to signal
+ * the next update cycle to skip the advance() call. It gave a very fast response on
+ * direction change but then a "freezing" because of the skipped update.
+ * So far the first implementation with a pooling update cycle is the best.
  */
 export class SnakeGame {
     public static readonly WIDTH = 24;
@@ -67,19 +78,15 @@ export class SnakeGame {
         return this.status;
     }
 
-    private times<T>(generator: (index: number) => T, length: number): Array<T> {
-        return Array(length).fill(undefined).map((_, index) => generator(index));
-    }
-
     private getNewSnake(): Array<SnakeGameData> {
         const y = Math.floor(SnakeGame.HEIGHT / 2);
-        return this.times<SnakeGameData>((x) => ({
+        return times<SnakeGameData>(SnakeGame.INITIAL_LENGTH, (x) => ({
             // Index 0 is the head,
             // it's like rendering from right to left
             x: SnakeGame.INITIAL_LENGTH + 3 - x,
             y,
             eating: false,
-        }), SnakeGame.INITIAL_LENGTH);
+        }));
     }
 
     private snake: Array<SnakeGameData> = this.getNewSnake();

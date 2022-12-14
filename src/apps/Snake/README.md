@@ -17,8 +17,11 @@ I remembered that the snake got longer only when the eaten fruit reached its tai
 I cannot recall how it started so I put the snake on the most probable location.
 
 Through some iterations I then simplified the calculations. For this iteration I devised
-a way in which we have to draw only the snake and apple squares. I think it needs some sorting
-before printing it
+a way in which we have to draw only the snake and apple squares. By sorting the snake
+tracts before printing them we can minimize the renderings.
+
+Also tried to improve performance by advancing immediately the snake upon direction
+change with different techniques but didn't notice any improvement without a drawback.
 
 ## Instructions
 
