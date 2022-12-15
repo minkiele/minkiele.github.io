@@ -95,7 +95,7 @@ const Minesweeper: FunctionComponent = () => {
 
       let content: ReactNode = <>&nbsp;</>;
       if (tile.isFlag) {
-        content = "F";
+        content = "🏴";
       } else if (tile.isSteppedOn && tile.surroundingMines > 0) {
         content = `${tile.surroundingMines}`;
       }
@@ -123,18 +123,18 @@ const Minesweeper: FunctionComponent = () => {
         }
         case MinesweeperGame.STATUS.GAME_OVER: {
           if (!tile.isFlag && tile.isMine) {
-            content = "*";
+            content = "💣";
           } else if (!tile.isSteppedOn && tile.isFlag && tile.isMine) {
-            content = "F";
+            content = "🏴";
           } else if (tile.isFlag && !tile.isMine) {
-            content = "X";
+            content = "❌";
           }
           return cloneElement(
             element,
             {
               className: classNames({
                 ...baseClassNames,
-                [styles.title__mine]:
+                [styles.tile__mine]:
                   !tile.isSteppedOn && !tile.isFlag && tile.isMine,
                 [styles.tile__steppedOnMine]:
                   tile.isSteppedOn && !tile.isFlag && tile.isMine,
@@ -180,7 +180,6 @@ const Minesweeper: FunctionComponent = () => {
                           key={`tile-x-${x}-y-${y}`}
                           className={classNames({
                             [styles.tile]: true,
-                            [styles.tile__unstepped]: true,
                           })}
                           onMouseUp={handleMouseUp(x, y, tiles[y][x])}
                         >

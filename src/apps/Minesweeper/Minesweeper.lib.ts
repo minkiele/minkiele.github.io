@@ -158,7 +158,7 @@ export class Minesweeper {
 
     private startChainReaction(x: number, y: number) {
         this.callSurroundingTiles(x, y, (tX, tY) => {
-            if(!this.tiles[tY][tX].isSteppedOn) {
+            if(!this.tiles[tY][tX].isSteppedOn && !this.tiles[tY][tX].isFlag) {
                 if(this.isTileEmpty(tX, tY)) {
                     this.tiles[tY][tX].isSteppedOn = true;
                     this.startChainReaction(tX, tY);

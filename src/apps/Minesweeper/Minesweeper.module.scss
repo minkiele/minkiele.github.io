@@ -26,7 +26,7 @@
 
 .tile {
     width: var(--minesweeper-tile-width);
-    width: var(--minesweeper-tile-height);
+    height: var(--minesweeper-tile-height);
     border: 1px solid colors.$fg;
     text-align: center;
     vertical-align: middle;
@@ -35,13 +35,24 @@
     &:hover {
         cursor: pointer;
     }
+
+    @at-root %emoji {
+        font-family: 'Noto Emoji';
+        font-size: .8rem;
+    }
+
     &__stepped {
         background-color: rgba(colors.$fg, .15);
     }
+    &__mine {
+        @extend %emoji;
+    }
     &__flag, &__falseFlag {
+        @extend %emoji;
         color: #f00;
     }
     &__steppedOnMine {
+        @extend %emoji;
         background-color: #f00;
     }
     &__number {
