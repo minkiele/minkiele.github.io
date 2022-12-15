@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { thunkify, times } from "ramda";
 import {
   cloneElement,
+  FormEventHandler,
   FunctionComponent,
   MouseEventHandler,
   ReactElement,
@@ -65,10 +66,15 @@ const Minesweeper: FunctionComponent = () => {
   }, [options]);
 
   const handleMouseUp =
-    (x: number, y: number, { isSteppedOn, surroundingMines, isMine, isFlag }: MinefieldTile): MouseEventHandler<HTMLTableCellElement> =>
+    (
+      x: number,
+      y: number,
+      { isSteppedOn, surroundingMines, isMine, isFlag }: MinefieldTile
+    ): MouseEventHandler<HTMLTableCellElement> =>
     (evt) => {
-      const toggleStepMode = isSteppedOn && !isMine && !isFlag && surroundingMines === 0;
-      if(toggleStepMode) {
+      const toggleStepMode =
+        isSteppedOn && !isMine && !isFlag && surroundingMines === 0;
+      if (toggleStepMode) {
         setStepMode((currentMode) => !currentMode);
       } else {
         if (!stepMode || evt.metaKey || evt.button === 2) {
@@ -152,10 +158,9 @@ const Minesweeper: FunctionComponent = () => {
     return element;
   };
 
-  const handleSetDifficulty =
-    thunkify((difficulty: MinesweeperOptions) => {
-      setOptions({ ...difficulty });
-    });
+  const handleSetDifficulty = thunkify((difficulty: MinesweeperOptions) => {
+    setOptions({ ...difficulty });
+  });
 
   const handleReset = () => {
     minesweeperRef.current.reset();
@@ -164,18 +169,58 @@ const Minesweeper: FunctionComponent = () => {
   const handleSetStepMode = thunkify(setStepMode);
 
   const { width, height } = options;
+
+  const handleCustomOptions: FormEventHandler<HTMLFormElement> = (evt) => {
+    evt.preventDefault();
+    const formWidth = (
+      (evt.target as HTMLFormElement).width as HTMLInputElement
+    ).value;
+    const formHeight = (
+      (evt.target as HTMLFormElement).height as HTMLInputElement
+    ).value;
+    const formMines = (
+      (evt.target as HTMLFormElement).mines as HTMLInputElement
+    ).value;
+
+    let width = parseInt(formWidth);
+    let height = parseInt(formHeight);
+    let mines = parseInt(formMines);
+
+    if (isNaN(width) || width < 3) {
+      width = 3;
+    }
+
+    if (isNaN(height) || height < 3) {
+      height = 3;
+    }
+
+    if (isNaN(mines)) {
+      mines = Math.floor(0.15 * width * height);
+    } else if (mines < 1) {
+      mines = 1;
+    } else if (mines >= width * height) {
+      mines = width * height - 1;
+    }
+
+    setOptions({ width, height, mines });
+  };
+
   return (
     <div>
       <MinesweeperMd />
       <div className={styles.scrollable}>
-        <table className={styles.table} style={getMinefieldStyle(width, height)}>
+        <table
+          className={styles.table}
+          style={getMinefieldStyle(width, height)}
+        >
           <tbody>
             {times(
               (y) => (
                 <tr key={`row-${y}`}>
                   {times(
                     (x) =>
-                    tiles?.[y]?.[x] != null && getTile(
+                      tiles?.[y]?.[x] != null &&
+                      getTile(
                         <td
                           key={`tile-x-${x}-y-${y}`}
                           className={classNames({
@@ -198,7 +243,9 @@ const Minesweeper: FunctionComponent = () => {
       </div>
       <div>
         {status === MinesweeperGame.STATUS.UNINITIALIZED && <p>Ready...</p>}
-        {status === MinesweeperGame.STATUS.IN_GAME && <p>You must flag {mines} mines to finish</p>}
+        {status === MinesweeperGame.STATUS.IN_GAME && (
+          <p>You must flag {mines} mines to finish</p>
+        )}
         {status === MinesweeperGame.STATUS.GAME_OVER && <p>Oops!</p>}
         {status === MinesweeperGame.STATUS.COMPLETE && <p>Bravo! Hooray!</p>}
       </div>
@@ -213,8 +260,7 @@ const Minesweeper: FunctionComponent = () => {
             onChange={handleSetStepMode(true)}
             checked={stepMode}
           />
-          <label htmlFor="setStepModeStep">Click</label>
-          {' '}
+          <label htmlFor="setStepModeStep">Click</label>{" "}
           <input
             type="radio"
             name="stepMode"
@@ -228,7 +274,10 @@ const Minesweeper: FunctionComponent = () => {
       </div>
       <div>
         <fieldset>
-          <legend>Choose your destiny</legend>
+          <legend>Choose your density (ehm... destiny)</legend>
+          <button type="button" onClick={handleReset}>
+            Reset
+          </button>{" "}
           <button
             type="button"
             onClick={handleSetDifficulty(MinesweeperGame.DIFFICULTY.EASY)}
@@ -246,13 +295,34 @@ const Minesweeper: FunctionComponent = () => {
             onClick={handleSetDifficulty(MinesweeperGame.DIFFICULTY.HARD)}
           >
             Hard
-          </button>{" "}
-          <button
-            type="button"
-            onClick={handleReset}
-          >
-            Reset
           </button>
+          <form onSubmit={handleCustomOptions}>
+            <label htmlFor="width">Width</label>{" "}
+            <input
+              id="width"
+              name="width"
+              type="number"
+              defaultValue={width}
+              min={3}
+            />{" "}
+            <label htmlFor="height">Height</label>{" "}
+            <input
+              id="height"
+              name="height"
+              type="number"
+              defaultValue={height}
+              min={3}
+            />{" "}
+            <label htmlFor="mines">Mines</label>{" "}
+            <input
+              id="mines"
+              name="mines"
+              type="number"
+              defaultValue={mines}
+              min={1}
+            />{" "}
+            <button type="submit">Custom</button>
+          </form>
         </fieldset>
       </div>
     </div>
