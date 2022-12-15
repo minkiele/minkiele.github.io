@@ -17,6 +17,7 @@ import {
   MinesweeperOptions,
 } from "./Minesweeper.lib";
 import styles from "./Minesweeper.module.scss";
+import { getMinefieldStyle } from "./Minesweeper.utils";
 import MinesweeperMd from "./README.md";
 
 const Minesweeper: FunctionComponent = () => {
@@ -64,12 +65,17 @@ const Minesweeper: FunctionComponent = () => {
   }, [options]);
 
   const handleMouseUp =
-    (x: number, y: number): MouseEventHandler<HTMLTableCellElement> =>
+    (x: number, y: number, { isSteppedOn, surroundingMines, isMine, isFlag }: MinefieldTile): MouseEventHandler<HTMLTableCellElement> =>
     (evt) => {
-      if (!stepMode || evt.metaKey || evt.button === 2) {
-        minesweeperRef.current.toggleFlag(x, y);
+      const toggleStepMode = isSteppedOn && !isMine && !isFlag && surroundingMines === 0;
+      if(toggleStepMode) {
+        setStepMode((currentMode) => !currentMode);
       } else {
-        minesweeperRef.current.stepOn(x, y);
+        if (!stepMode || evt.metaKey || evt.button === 2) {
+          minesweeperRef.current.toggleFlag(x, y);
+        } else {
+          minesweeperRef.current.stepOn(x, y);
+        }
       }
     };
 
@@ -81,6 +87,7 @@ const Minesweeper: FunctionComponent = () => {
       const baseClassNames = {
         [styles.tile]: true,
         [styles.tile__unstepped]: !tile.isSteppedOn,
+        [styles.tile__stepped]: tile.isSteppedOn,
         [styles.tile__flag]: tile.isFlag,
         [styles[`tile__number${tile.surroundingMines}`]]:
           !tile.isFlag && tile.isSteppedOn && tile.surroundingMines > 0,
@@ -161,25 +168,25 @@ const Minesweeper: FunctionComponent = () => {
     <div>
       <MinesweeperMd />
       <div className={styles.scrollable}>
-        <table className={styles.table}>
+        <table className={styles.table} style={getMinefieldStyle(width, height)}>
           <tbody>
             {times(
               (y) => (
                 <tr key={`row-${y}`}>
                   {times(
                     (x) =>
-                      getTile(
+                    tiles?.[y]?.[x] != null && getTile(
                         <td
                           key={`tile-x-${x}-y-${y}`}
                           className={classNames({
                             [styles.tile]: true,
                             [styles.tile__unstepped]: true,
                           })}
-                          onMouseUp={handleMouseUp(x, y)}
+                          onMouseUp={handleMouseUp(x, y, tiles[y][x])}
                         >
                           &nbsp;
                         </td>,
-                        tiles?.[y]?.[x]
+                        tiles[y][x]
                       ),
                     width
                   )}
@@ -199,18 +206,25 @@ const Minesweeper: FunctionComponent = () => {
       <div>
         <fieldset>
           <legend>Mode</legend>
-          <button
-            type="button"
-            onClick={handleSetStepMode(true)}
-          >
-            Click
-          </button>{" "}
-          <button
-            type="button"
-            onClick={handleSetStepMode(false)}
-          >
-            Flag
-          </button>{" "}
+          <input
+            type="radio"
+            name="stepMode"
+            id="setStepModeStep"
+            value="step"
+            onChange={handleSetStepMode(true)}
+            checked={stepMode}
+          />
+          <label htmlFor="setStepModeStep">Click</label>
+          {' '}
+          <input
+            type="radio"
+            name="stepMode"
+            id="setStepModeFlag"
+            value="flag"
+            onChange={handleSetStepMode(false)}
+            checked={!stepMode}
+          />
+          <label htmlFor="setStepModeFlag">Flag</label>
         </fieldset>
       </div>
       <div>
