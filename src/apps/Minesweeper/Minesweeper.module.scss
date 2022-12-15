@@ -1,6 +1,11 @@
 @use "../../styles/colors";
 @use "../../styles/mixins";
 
+.scrollable {
+    overflow: auto;
+    max-width: 100%;
+}
+
 .table {
     border-collapse: collapse;
 }

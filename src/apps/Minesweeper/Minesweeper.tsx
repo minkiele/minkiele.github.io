@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { times } from "ramda";
+import { thunkify, times } from "ramda";
 import {
   cloneElement,
   FunctionComponent,
@@ -34,6 +34,8 @@ const Minesweeper: FunctionComponent = () => {
     options.mines - minesweeperRef.current.getFlaggedMines()
   );
 
+  const [stepMode, setStepMode] = useState<boolean>(true);
+
   useEffect(() => {
     minesweeperRef.current.reset(options);
     setTiles(minesweeperRef.current.getMinefield());
@@ -64,7 +66,7 @@ const Minesweeper: FunctionComponent = () => {
   const handleMouseUp =
     (x: number, y: number): MouseEventHandler<HTMLTableCellElement> =>
     (evt) => {
-      if (evt.metaKey || evt.button === 2) {
+      if (!stepMode || evt.metaKey || evt.button === 2) {
         minesweeperRef.current.toggleFlag(x, y);
       } else {
         minesweeperRef.current.stepOn(x, y);
@@ -144,52 +146,72 @@ const Minesweeper: FunctionComponent = () => {
   };
 
   const handleSetDifficulty =
-    (difficulty: MinesweeperOptions): MouseEventHandler<HTMLButtonElement> =>
-    () => {
+    thunkify((difficulty: MinesweeperOptions) => {
       setOptions({ ...difficulty });
-    };
+    });
 
   const handleReset = () => {
     minesweeperRef.current.reset();
   };
 
+  const handleSetStepMode = thunkify(setStepMode);
+
   const { width, height } = options;
   return (
     <div>
       <MinesweeperMd />
-      <table className={styles.table}>
-        <tbody>
-          {times(
-            (y) => (
-              <tr key={`row-${y}`}>
-                {times(
-                  (x) =>
-                    getTile(
-                      <td
-                        key={`tile-x-${x}-y-${y}`}
-                        className={classNames({
-                          [styles.tile]: true,
-                          [styles.tile__unstepped]: true,
-                        })}
-                        onMouseUp={handleMouseUp(x, y)}
-                      >
-                        &nbsp;
-                      </td>,
-                      tiles?.[y]?.[x]
-                    ),
-                  width
-                )}
-              </tr>
-            ),
-            height
-          )}
-        </tbody>
-      </table>
+      <div className={styles.scrollable}>
+        <table className={styles.table}>
+          <tbody>
+            {times(
+              (y) => (
+                <tr key={`row-${y}`}>
+                  {times(
+                    (x) =>
+                      getTile(
+                        <td
+                          key={`tile-x-${x}-y-${y}`}
+                          className={classNames({
+                            [styles.tile]: true,
+                            [styles.tile__unstepped]: true,
+                          })}
+                          onMouseUp={handleMouseUp(x, y)}
+                        >
+                          &nbsp;
+                        </td>,
+                        tiles?.[y]?.[x]
+                      ),
+                    width
+                  )}
+                </tr>
+              ),
+              height
+            )}
+          </tbody>
+        </table>
+      </div>
       <div>
         {status === MinesweeperGame.STATUS.UNINITIALIZED && <p>Ready...</p>}
         {status === MinesweeperGame.STATUS.IN_GAME && <p>You must flag {mines} mines to finish</p>}
         {status === MinesweeperGame.STATUS.GAME_OVER && <p>Oops!</p>}
         {status === MinesweeperGame.STATUS.COMPLETE && <p>Bravo! Hooray!</p>}
+      </div>
+      <div>
+        <fieldset>
+          <legend>Mode</legend>
+          <button
+            type="button"
+            onClick={handleSetStepMode(true)}
+          >
+            Click
+          </button>{" "}
+          <button
+            type="button"
+            onClick={handleSetStepMode(false)}
+          >
+            Flag
+          </button>{" "}
+        </fieldset>
       </div>
       <div>
         <fieldset>
@@ -217,7 +239,7 @@ const Minesweeper: FunctionComponent = () => {
             onClick={handleReset}
           >
             Reset
-          </button>{" "}
+          </button>
         </fieldset>
       </div>
     </div>
