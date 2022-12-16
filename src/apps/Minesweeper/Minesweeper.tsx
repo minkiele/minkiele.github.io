@@ -7,6 +7,7 @@ import {
   MouseEventHandler,
   ReactElement,
   ReactNode,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -18,7 +19,11 @@ import {
   MinesweeperOptions,
 } from "./Minesweeper.lib";
 import styles from "./Minesweeper.module.scss";
-import { getMinefieldStyle } from "./Minesweeper.utils";
+import {
+  getMinefieldStyle,
+  isCoastingTile,
+  isEmptyTile,
+} from "./Minesweeper.utils";
 import MinesweeperMd from "./README.md";
 
 const Minesweeper: FunctionComponent = () => {
@@ -69,15 +74,19 @@ const Minesweeper: FunctionComponent = () => {
     (
       x: number,
       y: number,
-      { isSteppedOn, surroundingMines, isMine, isFlag }: MinefieldTile
+      tile: MinefieldTile
     ): MouseEventHandler<HTMLTableCellElement> =>
     (evt) => {
-      const toggleStepMode =
-        isSteppedOn && !isMine && !isFlag && surroundingMines === 0;
+      evt.preventDefault();
+      const toggleStepMode = isEmptyTile(tile);
       if (toggleStepMode) {
         setStepMode((currentMode) => !currentMode);
       } else {
-        if (!stepMode || evt.metaKey || evt.button === 2) {
+        if (
+          !(stepMode || isCoastingTile(tile)) ||
+          evt.metaKey ||
+          evt.button === 2
+        ) {
           minesweeperRef.current.toggleFlag(x, y);
         } else {
           minesweeperRef.current.stepOn(x, y);
@@ -85,78 +94,85 @@ const Minesweeper: FunctionComponent = () => {
       }
     };
 
-  const getTile = (
-    element: ReactElement,
-    tile: MinefieldTile | undefined
-  ): ReactNode => {
-    if (tile != null) {
-      const baseClassNames = {
-        [styles.tile]: true,
-        [styles.tile__unstepped]: !tile.isSteppedOn,
-        [styles.tile__stepped]: tile.isSteppedOn,
-        [styles.tile__flag]: tile.isFlag,
-        [styles[`tile__number${tile.surroundingMines}`]]:
-          !tile.isFlag && tile.isSteppedOn && tile.surroundingMines > 0,
-      };
+  const getTile = useCallback(
+    (element: ReactElement, tile: MinefieldTile | undefined): ReactNode => {
+      if (tile != null) {
+        const baseClassNames = {
+          [styles.tile]: true,
+          [styles.tile__stepped]: tile.isSteppedOn,
+          [styles.tile__flag]: tile.isFlag,
+          [styles[`tile__number${tile.surroundingMines}`]]:
+            !tile.isFlag && tile.isSteppedOn && tile.surroundingMines > 0,
+        };
 
-      let content: ReactNode = <>&nbsp;</>;
-      if (tile.isFlag) {
-        content = "🏴";
-      } else if (tile.isSteppedOn && tile.surroundingMines > 0) {
-        content = `${tile.surroundingMines}`;
-      }
+        let content: ReactNode = <>&nbsp;</>;
+        if (
+          tile.isFlag ||
+          (!(stepMode || tile.isSteppedOn) &&
+            status !== MinesweeperGame.STATUS.GAME_OVER)
+        ) {
+          content = "🏴";
+        } else if (tile.isSteppedOn && tile.surroundingMines > 0) {
+          content = `${tile.surroundingMines}`;
+        }
 
-      switch (status) {
-        case MinesweeperGame.STATUS.UNINITIALIZED:
-        case MinesweeperGame.STATUS.IN_GAME: {
-          return cloneElement(
-            element,
-            {
-              className: classNames(baseClassNames),
-            },
-            content
-          );
-        }
-        case MinesweeperGame.STATUS.COMPLETE: {
-          return cloneElement(
-            element,
-            {
-              className: classNames(baseClassNames),
-              onMouseUp: undefined,
-            },
-            content
-          );
-        }
-        case MinesweeperGame.STATUS.GAME_OVER: {
-          if (!tile.isFlag && tile.isMine) {
-            content = "💣";
-          } else if (!tile.isSteppedOn && tile.isFlag && tile.isMine) {
-            content = "🏴";
-          } else if (tile.isFlag && !tile.isMine) {
-            content = "❌";
+        switch (status) {
+          case MinesweeperGame.STATUS.UNINITIALIZED:
+          case MinesweeperGame.STATUS.IN_GAME: {
+            return cloneElement(
+              element,
+              {
+                className: classNames({
+                  ...baseClassNames,
+                  [styles.tile__flagMode]:
+                    !stepMode && !tile.isSteppedOn && !tile.isFlag,
+                }),
+              },
+              content
+            );
           }
-          return cloneElement(
-            element,
-            {
-              className: classNames({
-                ...baseClassNames,
-                [styles.tile__mine]:
-                  !tile.isSteppedOn && !tile.isFlag && tile.isMine,
-                [styles.tile__steppedOnMine]:
-                  tile.isSteppedOn && !tile.isFlag && tile.isMine,
-                [styles.tile__flag]:
-                  !tile.isSteppedOn && tile.isFlag && tile.isMine,
-                [styles.tile__falseFlag]: tile.isFlag && !tile.isMine,
-              }),
-              onMouseUp: undefined,
-            },
-            content
-          );
+          case MinesweeperGame.STATUS.COMPLETE: {
+            return cloneElement(
+              element,
+              {
+                className: classNames(baseClassNames),
+                onMouseUp: undefined,
+              },
+              content
+            );
+          }
+          case MinesweeperGame.STATUS.GAME_OVER: {
+            if (!tile.isFlag && tile.isMine) {
+              content = "💣";
+            } else if (!tile.isSteppedOn && tile.isFlag && tile.isMine) {
+              content = "🏴";
+            } else if (tile.isFlag && !tile.isMine) {
+              content = "❌";
+            }
+            return cloneElement(
+              element,
+              {
+                className: classNames({
+                  ...baseClassNames,
+                  [styles.tile__mine]:
+                    !tile.isSteppedOn && !tile.isFlag && tile.isMine,
+                  [styles.tile__steppedOnMine]:
+                    tile.isSteppedOn && !tile.isFlag && tile.isMine,
+                  [styles.tile__flag]:
+                    !tile.isSteppedOn && tile.isFlag && tile.isMine,
+                  [styles.tile__falseFlag]: tile.isFlag && !tile.isMine,
+                }),
+                onMouseUp: undefined,
+              },
+              content
+            );
+          }
         }
       }
-    }
-    return element;
-  };
+      return element;
+    },
+    [stepMode, status]
+  );
 
   const handleSetDifficulty = thunkify((difficulty: MinesweeperOptions) => {
     setOptions({ ...difficulty });
@@ -205,6 +221,10 @@ const Minesweeper: FunctionComponent = () => {
     setOptions({ width, height, mines });
   };
 
+  // Prevent opening of the context menu when right clicking a tile
+  const preventDefault: MouseEventHandler<HTMLDivElement> = (evt) =>
+    evt.preventDefault();
+
   return (
     <div>
       <MinesweeperMd />
@@ -212,6 +232,7 @@ const Minesweeper: FunctionComponent = () => {
         <table
           className={styles.table}
           style={getMinefieldStyle(width, height)}
+          onContextMenu={preventDefault}
         >
           <tbody>
             {times(

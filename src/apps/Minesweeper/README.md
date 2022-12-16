@@ -12,8 +12,9 @@ to make it work in mobile and with dark theme. There are two modes, Click mode a
 
 When in click mode you can click on every tile. By clicking an empty uncoverd tile you will go to
 *Flag mode*. By clicking a number you will expose all the tiles around (only if there are the number's
-amount of tiles flagged). By pressing *command* on *macOS* and *alt* on other O.S. on an
-uncovered tile you will flag it.
+amount of tiles flagged). By pressing *command* on *macOS* and *alt* on other O.S. and clicking on an
+uncovered tile you will toggle the flag over the selected cell. By right-clicking a covered tile
+you will toggle the flag over the selected cell.
 
 ### Flag mode
 

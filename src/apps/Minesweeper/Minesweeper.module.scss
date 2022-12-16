@@ -21,6 +21,7 @@
 
 .table {
     border-collapse: collapse;
+    border: 2px solid colors.$fg;
     user-select: none;
     margin: 0 auto;
 }
@@ -48,6 +49,10 @@
     &__mine {
         @extend %emoji;
     }
+    &__flagMode {
+        @extend %emoji;
+        color: rgb(160, 160, 160);
+    }
     &__flag, &__falseFlag {
         @extend %emoji;
         color: #f00;
@@ -67,11 +72,18 @@
 }
 
 @include mixins.when-dark() {
+    .table {
+        border-color: colors.$dark-fg;
+    }
     .tile {
         border-color: colors.$dark-fg;
         background-color: rgba(colors.$dark-fg, .3);
         &__stepped {
             background-color: rgba(colors.$dark-fg, .15);
+        }
+        &__steppedOnMine {
+            color: #f00;
+            background-color: rgb(112, 20, 20);
         }
         // Some numbers weren't readable in dark mode
         // Adding light variants
