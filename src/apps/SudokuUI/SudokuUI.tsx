@@ -1,13 +1,8 @@
-import dayjs, { Dayjs } from "dayjs";
 import { assocPath, repeat, times } from "ramda";
 import {
   ChangeEvent,
-  ForwardedRef,
-  forwardRef,
   KeyboardEvent,
   useEffect,
-  useImperativeHandle,
-  useReducer,
   useRef,
   useState,
 } from "react";
@@ -15,25 +10,14 @@ import generateClassName from "../../lib/generateClassName";
 import styles from "./SudokuUI.module.scss";
 import { SudokuMatrix } from "minkiele-sudoku-matrix";
 import SudokuUIMd from './README.md';
+import useClock from "../../hooks/useClock";
+// import { ClockRef } from "../../hooks/useClock";
+// import Clock from "../../components/Clock/Clock";
 
 interface MatrixReducerAction {
   row: number;
   col: number;
   value: string;
-}
-
-interface ElapsedReducerState {
-  start: Dayjs | null;
-  current: Dayjs | null;
-  elapsed: number;
-}
-
-type ElapsedReducerAction = "start" | "stop" | "update" | "reset";
-
-interface CaptionRef {
-  start: () => void;
-  stop: () => void;
-  reset: () => void;
 }
 
 const STORAGE_KEY = "io.github.minkiele.SudokuUI.matrix";
@@ -45,70 +29,6 @@ const getSudokuMatrix = (matrix: Array<Array<string>>) =>
       return isNaN(numCol) ? null : numCol;
     })
   );
-
-const Caption = forwardRef(function Caption(
-  _,
-  forwardedRef: ForwardedRef<CaptionRef>
-) {
-  const [timeStatus, setTimeStatus] = useReducer(
-    (state: ElapsedReducerState, action: ElapsedReducerAction) => {
-      switch (action) {
-        case "start": {
-          if (state.start == null) {
-            const now = dayjs();
-            return { start: now, current: now, elapsed: 0 };
-          } else {
-            return state;
-          }
-        }
-        case "stop": {
-          return { ...state, start: null, current: null };
-        }
-        case "reset": {
-          return { start: null, current: null, elapsed: 0 };
-        }
-        default:
-          const now = dayjs();
-          return {
-            ...state,
-            current: now,
-            elapsed: state.current?.diff(state.start, "s") ?? 0,
-          };
-      }
-    },
-    {
-      start: null,
-      current: null,
-      elapsed: 0,
-    }
-  );
-
-  useImperativeHandle(
-    forwardedRef,
-    () => ({
-      start: () => setTimeStatus("start"),
-      stop: () => setTimeStatus("stop"),
-      reset: () => setTimeStatus("reset"),
-    }),
-    []
-  );
-
-  useEffect(() => {
-    if (timeStatus.start != null) {
-      const timerId = setInterval(() => {
-        setTimeStatus("update");
-      }, 1000);
-      return () => {
-        clearTimeout(timerId);
-      };
-    }
-    return undefined;
-  }, [timeStatus.start]);
-
-  return <>{timeStatus.elapsed}s</>;
-});
-
-Caption.displayName = "Caption";
 
 function SudokuUI() {
   const sanitizeValue = (input: string): string => {
@@ -131,13 +51,14 @@ function SudokuUI() {
     setValid(validator.isValid());
   }, [matrix]);
 
-  const captionRef = useRef<CaptionRef | null>(null);
+  // const captionRef = useRef<ClockRef | null>(null);
+  const { start: startClock, stop: stopClock, reset: resetClock, elapsed: elapsedTime } = useClock();
 
   useEffect(() => {
     if (valid) {
-      captionRef.current?.stop();
+      stopClock();
     }
-  }, [valid]);
+  }, [valid, stopClock]);
 
   const inputRefs = useRef<Array<Array<HTMLInputElement | null>>>(
     times(() => repeat(null, 9), 9)
@@ -145,7 +66,7 @@ function SudokuUI() {
 
   const handleChange = (row: number, col: number) => (evt: ChangeEvent) => {
     setValue({ row, col, value: (evt.target as HTMLInputElement).value });
-    captionRef.current?.start();
+    startClock();
   };
 
   const setRefFactory =
@@ -198,14 +119,14 @@ function SudokuUI() {
       try {
         const restoredMatrix = JSON.parse(serializedMatrix);
         setMatrix(restoredMatrix);
-        captionRef.current?.reset();
+        resetClock();
       } catch (_) {}
     }
   };
 
   const handleReset = () => {
     setMatrix(times(() => repeat("", 9), 9));
-    captionRef.current?.reset();
+    resetClock();
   };
 
   return (
@@ -213,7 +134,7 @@ function SudokuUI() {
       <SudokuUIMd />
       <table className={styles.table}>
         <caption>
-          <Caption ref={captionRef} />{" "}
+          {elapsedTime}s{" "}
           {valid && <span>Bravo, the sudoku is valid!</span>}
         </caption>
         <tbody>

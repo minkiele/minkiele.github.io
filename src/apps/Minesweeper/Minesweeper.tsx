@@ -12,6 +12,7 @@ import {
   useRef,
   useState,
 } from "react";
+import useClock from "../../hooks/useClock";
 import {
   Minefield,
   MinefieldTile,
@@ -43,12 +44,21 @@ const Minesweeper: FunctionComponent = () => {
 
   const [stepMode, setStepMode] = useState<boolean>(true);
 
+  const {
+    reset: resetClock,
+    start: startClock,
+    stop: stopClock,
+    elapsed: timeElapsed,
+  } = useClock();
+
   useEffect(() => {
     minesweeperRef.current.reset(options);
     setTiles(minesweeperRef.current.getMinefield());
     setMines(options.mines - minesweeperRef.current.getFlaggedMines());
     setStatus(minesweeperRef.current.getStatus());
-  }, [options]);
+    setStepMode(true);
+    resetClock();
+  }, [options, resetClock]);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -58,8 +68,21 @@ const Minesweeper: FunctionComponent = () => {
     minesweeperRef.current.on(MinesweeperGame.EVENT.STEP, handleUpdate);
     const handleStatus = (status: symbol) => {
       setStatus(status);
-      if (status === MinesweeperGame.STATUS.UNINITIALIZED) {
-        handleUpdate();
+      switch (status) {
+        case MinesweeperGame.STATUS.UNINITIALIZED: {
+          handleUpdate();
+          resetClock();
+          break;
+        }
+        case MinesweeperGame.STATUS.IN_GAME: {
+          startClock();
+          break;
+        }
+        case MinesweeperGame.STATUS.COMPLETE:
+        case MinesweeperGame.STATUS.GAME_OVER: {
+          stopClock();
+          break;
+        }
       }
     };
     minesweeperRef.current.on(MinesweeperGame.EVENT.STATUS, handleStatus);
@@ -68,7 +91,7 @@ const Minesweeper: FunctionComponent = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       minesweeperRef.current.off(MinesweeperGame.EVENT.STATUS, handleStatus);
     };
-  }, [options]);
+  }, [options, resetClock, startClock, stopClock]);
 
   const handleMouseUp =
     (
@@ -109,7 +132,10 @@ const Minesweeper: FunctionComponent = () => {
         if (
           tile.isFlag ||
           (!(stepMode || tile.isSteppedOn) &&
-            status !== MinesweeperGame.STATUS.GAME_OVER)
+            !(
+              status === MinesweeperGame.STATUS.COMPLETE ||
+              status === MinesweeperGame.STATUS.GAME_OVER
+            ))
         ) {
           content = "🏴";
         } else if (tile.isSteppedOn && tile.surroundingMines > 0) {
@@ -180,6 +206,8 @@ const Minesweeper: FunctionComponent = () => {
 
   const handleReset = () => {
     minesweeperRef.current.reset();
+    setStepMode(true);
+    resetClock();
   };
 
   const handleSetStepMode = thunkify(setStepMode);
@@ -265,10 +293,15 @@ const Minesweeper: FunctionComponent = () => {
       <div>
         {status === MinesweeperGame.STATUS.UNINITIALIZED && <p>Ready...</p>}
         {status === MinesweeperGame.STATUS.IN_GAME && (
-          <p>You must flag {mines} mines to finish</p>
+          <p>
+            After {timeElapsed}s you still have to flag {mines} mines to finish.
+            {mines < 0 && <> Wait, what!?</>}
+          </p>
         )}
         {status === MinesweeperGame.STATUS.GAME_OVER && <p>Oops!</p>}
-        {status === MinesweeperGame.STATUS.COMPLETE && <p>Bravo! Hooray!</p>}
+        {status === MinesweeperGame.STATUS.COMPLETE && (
+          <p>Bravo! Hooray! You sweeped all mines in {timeElapsed}s!</p>
+        )}
       </div>
       <div>
         <fieldset>
@@ -297,7 +330,7 @@ const Minesweeper: FunctionComponent = () => {
         <fieldset>
           <legend>Choose your density (ehm... destiny)</legend>
           <button type="button" onClick={handleReset}>
-            Reset
+            New game
           </button>{" "}
           <button
             type="button"
