@@ -2,6 +2,7 @@ import {
   ChangeEventHandler,
   DragEventHandler,
   FunctionComponent,
+  useEffect,
   useRef,
 } from "react";
 import { Column, Move } from "./Vietnam.models";
@@ -15,6 +16,7 @@ import {
 import VietnamMd from "./README.md";
 import { thunkify } from "ramda";
 import classNames from "classnames";
+import useClock from "../../hooks/useClock";
 
 const COLS: Array<Column> = ["left", "center", "right"];
 const DEFAULT_SIZE = 3;
@@ -24,6 +26,7 @@ const Vietnam: FunctionComponent = () => {
     useVietnam(DEFAULT_SIZE);
   const { touchSelected, touchSelect } = useTouchSelect(move);
   const timerRef = useRef<ReturnType<typeof setInterval>>();
+  const { start: startClock, stop: stopClock, reset: resetClock, elapsed: timeElapsed } = useClock();
 
   const handleDragStart =
     (column: Column): DragEventHandler<HTMLDivElement> =>
@@ -58,6 +61,7 @@ const Vietnam: FunctionComponent = () => {
   const handleReset = () => {
     reset();
     resetProgress();
+    resetClock();
   };
 
   const handleSolve = () => {
@@ -77,6 +81,14 @@ const Vietnam: FunctionComponent = () => {
   };
 
   const handleTouchSelect = thunkify(touchSelect);
+
+  useEffect(() => {
+    if(isValid) {
+      stopClock();
+    } else if(moves > 0) {
+      startClock();
+    }
+  }, [startClock, stopClock, isValid, moves]);
 
   return (
     <div>
@@ -108,13 +120,13 @@ const Vietnam: FunctionComponent = () => {
       </div>
       <p>
         To move this tower you'll need 2<sup>{size}</sup> - 1 = {2 ** size - 1}{" "}
-        moves, so far you made {moves} moves.
+        moves, so far you made {moves} moves in {timeElapsed}s.
       </p>
       {isValid &&
         (moves === 2 ** size - 1 ? (
-          <p>You solved it with maximum effort!</p>
+          <p>You solved it with maximum effort in {timeElapsed}s!</p>
         ) : (
-          <p>You solved it, but you can do better.</p>
+          <p>You solved it, but you can do better in {timeElapsed}s.</p>
         ))}
       <div>
         <fieldset>
