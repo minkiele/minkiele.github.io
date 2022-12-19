@@ -34,10 +34,10 @@ export class SnakeGame {
     public static readonly HEIGHT = 17;
     public static readonly INITIAL_LENGTH = 5;
 
-    private static getSnakeGameEnum <T extends string>(...values: Array<T>): SnakeGameEnum<T> {
+    private static getSnakeGameEnum<T extends string>(...values: Array<T>): SnakeGameEnum<T> {
         return values.reduce<Partial<SnakeGameEnum<T>>>(
-          (acc, sym) => ({ ...acc, [sym]: Symbol(sym) }),
-          {}
+            (acc, sym) => ({ ...acc, [sym]: Symbol(sym) }),
+            {}
         ) as SnakeGameEnum<T>
     };
 
@@ -66,10 +66,10 @@ export class SnakeGame {
     private hasWalls = true;
 
     public constructor(speed?: number, hasWalls?: boolean) {
-        if(speed != null) {
+        if (speed != null) {
             this.setSpeed(speed);
         }
-        if(hasWalls != null) {
+        if (hasWalls != null) {
             this.setWalls(hasWalls);
         }
     }
@@ -125,7 +125,7 @@ export class SnakeGame {
 
     private advance() {
         // We filled the screen, we won!
-        if(this.snake.length === SnakeGame.AREA) {
+        if (this.snake.length === SnakeGame.AREA) {
             this.stopAdvancing(SnakeGame.STATUS.COMPLETE);
             // GAME OVER
         }
@@ -139,41 +139,41 @@ export class SnakeGame {
             this.stopAdvancing(SnakeGame.STATUS.OVER);
             // GAME OVER
         } else
-        // If next head position is a snake tract stop
-        if(this.isHittingItself(nextHeadPosition)) {
-            this.stopAdvancing(SnakeGame.STATUS.OVER);
-            // GAME OVER
-        } else {
-            // Move the rest of the snake and digest the apple
-            // If an apple reached the tail of the snake clone
-            // the tail into a new tail.
-            for(let i = this.snake.length - 1; i > 0; i -= 1) {
-                const tract = this.snake[i];
-                // An apple has reached the snake tail, make it grow
-                if(i === this.tailIndex && tract.eating) {
-                    // Copy the last element
-                    this.snake.push({
-                        ...tract,
-                        eating: false,
-                    });
+            // If next head position is a snake tract stop
+            if (this.isHittingItself(nextHeadPosition)) {
+                this.stopAdvancing(SnakeGame.STATUS.OVER);
+                // GAME OVER
+            } else {
+                // Move the rest of the snake and digest the apple
+                // If an apple reached the tail of the snake clone
+                // the tail into a new tail.
+                for (let i = this.snake.length - 1; i > 0; i -= 1) {
+                    const tract = this.snake[i];
+                    // An apple has reached the snake tail, make it grow
+                    if (i === this.tailIndex && tract.eating) {
+                        // Copy the last element
+                        this.snake.push({
+                            ...tract,
+                            eating: false,
+                        });
+                    }
+                    const nextTract = this.snake[i - 1];
+                    tract.x = nextTract.x;
+                    tract.y = nextTract.y;
+                    tract.eating = nextTract.eating;
                 }
-                const nextTract = this.snake[i - 1];
-                tract.x = nextTract.x;
-                tract.y = nextTract.y;
-                tract.eating = nextTract.eating;
+                snakeHead.x = nextHeadPosition.x;
+                snakeHead.y = nextHeadPosition.y;
+                // If next head position is an apple eat it
+                snakeHead.eating = this.apple != null && this.apple.x === nextHeadPosition.x && this.apple.y === nextHeadPosition.y;
+                // If the snake ate then
+                if (snakeHead.eating) {
+                    this.apple = this.getNewAppleCoords();
+                }
+                this.nextDirection = undefined;
+                this.currentDirection = nextDirection;
+                this.emit(SnakeGame.EVENT.ADVANCE);
             }
-            snakeHead.x = nextHeadPosition.x;
-            snakeHead.y = nextHeadPosition.y;
-            // If next head position is an apple eat it
-            snakeHead.eating = this.apple != null && this.apple.x === nextHeadPosition.x && this.apple.y === nextHeadPosition.y;
-            // If the snake ate then
-            if(snakeHead.eating) {
-                this.apple = this.getNewAppleCoords();
-            }
-            this.nextDirection = undefined;
-            this.currentDirection = nextDirection;
-            this.emit(SnakeGame.EVENT.ADVANCE);
-        }
     }
 
     private getSnakeHead(): SnakeGameData {
@@ -220,22 +220,27 @@ export class SnakeGame {
         this.emit(SnakeGame.EVENT.STATUS, this.status);
     }
 
+    private runner = new Runner(this.refreshSpeed, this.advance.bind(this));
+
     public start() {
-        if (this.timerId != null) {
+        // if (this.timerId != null) {
+        if (this.runner.isRunning()) {
             throw new Error('Game has already started');
         }
         this.setStatus(SnakeGame.STATUS.RUNNING);
-        this.timerId = setInterval(() => {
-            this.advance();
-        }, this.refreshSpeed);
+        // this.timerId = setInterval(() => {
+        //     this.advance();
+        // }, this.refreshSpeed);
+        this.runner.start();
     }
 
     private stopAdvancing(reason?: symbol) {
-        if (this.timerId != null) {
-            clearInterval(this.timerId);
-            this.timerId = undefined;
-        }
-        if(reason != null) {
+        // if (this.timerId != null) {
+        //     clearInterval(this.timerId);
+        //     this.timerId = undefined;
+        // }
+        this.runner.stop();
+        if (reason != null) {
             this.setStatus(reason);
             this.emit(SnakeGame.EVENT.STOP);
         }
@@ -247,7 +252,7 @@ export class SnakeGame {
 
     public setDirection(nextDirection: symbol) {
         // Direction must not be opposite
-        if(this.isNewDirectionValid(nextDirection, this.currentDirection)) {
+        if (this.isNewDirectionValid(nextDirection, this.currentDirection)) {
             this.nextDirection = nextDirection;
         }
     }
@@ -274,11 +279,12 @@ export class SnakeGame {
 
     public setSpeed(speed: number) {
         this.speed = speed;
-        if(this.timerId != null) {
-            // Do not change the status, we just need to replace the timer
-            this.stopAdvancing();
-            this.start();
-        }
+        // if (this.timerId != null) {
+        //     // Do not change the status, we just need to replace the timer
+        //     this.stopAdvancing();
+        //     this.start();
+        // }
+        this.runner.setRefreshTimeMs(this.refreshSpeed);
     }
 
     public getSnake(): Array<SnakeGameCoords> {
@@ -311,6 +317,54 @@ export class SnakeGame {
 
     private emit(evt: symbol, ...data: Array<any>) {
         this.eventEmitter.emit(evt, ...data);
+    }
+
+}
+
+class Runner {
+    private previousTimestamp: number | undefined;
+    private _isRunning = false;
+    private lastRequestId: number | undefined;
+    constructor(private refreshTimeMs: number, private callback: () => void) { }
+    private refreshCallback(currentTimestamp: number) {
+        if (this._isRunning) {
+            if (this.previousTimestamp == null || (currentTimestamp - this.previousTimestamp > this.refreshTimeMs)) {
+                this.previousTimestamp = currentTimestamp;
+                this.callback();
+            }
+            this.callRefreshCallback();
+        }
+    }
+
+    private callRefreshCallback() {
+        this.lastRequestId = window.requestAnimationFrame(this.refreshCallbackBound);
+    }
+
+    private refreshCallbackBound = this.refreshCallback.bind(this);
+
+    public start() {
+        if (!this._isRunning) {
+            this._isRunning = true;
+            this.callRefreshCallback();
+        }
+    }
+
+    public stop() {
+        if (this._isRunning) {
+            this._isRunning = false;
+            if (this.lastRequestId != null) {
+                window.cancelAnimationFrame(this.lastRequestId);
+                this.lastRequestId = undefined;
+            }
+        }
+    }
+
+    public setRefreshTimeMs(refreshTimeMs: number) {
+        this.refreshTimeMs = refreshTimeMs;
+    }
+
+    public isRunning() {
+        return this._isRunning;
     }
 
 }
