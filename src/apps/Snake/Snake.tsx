@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { thunkify } from "ramda";
+import { thunkify, times } from "ramda";
 import {
   ChangeEventHandler,
   FunctionComponent,
@@ -8,36 +8,59 @@ import {
   useRef,
   useState,
 } from "react";
-import { SnakeGame, SnakeGameCoords } from "./Snake.lib";
+import { SnakeGame } from "./Snake.lib";
 import styles from "./Snake.module.scss";
 import SnakeMd from "./README.md";
-import { getCellStyle, getSortedSnake } from "./Snake.utils";
+import { getSortedSnake, getTileStyle } from "./Snake.utils";
 
 const Snake: FunctionComponent = () => {
   const [speed, setSpeed] = useState<number>(10);
   const [hasWalls, setWalls] = useState<boolean>(true);
   const [status, setStatus] = useState<symbol>(SnakeGame.STATUS.IDLE);
   const snakeGame = useRef<SnakeGame>(new SnakeGame(speed, hasWalls));
-  const [snake, setSnake] = useState<Array<SnakeGameCoords>>(
-    getSortedSnake(snakeGame.current.getSnake())
+  const [snakeSize, setSnakeSize] = useState<number>(
+    snakeGame.current.getSnake().length
   );
-  const [apple, setApple] = useState<SnakeGameCoords | undefined>(
-    snakeGame.current.getApple()
-  );
+  const snakeTilesRef = useRef<Array<HTMLDivElement>>([]);
+  const appleTileRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const updateData = () => {
-      setSnake(getSortedSnake(snakeGame.current.getSnake()));
-      setApple(snakeGame.current.getApple());
+      setSnakeSize(snakeGame.current.getSnake().length);
     };
     snakeGame.current.on(SnakeGame.EVENT.ADVANCE, updateData);
+    const redraw = () => {
+      window.requestAnimationFrame(() => {
+        getSortedSnake(snakeGame.current.getSnake()).forEach(
+          ({ x, y }, index) => {
+            const tileDomElement = snakeTilesRef.current.find(
+              (elem) => elem.getAttribute("data-snake-tract") === `${index}`
+            );
+            const tileStyle = getTileStyle({ x, y }).transform;
+            if (tileDomElement != null && tileStyle != null) {
+              tileDomElement.style.transform = tileStyle;
+            }
+          }
+        );
+        const appleCoords = snakeGame.current.getApple();
+        if (appleCoords != null) {
+          const appleStyle = getTileStyle(appleCoords).transform;
+          const appleDomElement = appleTileRef.current;
+          if (appleStyle != null && appleDomElement != null) {
+            appleDomElement.style.transform = appleStyle;
+          }
+        }
+      });
+    };
+    redraw();
+    snakeGame.current.on(SnakeGame.EVENT.ADVANCE, redraw);
     snakeGame.current.on(SnakeGame.EVENT.RESET, updateData);
     const updateStatus = (statusVariation: symbol) => {
       setStatus(statusVariation);
     };
     snakeGame.current.on(SnakeGame.EVENT.STATUS, updateStatus);
 
-    const handleKeyUp = (evt: KeyboardEvent) => {
+    const handleKeyDown = (evt: KeyboardEvent) => {
       evt.preventDefault();
       const gameStatus = snakeGame.current.getStatus();
       const isWaiting =
@@ -101,10 +124,10 @@ const Snake: FunctionComponent = () => {
       }
     };
 
-    document.addEventListener("keyup", handleKeyUp);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("keyup", handleKeyUp);
+      document.removeEventListener("keyup", handleKeyDown);
       snakeGame.current.off(SnakeGame.EVENT.STATUS, updateStatus);
       snakeGame.current.off(SnakeGame.EVENT.RESET, updateData);
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -162,6 +185,11 @@ const Snake: FunctionComponent = () => {
     []
   );
 
+  const handleSetSnakeTileRef =
+    (tract: number) => (snakeTile: HTMLDivElement) => {
+      snakeTilesRef.current[tract] = snakeTile;
+    };
+
   return (
     <div>
       <SnakeMd />
@@ -171,23 +199,25 @@ const Snake: FunctionComponent = () => {
           [styles.board__noWalls]: !hasWalls,
         })}
       >
-        {snake.map((tract) => (
-          <div
-            key={`tract-x-${tract.x}-y-${tract.y}`}
-            className={`${styles.cell} ${styles.cell__snake}`}
-            style={getCellStyle(tract)}
-          >
-            &nbsp;
-          </div>
-        ))}
-        {apple != null && (
-          <div
-            className={`${styles.cell} ${styles.cell__apple}`}
-            style={getCellStyle(apple)}
-          >
-            &nbsp;
-          </div>
+        {times(
+          (tract) => (
+            <div
+              key={`snake-tract-${tract}`}
+              data-snake-tract={tract}
+              className={`${styles.cell} ${styles.cell__snake}`}
+              ref={handleSetSnakeTileRef(tract)}
+            >
+              &nbsp;
+            </div>
+          ),
+          snakeSize
         )}
+        <div
+          className={`${styles.cell} ${styles.cell__apple}`}
+          ref={appleTileRef}
+        >
+          &nbsp;
+        </div>
       </div>
       <div>
         {status === SnakeGame.STATUS.IDLE && <p>Insert coin to play...</p>}
@@ -208,24 +238,24 @@ const Snake: FunctionComponent = () => {
       </div>
       <div className={styles.gamepad}>
         <div>
-          <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.U)}>
+          <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.U)}>
             Up
           </button>
         </div>
         <div className={styles.gamepad_center}>
           <div>
-            <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.L)}>
+            <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.L)}>
               Left
             </button>
           </div>
           <div>
-            <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.R)}>
+            <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.R)}>
               Right
             </button>
           </div>
         </div>
         <div>
-          <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.D)}>
+          <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.D)}>
             Down
           </button>
         </div>

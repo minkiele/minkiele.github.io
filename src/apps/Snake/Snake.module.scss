@@ -39,6 +39,8 @@ $boardHeight: calc((var(--snake-game-cell-height) * #{$rows}) + (var(--snake-gam
     width: var(--snake-game-cell-width);
     height: var(--snake-game-cell-height);
     position: absolute;
+    top: 0;
+    left: 0;
     background-color: colors.$bg;
     &#{&}__snake {
         background-color: colors.$fg;
