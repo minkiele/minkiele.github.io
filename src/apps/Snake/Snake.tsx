@@ -37,7 +37,7 @@ const Snake: FunctionComponent = () => {
     };
     snakeGame.current.on(SnakeGame.EVENT.STATUS, updateStatus);
 
-    const handleKeyUp = (evt: KeyboardEvent) => {
+    const handleKeyDown = (evt: KeyboardEvent) => {
       evt.preventDefault();
       const gameStatus = snakeGame.current.getStatus();
       const isWaiting =
@@ -101,10 +101,10 @@ const Snake: FunctionComponent = () => {
       }
     };
 
-    document.addEventListener("keyup", handleKeyUp);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("keyup", handleKeyUp);
+      document.removeEventListener("keydown", handleKeyDown);
       snakeGame.current.off(SnakeGame.EVENT.STATUS, updateStatus);
       snakeGame.current.off(SnakeGame.EVENT.RESET, updateData);
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -208,24 +208,24 @@ const Snake: FunctionComponent = () => {
       </div>
       <div className={styles.gamepad}>
         <div>
-          <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.U)}>
+          <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.U)}>
             Up
           </button>
         </div>
         <div className={styles.gamepad_center}>
           <div>
-            <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.L)}>
+            <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.L)}>
               Left
             </button>
           </div>
           <div>
-            <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.R)}>
+            <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.R)}>
               Right
             </button>
           </div>
         </div>
         <div>
-          <button onClick={handleGamepadThunk(SnakeGame.DIRECTION.D)}>
+          <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.D)}>
             Down
           </button>
         </div>
