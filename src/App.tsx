@@ -1,7 +1,21 @@
-import { FunctionComponent, lazy, Suspense, useEffect, useRef } from "react";
+import {
+  FunctionComponent,
+  lazy,
+  MouseEventHandler,
+  Suspense,
+  useEffect,
+  useRef,
+} from "react";
 import { Route, Routes } from "react-router";
 import { NavLink } from "react-router-dom";
+import {
+  LazyRouteComponent,
+  Menu as MenuList,
+  MenuProps,
+  Submenu,
+} from "./App.models";
 import "./App.scss";
+import { flattenMenu, useTrackMenu } from "./App.utils";
 
 const Info = lazy(() => import("./apps/Info/Info"));
 const SudokuUI = lazy(() => import("./apps/SudokuUI/SudokuUI"));
@@ -20,14 +34,9 @@ const Vietnam = lazy(() => import("./apps/Vietnam/Vietnam"));
 const Snake = lazy(() => import("./apps/Snake/Snake"));
 const Minesweeper = lazy(() => import("./apps/Minesweeper/Minesweeper"));
 
-interface LazyRouteComponent {
-  route: string;
-  name: string;
-  component: ReturnType<typeof lazy>;
-  setTitle?: boolean;
-}
+type LazyComponent = ReturnType<typeof lazy>;
 
-const lazyRouteComponents: Array<LazyRouteComponent> = [
+const menu: MenuList<LazyComponent> = [
   {
     route: "/",
     name: "Minkiele",
@@ -35,64 +44,70 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
     setTitle: false,
   },
   {
-    route: "/sudoku",
-    name: "Sudoku",
-    component: SudokuUI,
-  },
-  {
-    route: "/anagrammator",
-    name: "Anagrammator",
-    component: Anagrammator,
-  },
-  {
-    route: "/cruciverba",
-    name: "Cruciverba",
-    component: Cruciverba,
-  },
-  {
-    route: "/numeri-a-caso",
-    name: "Numeri a caso",
-    component: NumeriCasuali,
-  },
-  {
-    route: "/parole",
-    name: "Ora a parole",
-    component: OraInParole,
-  },
-  {
-    route: "/palle",
-    name: "Ora a palla",
-    component: Circles,
-  },
-  {
-    route: "/jump-matrix",
-    name: "Jumps",
-    component: JumpMatrix,
-  },
-  {
-    route: "/fibonacci-triangle",
-    name: "Fibonacci's triangle",
-    component: Triangles,
-  },
-  {
-    route: "/dragon-fractal",
-    name: "The Dragon Fractal",
-    component: Dragons,
-  },
-  {
-    route: "/demodogs",
-    name: "Demo Dogs",
-    component: DemoDogs,
-  },
-  {
-    route: "/folypo",
-    name: "Folypo",
-    component: Polypo,
-  },
-  {
-    route: "/factorize",
-    name: "Factorizer",
-    component: Factorizer,
+    id: "archive",
+    name: "The archive",
+    components: [
+      {
+        route: "/sudoku",
+        name: "Sudoku",
+        component: SudokuUI,
+      },
+      {
+        route: "/anagrammator",
+        name: "Anagrammator",
+        component: Anagrammator,
+      },
+      {
+        route: "/cruciverba",
+        name: "Cruciverba",
+        component: Cruciverba,
+      },
+      {
+        route: "/numeri-a-caso",
+        name: "Numeri a caso",
+        component: NumeriCasuali,
+      },
+      {
+        route: "/parole",
+        name: "Ora a parole",
+        component: OraInParole,
+      },
+      {
+        route: "/palle",
+        name: "Ora a palla",
+        component: Circles,
+      },
+      {
+        route: "/jump-matrix",
+        name: "Jumps",
+        component: JumpMatrix,
+      },
+      {
+        route: "/fibonacci-triangle",
+        name: "Fibonacci's triangle",
+        component: Triangles,
+      },
+      {
+        route: "/dragon-fractal",
+        name: "The Dragon Fractal",
+        component: Dragons,
+      },
+      {
+        route: "/demodogs",
+        name: "Demo Dogs",
+        component: DemoDogs,
+      },
+      {
+        route: "/folypo",
+        name: "Folypo",
+        component: Polypo,
+      },
+      {
+        route: "/factorize",
+        name: "Factorizer",
+        component: Factorizer,
+      },
+    ],
   },
   {
     route: "/vietnam",
@@ -110,6 +125,8 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
     component: Minesweeper,
   },
 ];
+
+const routes = flattenMenu(menu);
 
 interface DocumentTitleProps {
   title?: string;
@@ -142,23 +159,74 @@ const DocumentTitle: FunctionComponent<DocumentTitleProps> = ({
   return <>{undefined}</>;
 };
 
+const Menu: FunctionComponent<MenuProps<LazyComponent>> = ({
+  menu,
+  expanded,
+  toggleExpanded,
+}) => {
+  const handleToggleExpanded =
+    (id: string): MouseEventHandler<HTMLAnchorElement> =>
+    (evt) => {
+      evt.preventDefault();
+      toggleExpanded(id);
+    };
+  return (
+    <ul>
+      {menu.map((menuItem, index) => (
+        <>
+          {(menuItem as LazyRouteComponent<LazyComponent>).route != null ? (
+            <li
+              key={`item-${index}-${
+                (menuItem as LazyRouteComponent<LazyComponent>).route
+              }`}
+            >
+              <NavLink
+                to={(menuItem as LazyRouteComponent<LazyComponent>).route}
+              >
+                {(menuItem as LazyRouteComponent<LazyComponent>).name}
+              </NavLink>
+            </li>
+          ) : (
+            (menuItem as Submenu<LazyComponent>).components.length > 0 && (
+              <li
+                key={`item-${index}-${(menuItem as Submenu<LazyComponent>).id}`}
+              >
+                <a
+                  href={`#${(menuItem as Submenu<LazyComponent>).id}`}
+                  onClick={handleToggleExpanded(
+                    (menuItem as Submenu<LazyComponent>).id
+                  )}
+                >
+                  {menuItem.name}
+                </a>
+                {expanded.includes((menuItem as Submenu<LazyComponent>).id) && (
+                  <Menu
+                    menu={(menuItem as Submenu<LazyComponent>).components}
+                    expanded={expanded}
+                    toggleExpanded={toggleExpanded}
+                  />
+                )}
+              </li>
+            )
+          )}
+        </>
+      ))}
+    </ul>
+  );
+};
+
 function App() {
+  const expanded = useTrackMenu(menu);
   return (
     <div className="App">
       <aside>
         <nav>
-          <ul>
-            {lazyRouteComponents.map(({ name, route }) => (
-              <li key={route}>
-                <NavLink to={route}>{name}</NavLink>
-              </li>
-            ))}
-          </ul>
+          <Menu menu={menu} {...expanded} />
         </nav>
       </aside>
       <article>
         <Routes>
-          {lazyRouteComponents.map(
+          {routes.map(
             ({ component: LazyComponent, name, route, setTitle = true }) => (
               <Route
                 key={route}
