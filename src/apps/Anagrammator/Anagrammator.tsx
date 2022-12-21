@@ -2,8 +2,6 @@ import { ChangeEvent, Children, useCallback, useEffect, useState } from "react";
 import debounce from "lodash.debounce";
 import anagrammator, { countAnagrams } from "anagrammator-minkiele";
 import { UberMath } from "../../lib/ubermath";
-import { isValidWord } from "../../lib/stupid-abc";
-import { T } from "ramda";
 import AnagrammatorMd from './README.md';
 
 interface AnagrammatorState {
@@ -31,8 +29,6 @@ function Anagrammator() {
       skipped: 0,
     });
 
-  const [onlyValid, setOnlyValid] = useState<boolean>(false);
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceGenerateAnagrams = useCallback(
     debounce((input: string) => {
@@ -53,7 +49,7 @@ function Anagrammator() {
             const newSkipped = newTotal - newSize;
             return {
               ...oldState,
-              anagramms: newAnagramms.filter(onlyValid ? isValidWord : T),
+              anagramms: newAnagramms,
               size: newSize,
               total: newTotal,
               skipped: newSkipped,
@@ -74,7 +70,7 @@ function Anagrammator() {
         }
       );
     }, 500),
-    [onlyValid]
+    []
   );
 
   useEffect(() => {
@@ -91,10 +87,6 @@ function Anagrammator() {
     }));
   };
 
-  const handleOnlyValid = (evt: ChangeEvent<HTMLInputElement>) => {
-    setOnlyValid(evt.currentTarget.checked);
-  };
-
   return (
     <div>
       <AnagrammatorMd />
@@ -107,15 +99,6 @@ function Anagrammator() {
           type="text"
           onChange={handleChangeValue}
         />{" "}
-        <input
-          id="onlyValid"
-          name="onlyValid"
-          value="onlyValid"
-          type="checkbox"
-          checked={onlyValid}
-          onChange={handleOnlyValid}
-        />{" "}
-        <label htmlFor="onlyValid">Only valid words</label>
       </fieldset>
       {total > 0 && (
         <>

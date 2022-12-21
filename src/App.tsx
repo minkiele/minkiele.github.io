@@ -1,7 +1,8 @@
 import { FunctionComponent, lazy, Suspense, useEffect, useRef } from "react";
 import { Route, Routes } from "react-router";
-import { NavLink } from "react-router-dom";
+import { LazyRouteComponent } from "./App.models";
 import "./App.scss";
+import Nav from "./Nav";
 
 const Info = lazy(() => import("./apps/Info/Info"));
 const SudokuUI = lazy(() => import("./apps/SudokuUI/SudokuUI"));
@@ -19,85 +20,14 @@ const Factorizer = lazy(() => import("./apps/Factorizer/Factorizer"));
 const Vietnam = lazy(() => import("./apps/Vietnam/Vietnam"));
 const Snake = lazy(() => import("./apps/Snake/Snake"));
 const Minesweeper = lazy(() => import("./apps/Minesweeper/Minesweeper"));
+const TheArchive = lazy(() => import("./apps/TheArchive/TheArchive"));
 
-interface LazyRouteComponent {
-  route: string;
-  name: string;
-  component: ReturnType<typeof lazy>;
-  setTitle?: boolean;
-}
-
-const lazyRouteComponents: Array<LazyRouteComponent> = [
+const allLazyRouteComponents: Array<LazyRouteComponent> = [
   {
     route: "/",
     name: "Minkiele",
     component: Info,
     setTitle: false,
-  },
-  {
-    route: "/sudoku",
-    name: "Sudoku",
-    component: SudokuUI,
-  },
-  {
-    route: "/anagrammator",
-    name: "Anagrammator",
-    component: Anagrammator,
-  },
-  {
-    route: "/cruciverba",
-    name: "Cruciverba",
-    component: Cruciverba,
-  },
-  {
-    route: "/numeri-a-caso",
-    name: "Numeri a caso",
-    component: NumeriCasuali,
-  },
-  {
-    route: "/parole",
-    name: "Ora a parole",
-    component: OraInParole,
-  },
-  {
-    route: "/palle",
-    name: "Ora a palla",
-    component: Circles,
-  },
-  {
-    route: "/jump-matrix",
-    name: "Jumps",
-    component: JumpMatrix,
-  },
-  {
-    route: "/fibonacci-triangle",
-    name: "Fibonacci's triangle",
-    component: Triangles,
-  },
-  {
-    route: "/dragon-fractal",
-    name: "The Dragon Fractal",
-    component: Dragons,
-  },
-  {
-    route: "/demodogs",
-    name: "Demo Dogs",
-    component: DemoDogs,
-  },
-  {
-    route: "/folypo",
-    name: "Folypo",
-    component: Polypo,
-  },
-  {
-    route: "/factorize",
-    name: "Factorizer",
-    component: Factorizer,
-  },
-  {
-    route: "/vietnam",
-    name: "Vietnam",
-    component: Vietnam,
   },
   {
     route: "/snake",
@@ -109,7 +39,93 @@ const lazyRouteComponents: Array<LazyRouteComponent> = [
     name: "Minesweeper",
     component: Minesweeper,
   },
+  {
+    route: "/vietnam",
+    name: "Vietnam",
+    component: Vietnam,
+  },
+  {
+    route: "/sudoku",
+    name: "Sudoku",
+    component: SudokuUI,
+    archived: true,
+  },
+  {
+    route: "/anagrammator",
+    name: "Anagrammator",
+    component: Anagrammator,
+  },
+  {
+    route: "/cruciverba",
+    name: "Cruciverba",
+    component: Cruciverba,
+    archived: true,
+  },
+  {
+    route: "/numeri-a-caso",
+    name: "Numeri a caso",
+    component: NumeriCasuali,
+    archived: true,
+  },
+  {
+    route: "/parole",
+    name: "Ora a parole",
+    component: OraInParole,
+  },
+  {
+    route: "/palle",
+    name: "Ora a palla",
+    component: Circles,
+    archived: true,
+  },
+  {
+    route: "/jump-matrix",
+    name: "Jumps",
+    component: JumpMatrix,
+    archived: true,
+  },
+  {
+    route: "/fibonacci-triangle",
+    name: "Fibonacci's triangle",
+    component: Triangles,
+    archived: true,
+  },
+  {
+    route: "/dragon-fractal",
+    name: "The Dragon Fractal",
+    component: Dragons,
+  },
+  {
+    route: "/demodogs",
+    name: "Demo Dogs",
+    component: DemoDogs,
+    archived: true,
+  },
+  {
+    route: "/folypo",
+    name: "Folypo",
+    component: Polypo,
+    archived: true,
+  },
+  {
+    route: "/factorize",
+    name: "Factorizer",
+    component: Factorizer,
+    archived: true,
+  },
+  {
+    route: "/archive",
+    name: "The Archive",
+    component: TheArchive,
+  }
 ];
+
+const lazyRouteComponents = allLazyRouteComponents.filter(
+  (lazyRouteComponent) => lazyRouteComponent.archived !== true
+);
+const archivedLazyRouteComponents = allLazyRouteComponents.filter(
+  (lazyRouteComponent) => lazyRouteComponent.archived === true
+);
 
 interface DocumentTitleProps {
   title?: string;
@@ -146,19 +162,11 @@ function App() {
   return (
     <div className="App">
       <aside>
-        <nav>
-          <ul>
-            {lazyRouteComponents.map(({ name, route }) => (
-              <li key={route}>
-                <NavLink to={route}>{name}</NavLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <Nav menu={lazyRouteComponents} />
       </aside>
       <article>
         <Routes>
-          {lazyRouteComponents.map(
+          {allLazyRouteComponents.map(
             ({ component: LazyComponent, name, route, setTitle = true }) => (
               <Route
                 key={route}
@@ -167,7 +175,7 @@ function App() {
                   <Suspense fallback={`Loading ${name}...`}>
                     <DocumentTitle title={setTitle ? name : undefined} />
                     <h1>{name}</h1>
-                    <LazyComponent />
+                    <LazyComponent components={archivedLazyRouteComponents} />
                   </Suspense>
                 }
               />

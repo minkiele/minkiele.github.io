@@ -383,7 +383,7 @@ function Cruciverba() {
                         <span className="app_black"></span>
                       ) : (
                         <>
-                          {showDefs && definition != null && (
+                          {definition != null && (
                             <span className="app_definition">
                               {definition.order}
                             </span>
