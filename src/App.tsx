@@ -2,6 +2,7 @@ import { FunctionComponent, lazy, Suspense, useEffect, useRef } from "react";
 import { Route, Routes } from "react-router";
 import { LazyRouteComponent } from "./App.models";
 import "./App.scss";
+import TheArchive from "./apps/TheArchive/TheArchive";
 import Nav from "./Nav";
 
 const Info = lazy(() => import("./apps/Info/Info"));
@@ -20,7 +21,6 @@ const Factorizer = lazy(() => import("./apps/Factorizer/Factorizer"));
 const Vietnam = lazy(() => import("./apps/Vietnam/Vietnam"));
 const Snake = lazy(() => import("./apps/Snake/Snake"));
 const Minesweeper = lazy(() => import("./apps/Minesweeper/Minesweeper"));
-const TheArchive = lazy(() => import("./apps/TheArchive/TheArchive"));
 
 const allLazyRouteComponents: Array<LazyRouteComponent> = [
   {
