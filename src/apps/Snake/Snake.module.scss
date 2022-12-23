@@ -1,5 +1,6 @@
 @use "../../styles/colors";
 @use "../../styles/mixins";
+@use "sass:math";
 
 :global {
     html, body {
@@ -53,11 +54,38 @@ $boardHeight: calc((var(--snake-game-cell-height) * #{$rows}) + (var(--snake-gam
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transform: rotate(45deg);
+    margin-top: 50px;
+    margin-bottom: 50px;
 
-    &_center {
+    &_row {
         display: flex;
+        width: math.div(100%, math.pow(2, 0.5));
+        align-items: center;
+        justify-content: center;
     }
-
+    &_col {
+        display: flex;
+        width: 50%;
+        aspect-ratio: 1;
+        align-items: center;
+        justify-content: center;
+    }
+    &_button {
+        display: block;
+        width: 90%;
+        height: 90%;
+        font-family: 'Noto Emoji';
+        font-size: 58px;
+        &, &:active {
+            transform: rotate(-45deg);
+            border: 0;
+            box-shadow: none;
+        }
+        &:focus {
+            outline: none;
+        }
+    }
 }
 
 @media(min-width: 768px) {

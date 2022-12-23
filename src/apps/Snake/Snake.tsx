@@ -3,6 +3,7 @@ import { thunkify } from "ramda";
 import {
   ChangeEventHandler,
   FunctionComponent,
+  memo,
   useCallback,
   useEffect,
   useRef,
@@ -12,6 +13,27 @@ import { SnakeGame, SnakeGameCoords } from "./Snake.lib";
 import styles from "./Snake.module.scss";
 import SnakeMd from "./README.md";
 import { getCellStyle, getSortedSnake } from "./Snake.utils";
+
+interface SnakeTileProps {
+  tile: SnakeGameCoords;
+  className?: string;
+}
+
+const SnakeTile: FunctionComponent<SnakeTileProps> = memo(
+  ({ tile, className }) => (
+    <div
+      className={classNames({
+        [styles.cell]: true,
+        [className as string]: className,
+      })}
+      style={getCellStyle(tile)}
+    >
+      &nbsp;
+    </div>
+  )
+);
+
+SnakeTile.displayName = "SnakeTile";
 
 const Snake: FunctionComponent = () => {
   const [speed, setSpeed] = useState<number>(10);
@@ -171,22 +193,15 @@ const Snake: FunctionComponent = () => {
           [styles.board__noWalls]: !hasWalls,
         })}
       >
-        {snake.map((tract) => (
-          <div
-            key={`tract-x-${tract.x}-y-${tract.y}`}
-            className={`${styles.cell} ${styles.cell__snake}`}
-            style={getCellStyle(tract)}
-          >
-            &nbsp;
-          </div>
+        {snake.map((tile) => (
+          <SnakeTile
+            tile={tile}
+            className={styles.cell__snake}
+            key={`tile-x-${tile.x}-y-${tile.y}`}
+          />
         ))}
         {apple != null && (
-          <div
-            className={`${styles.cell} ${styles.cell__apple}`}
-            style={getCellStyle(apple)}
-          >
-            &nbsp;
-          </div>
+          <SnakeTile tile={apple} className={styles.cell__apple} />
         )}
       </div>
       <div>
@@ -207,27 +222,45 @@ const Snake: FunctionComponent = () => {
         {status === SnakeGame.STATUS.RUNNING && <p>Run Forrest, Run!</p>}
       </div>
       <div className={styles.gamepad}>
-        <div>
-          <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.U)}>
-            Up
-          </button>
-        </div>
-        <div className={styles.gamepad_center}>
-          <div>
-            <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.L)}>
-              Left
+        <div className={styles.gamepad_row}>
+          <div className={styles.gamepad_col}>
+            <button
+              className={styles.gamepad_button}
+              onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.U)}
+              aria-label="Up"
+            >
+              ⬆️
             </button>
           </div>
-          <div>
-            <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.R)}>
-              Right
+          <div className={styles.gamepad_col}>
+            <button
+              className={styles.gamepad_button}
+              onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.R)}
+              aria-label="Right"
+            >
+              ➡️
             </button>
           </div>
         </div>
-        <div>
-          <button onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.D)}>
-            Down
-          </button>
+        <div className={styles.gamepad_row}>
+          <div className={styles.gamepad_col}>
+            <button
+              className={styles.gamepad_button}
+              onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.L)}
+              aria-label="Left"
+            >
+              ⬅️
+            </button>
+          </div>
+          <div className={styles.gamepad_col}>
+            <button
+              className={styles.gamepad_button}
+              onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.D)}
+              aria-label="Down"
+            >
+              ⬇️
+            </button>
+          </div>
         </div>
       </div>
       <div>
