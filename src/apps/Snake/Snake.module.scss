@@ -6,6 +6,8 @@
     html, body {
         &.stopScrolling {
             overflow: hidden !important;
+            // This is to avoid my mistake to trying and make a "focused" board and gamepad
+            // https://stackoverflow.com/questions/63625709/css-not-selector-being-ignored
         }
     }
 }
