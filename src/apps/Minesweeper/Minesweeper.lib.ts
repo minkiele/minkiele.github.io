@@ -231,18 +231,10 @@ export class Minesweeper {
         }
     }
 
-
-    public on(evt: symbol, listener: (...args: Array<any>) => void) {
-        this.eventEmitter.on(evt, listener);
-    }
-
-    public off(evt: symbol, listener: (...args: Array<any>) => void) {
-        this.eventEmitter.off(evt, listener);
-    }
-
-    private emit(evt: symbol, ...data: Array<any>) {
-        this.eventEmitter.emit(evt, ...data);
-    }
+    // Expose Event Emitter API
+    public on = this.eventEmitter.on.bind(this.eventEmitter);
+    public off = this.eventEmitter.off.bind(this.eventEmitter);
+    private emit = this.eventEmitter.emit.bind(this.eventEmitter);
 
     /**
      * To be solved all mines must not be stepped on and all free tiles must be stepped on.

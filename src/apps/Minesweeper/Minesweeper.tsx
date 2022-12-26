@@ -104,17 +104,16 @@ const Minesweeper: FunctionComponent = () => {
       const toggleStepMode = isEmptyTile(tile);
       if (toggleStepMode) {
         setStepMode((currentMode) => !currentMode);
+      } else if (
+        !(stepMode || isCoastingTile(tile)) ||
+        evt.metaKey ||
+        evt.button === 2
+      ) {
+        minesweeperRef.current.toggleFlag(x, y);
       } else {
-        if (
-          !(stepMode || isCoastingTile(tile)) ||
-          evt.metaKey ||
-          evt.button === 2
-        ) {
-          minesweeperRef.current.toggleFlag(x, y);
-        } else {
-          minesweeperRef.current.stepOn(x, y);
-        }
+        minesweeperRef.current.stepOn(x, y);
       }
+
     };
 
   const getTile = useCallback(
