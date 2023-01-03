@@ -11,6 +11,7 @@ import styles from "./SudokuUI.module.scss";
 import { SudokuMatrix } from "minkiele-sudoku-matrix";
 import SudokuUIMd from './README.md';
 import useClock from "../../hooks/useClock";
+import { generateStartSudokuMatrix } from "./Sudoku.utils";
 // import { ClockRef } from "../../hooks/useClock";
 // import Clock from "../../components/Clock/Clock";
 
@@ -38,9 +39,7 @@ function SudokuUI() {
       : `${inputNumber}`;
   };
 
-  const [matrix, setMatrix] = useState<Array<Array<string>>>(
-    times(() => repeat("", 9), 9)
-  );
+  const [matrix, setMatrix] = useState<Array<Array<string>>>(generateStartSudokuMatrix());
   const setValue = ({ row, col, value }: MatrixReducerAction) =>
     setMatrix((state) => assocPath([row, col], sanitizeValue(value), state));
 
@@ -124,8 +123,13 @@ function SudokuUI() {
     }
   };
 
-  const handleReset = () => {
+  const handleEmpty = () => {
     setMatrix(times(() => repeat("", 9), 9));
+    resetClock();
+  };
+
+  const handleNew = () => {
+    setMatrix(generateStartSudokuMatrix());
     resetClock();
   };
 
@@ -173,14 +177,17 @@ function SudokuUI() {
       </table>
       <fieldset>
         <legend>Controls</legend>
+        <button type="button" onClick={handleNew}>
+          New
+        </button>{" "}
         <button type="button" onClick={handleStore}>
           Store
         </button>{" "}
         <button type="button" onClick={handleRestore}>
           Restore
         </button>{" "}
-        <button type="button" onClick={handleReset}>
-          Reset
+        <button type="button" onClick={handleEmpty}>
+          Empty
         </button>
       </fieldset>
     </div>

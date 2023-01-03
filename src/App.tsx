@@ -48,7 +48,6 @@ const allLazyRouteComponents: Array<LazyRouteComponent> = [
     route: "/sudoku",
     name: "Sudoku",
     component: SudokuUI,
-    archived: true,
   },
   {
     route: "/anagrammator",
