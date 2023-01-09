@@ -1,5 +1,5 @@
-import { FunctionComponent, useState } from "react";
-import { pronunciaNumero } from "../../lib/EnunciateNumbers";
+import { FunctionComponent, useState } from 'react';
+import { pronunciaNumero } from '../../lib/EnunciateNumbers';
 import NumeriCasualiMd from './README.md';
 
 const NUMBER_LENGTH = 32;
@@ -7,15 +7,15 @@ const NUMBER_LENGTH = 32;
 const getRandomNumber = (length = NUMBER_LENGTH): string => {
   const randomLength = Math.floor(Math.random() * length) + 1;
   let randomNumber = '';
-  while(randomNumber.length < randomLength) {
+  while (randomNumber.length < randomLength) {
     const randomDigit = Math.floor(Math.random() * 10);
     // Number must not start with zeroes (unless the number is zero so we can add it)
-    if(randomLength === 1 || randomNumber.length > 0 || randomDigit !== 0) {
+    if (randomLength === 1 || randomNumber.length > 0 || randomDigit !== 0) {
       randomNumber += randomDigit;
     }
   }
   return randomNumber;
-}
+};
 
 interface NumeroCasuale {
   inNumero: string;
@@ -39,7 +39,9 @@ const NumeriCasuali: FunctionComponent = () => {
   return (
     <div>
       <NumeriCasualiMd />
-      <h2>{numeroCasuale.aParole} (<small>{numeroCasuale.inNumero}</small>)</h2>
+      <h2>
+        {numeroCasuale.aParole} (<small>{numeroCasuale.inNumero}</small>)
+      </h2>
       <button onClick={handleNextRandom}>Prossimo numero</button>
     </div>
   );

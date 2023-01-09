@@ -1,7 +1,7 @@
-import { ChangeEvent, Children, useCallback, useEffect, useState } from "react";
-import debounce from "lodash.debounce";
-import anagrammator, { countAnagrams } from "anagrammator-minkiele";
-import { UberMath } from "../../lib/ubermath";
+import { ChangeEvent, Children, useCallback, useEffect, useState } from 'react';
+import debounce from 'lodash.debounce';
+import anagrammator, { countAnagrams } from 'anagrammator-minkiele';
+import { UberMath } from '../../lib/ubermath';
 import AnagrammatorMd from './README.md';
 
 interface AnagrammatorState {
@@ -14,20 +14,17 @@ interface AnagrammatorState {
 
 const normalizeInput = (input: string) => {
   const trimmedInput = input.trim();
-  return trimmedInput.length > 0
-    ? trimmedInput.toUpperCase().replace(/[^A-Z]/, "")
-    : trimmedInput;
+  return trimmedInput.length > 0 ? trimmedInput.toUpperCase().replace(/[^A-Z]/, '') : trimmedInput;
 };
 
 function Anagrammator() {
-  const [{ value, anagramms, size, total, skipped }, setState] =
-    useState<AnagrammatorState>({
-      value: "",
-      anagramms: [],
-      size: 0,
-      total: 0,
-      skipped: 0,
-    });
+  const [{ value, anagramms, size, total, skipped }, setState] = useState<AnagrammatorState>({
+    value: '',
+    anagramms: [],
+    size: 0,
+    total: 0,
+    skipped: 0,
+  });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceGenerateAnagrams = useCallback(
@@ -92,13 +89,7 @@ function Anagrammator() {
       <AnagrammatorMd />
       <fieldset>
         <legend>Generator controls</legend>
-        <label htmlFor="input">Type in a word:</label>{" "}
-        <input
-          id="input"
-          value={value}
-          type="text"
-          onChange={handleChangeValue}
-        />{" "}
+        <label htmlFor="input">Type in a word:</label> <input id="input" value={value} type="text" onChange={handleChangeValue} />{' '}
       </fieldset>
       {total > 0 && (
         <>
@@ -118,13 +109,7 @@ function Anagrammator() {
           {anagramms.length > 0 && (
             <>
               <h2>The anagrams</h2>
-              <ol>
-                {Children.toArray(
-                  anagramms.map((anagramm) => (
-                    <li key={anagramm}>{anagramm}</li>
-                  ))
-                )}
-              </ol>
+              <ol>{Children.toArray(anagramms.map((anagramm) => <li key={anagramm}>{anagramm}</li>))}</ol>
             </>
           )}
         </>

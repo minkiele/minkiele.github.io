@@ -1,70 +1,59 @@
-import { FunctionComponent, useState } from "react";
-import { join, pickOne, weight } from "../../lib/polygram/Collection";
+import { FunctionComponent, useState } from 'react';
+import { join, pickOne, weight } from '../../lib/polygram/Collection';
 import DemoDogsMd from './README.md';
 
 // DEMODOGS :D
 
-const barbon = join("Barbon", pickOne("e", "cino"));
-const volp = join("Volp", pickOne("ino", "e"));
+const barbon = join('Barbon', pickOne('e', 'cino'));
+const volp = join('Volp', pickOne('ino', 'e'));
 
 const races = pickOne(
-  "Carlino",
-  "Pastore",
-  "Beagle",
-  "Mastino",
+  'Carlino',
+  'Pastore',
+  'Beagle',
+  'Mastino',
   weight(barbon, 2),
   weight(volp, 2),
-  "Shiba",
-  "Chihuahua",
-  "Lupo",
-  "Cirneco",
-  "Rottweiler",
-  "Dobermann",
-  "Pitbull",
-  "Labrador",
-  "Golden",
-  "Schnauzer",
-  "Akita",
-  "Bull",
-  "Levriero",
-  "Dalmata",
-  "Boxer",
-  "Bulldog",
-  "Jack",
-  "Alano",
-  "Basset",
-  "Bassotto",
-  "Bouledogue"
+  'Shiba',
+  'Chihuahua',
+  'Lupo',
+  'Cirneco',
+  'Rottweiler',
+  'Dobermann',
+  'Pitbull',
+  'Labrador',
+  'Golden',
+  'Schnauzer',
+  'Akita',
+  'Bull',
+  'Levriero',
+  'Dalmata',
+  'Boxer',
+  'Bulldog',
+  'Jack',
+  'Alano',
+  'Basset',
+  'Bassotto',
+  'Bouledogue'
 );
 
-const variants = pickOne(
-  "Inu",
-  "Retriever",
-  "Terrier",
-  "Russell",
-  "Hound",
-  "Spaniel"
-);
+const variants = pickOne('Inu', 'Retriever', 'Terrier', 'Russell', 'Hound', 'Spaniel');
 
 const nationalities = pickOne(
-  "Napoletano",
-  "Americano",
-  "Tedesco",
-  "Cecoslovacco",
-  "Inglese",
-  "Italiano",
+  'Napoletano',
+  'Americano',
+  'Tedesco',
+  'Cecoslovacco',
+  'Inglese',
+  'Italiano',
   "dell'Etna",
-  "Messicano",
-  "Australiano",
-  "Giapponese",
-  "Afghano",
-  "Francese"
+  'Messicano',
+  'Australiano',
+  'Giapponese',
+  'Afghano',
+  'Francese'
 );
-const dogRaces = join(
-  races,
-  pickOne("", weight(variants, 2)),
-  pickOne("", weight(nationalities, 2))
-).withSeparator(" ");
+const dogRaces = join(races, pickOne('', weight(variants, 2)), pickOne('', weight(nationalities, 2))).withSeparator(' ');
 
 const getDemoDogs = (): Array<string> => {
   const demoDogs: Array<string> = [];

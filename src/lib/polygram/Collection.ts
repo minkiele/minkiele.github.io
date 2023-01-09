@@ -18,8 +18,7 @@ export class StringTerm implements Term {
   }
 }
 
-const normalizeTerm = (term: InputTerm): Term =>
-  typeof term === "string" ? new StringTerm(term) : term;
+const normalizeTerm = (term: InputTerm): Term => (typeof term === 'string' ? new StringTerm(term) : term);
 
 export class WeightedTerm implements Term {
   private term: Term;
@@ -31,7 +30,7 @@ export class WeightedTerm implements Term {
   public constructor(term: InputTerm, weight = 0) {
     this.term = normalizeTerm(term);
     if (weight < 0) {
-      throw new Error("Term weight must be >= 0");
+      throw new Error('Term weight must be >= 0');
     }
     this._weight = weight;
   }
@@ -52,23 +51,16 @@ export class WeightedCollection implements Term {
   private weights: Array<number> = [];
   public constructor(...collection: Array<InputTerm>) {
     if (collection.length <= 0) {
-      throw new Error("Collection must have at least one element");
+      throw new Error('Collection must have at least one element');
     }
     this.collection = collection
-      .map((term) =>
-        term instanceof WeightedTerm ? term : new WeightedTerm(term)
-      )
+      .map((term) => (term instanceof WeightedTerm ? term : new WeightedTerm(term)))
       .sort((a, b) => a.weight - b.weight);
     this.weights = this.collection.reduce<Array<number>>(
-      (weights, term, index) => [
-        ...weights,
-        term.weight + (index > 0 ? weights[index - 1] : 0) + 1,
-      ],
+      (weights, term, index) => [...weights, term.weight + (index > 0 ? weights[index - 1] : 0) + 1],
       []
     );
-    this.weight =
-      this.collection.reduce((sum, term) => sum + term.weight, 0) +
-      this.collection.length;
+    this.weight = this.collection.reduce((sum, term) => sum + term.weight, 0) + this.collection.length;
   }
   protected getRandomIndex(): number {
     const randomWeight = Math.floor(Math.random() * this.weight);
@@ -96,11 +88,9 @@ export class WeightedCollection implements Term {
 
 export class TermsJoiner implements Term {
   private parts: Array<Term>;
-  private separator = "";
+  private separator = '';
   public constructor(...parts: Array<InputTerm>) {
-    this.parts = parts.map((term) =>
-      typeof term === "string" ? new StringTerm(term) : term
-    );
+    this.parts = parts.map((term) => (typeof term === 'string' ? new StringTerm(term) : term));
   }
   public withSeparator(separator: string): this {
     this.separator = separator;
@@ -120,13 +110,13 @@ export class TermsJoiner implements Term {
 export class SpaceJoiner extends TermsJoiner {
   public constructor(...parts: Array<InputTerm>) {
     super(...parts);
-    this.withSeparator(" ");
+    this.withSeparator(' ');
   }
 }
 
 export const join = (...terms: Array<InputTerm>): TermsJoiner => new TermsJoiner(...terms);
 export const pickOne = (...terms: Array<InputTerm>): WeightedCollection => new WeightedCollection(...terms);
-export const maybePickOne = (...terms: Array<InputTerm>): WeightedCollection => pickOne("", pickOne(...terms).forExpansion());
+export const maybePickOne = (...terms: Array<InputTerm>): WeightedCollection => pickOne('', pickOne(...terms).forExpansion());
 export const weight = (term: InputTerm, weight?: number) => new WeightedTerm(term, weight);
 
 // DEMODOGS :D

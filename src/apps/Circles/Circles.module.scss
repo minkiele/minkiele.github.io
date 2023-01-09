@@ -1,8 +1,8 @@
-@use "sass:color";
-@use "sass:list";
-@use "sass:math";
-@use "../../styles/colors";
-@use "../../styles/mixins";
+@use 'sass:color';
+@use 'sass:list';
+@use 'sass:math';
+@use '../../styles/colors';
+@use '../../styles/mixins';
 
 .circles {
   display: grid;
@@ -29,10 +29,8 @@
     transition: width, height 200ms;
 
     // Change the color for every day of the year
-    $monthColors: rgb(162, 162, 162) rgb(216, 216, 216) rgb(31, 185, 87)
-      rgb(247, 180, 250) rgb(83, 199, 228) rgb(170, 255, 34) rgb(255, 29, 29)
-      rgb(255, 17, 17) rgb(123, 55, 16) rgb(107, 44, 2) rgb(73, 73, 73)
-      rgb(255, 0, 0) rgb(162, 162, 162);
+    $monthColors: rgb(162, 162, 162) rgb(216, 216, 216) rgb(31, 185, 87) rgb(247, 180, 250) rgb(83, 199, 228) rgb(170, 255, 34)
+      rgb(255, 29, 29) rgb(255, 17, 17) rgb(123, 55, 16) rgb(107, 44, 2) rgb(73, 73, 73) rgb(255, 0, 0) rgb(162, 162, 162);
     $daysInMonths: 31 29 31 30 31 30 31 31 30 31 30 31;
 
     $dayOfYear: 0;
@@ -40,7 +38,7 @@
       $daysInMonth: list.nth($daysInMonths, $month);
       @for $dayInMonth from 1 through $daysInMonth {
         $dayOfYear: $dayOfYear + 1;
-        &[data-doy="#{$dayOfYear}"] {
+        &[data-doy='#{$dayOfYear}'] {
           background-color: color.mix(
             list.nth($monthColors, $month),
             list.nth($monthColors, $month + 1),
@@ -54,7 +52,7 @@
     $day: rgb(255, 230, 10);
 
     @for $hour from 0 through 23 {
-      &[data-h="#{$hour}"] {
+      &[data-h='#{$hour}'] {
         $weight: (math.div($hour, 24) * 100%) * 2;
         @if $hour > 12 {
           $weight: 200% - $weight;

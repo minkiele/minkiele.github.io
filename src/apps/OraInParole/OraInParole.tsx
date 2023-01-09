@@ -1,5 +1,5 @@
-import { FunctionComponent, useEffect, useState } from "react";
-import { pronunciaDataOra } from "../../lib/EnunciateNumbers";
+import { FunctionComponent, useEffect, useState } from 'react';
+import { pronunciaDataOra } from '../../lib/EnunciateNumbers';
 import OraInParoleMd from './README.md';
 
 const orora = () => pronunciaDataOra(new Date());
@@ -9,11 +9,11 @@ const OraInParole: FunctionComponent = () => {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-        setOraInParole(orora());
+      setOraInParole(orora());
     }, 1000);
     return () => {
-        clearInterval(intervalId);
-    }
+      clearInterval(intervalId);
+    };
   }, []);
 
   return (

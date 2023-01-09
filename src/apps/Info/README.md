@@ -18,7 +18,7 @@ Well, it never got published, and my life changed in the last years, as I
 think it happened for everybody, so it isn't very accurate; and I'd like to
 protect, for what is worth, whatever little is left of my privacy.
 
-## About *this* little project
+## About _this_ little project
 
 I rounded up a lot of little projects I wrote on my personal and work laptop.
 Some of those already had a UI, to some others I built one just for this purpose.

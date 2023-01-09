@@ -1,9 +1,5 @@
-import dayjs, { Dayjs } from "dayjs";
-import {
-  useEffect,
-  useMemo,
-  useReducer,
-} from "react";
+import dayjs, { Dayjs } from 'dayjs';
+import { useEffect, useMemo, useReducer } from 'react';
 
 export interface ClockCommands {
   start: () => void;
@@ -17,13 +13,13 @@ interface ElapsedReducerState {
   elapsed: number;
 }
 
-type ElapsedReducerAction = "start" | "stop" | "update" | "reset";
+type ElapsedReducerAction = 'start' | 'stop' | 'update' | 'reset';
 
 const useClock = (): ClockCommands & ElapsedReducerState => {
   const [timeStatus, setTimeStatus] = useReducer(
     (state: ElapsedReducerState, action: ElapsedReducerAction) => {
       switch (action) {
-        case "start": {
+        case 'start': {
           if (state.started == null) {
             const now = dayjs();
             return { started: now, current: now, elapsed: 0 };
@@ -31,10 +27,10 @@ const useClock = (): ClockCommands & ElapsedReducerState => {
             return state;
           }
         }
-        case "stop": {
+        case 'stop': {
           return { ...state, started: null, current: null };
         }
-        case "reset": {
+        case 'reset': {
           return { started: null, current: null, elapsed: 0 };
         }
         default:
@@ -42,7 +38,7 @@ const useClock = (): ClockCommands & ElapsedReducerState => {
           return {
             ...state,
             current: now,
-            elapsed: state.current?.diff(state.started, "s") ?? 0,
+            elapsed: state.current?.diff(state.started, 's') ?? 0,
           };
       }
     },
@@ -55,9 +51,9 @@ const useClock = (): ClockCommands & ElapsedReducerState => {
 
   const commands = useMemo(
     () => ({
-      start: () => setTimeStatus("start"),
-      stop: () => setTimeStatus("stop"),
-      reset: () => setTimeStatus("reset"),
+      start: () => setTimeStatus('start'),
+      stop: () => setTimeStatus('stop'),
+      reset: () => setTimeStatus('reset'),
     }),
     []
   );
@@ -65,7 +61,7 @@ const useClock = (): ClockCommands & ElapsedReducerState => {
   useEffect(() => {
     if (timeStatus.started != null) {
       const timerId = setInterval(() => {
-        setTimeStatus("update");
+        setTimeStatus('update');
       }, 1000);
       return () => {
         clearTimeout(timerId);

@@ -1,6 +1,6 @@
-import { FunctionComponent } from "react";
-import { NavLink } from "react-router-dom";
-import { LazyRouteComponent } from "./App.models";
+import { FunctionComponent } from 'react';
+import { NavLink } from 'react-router-dom';
+import { LazyRouteComponent } from './App.models';
 
 interface NavProps {
   menu: Array<LazyRouteComponent>;

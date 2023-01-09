@@ -1,8 +1,8 @@
-import classNames from "classnames";
-import { ChangeEventHandler, FunctionComponent, useState } from "react";
-import { getDragonFractal, L, R } from "../../lib/triangles-dragons/dragons";
-import { Plane } from "../../lib/triangles-dragons/matrix/plane";
-import styles from "./Dragons.module.scss";
+import classNames from 'classnames';
+import { ChangeEventHandler, FunctionComponent, useState } from 'react';
+import { getDragonFractal, L, R } from '../../lib/triangles-dragons/dragons';
+import { Plane } from '../../lib/triangles-dragons/matrix/plane';
+import styles from './Dragons.module.scss';
 import DragonsMd from './README.md';
 
 const Dragons: FunctionComponent = () => {
@@ -23,11 +23,11 @@ const Dragons: FunctionComponent = () => {
   };
   const handleFold: ChangeEventHandler<HTMLInputElement> = (evt) => {
     switch (evt.target.value) {
-      case "L": {
+      case 'L': {
         setDragons((current) => ({ ...current, fold: L }));
         break;
       }
-      case "R": {
+      case 'R': {
         setDragons((current) => ({ ...current, fold: R }));
         break;
       }
@@ -35,28 +35,28 @@ const Dragons: FunctionComponent = () => {
   };
   const handleOrientation: ChangeEventHandler<HTMLInputElement> = (evt) => {
     switch (evt.target.value) {
-      case "N": {
+      case 'N': {
         setDragons((current) => ({
           ...current,
           orientation: Plane.Orientation.N,
         }));
         break;
       }
-      case "E": {
+      case 'E': {
         setDragons((current) => ({
           ...current,
           orientation: Plane.Orientation.E,
         }));
         break;
       }
-      case "S": {
+      case 'S': {
         setDragons((current) => ({
           ...current,
           orientation: Plane.Orientation.S,
         }));
         break;
       }
-      case "W": {
+      case 'W': {
         setDragons((current) => ({
           ...current,
           orientation: Plane.Orientation.W,
@@ -73,36 +73,15 @@ const Dragons: FunctionComponent = () => {
         <fieldset>
           <legend>Iterations</legend>
           <label htmlFor="newDragons">
-            This will generate a dragon fractal with the specified iterations
-            (after 15 iterations will start to considerably slow down).
+            This will generate a dragon fractal with the specified iterations (after 15 iterations will start to considerably slow down).
           </label>
-          <input
-            id="newDragons"
-            type="number"
-            onChange={handleDragons}
-            value={dragons.iterations}
-          />
+          <input id="newDragons" type="number" onChange={handleDragons} value={dragons.iterations} />
         </fieldset>
         <fieldset>
           <legend>Fold orientation</legend>
-          <input
-            type="radio"
-            name="fold"
-            id="foldLeft"
-            value="L"
-            onChange={handleFold}
-            checked={dragons.fold === L}
-          />
-          <label htmlFor="foldLeft">Left</label>
-          {' '}
-          <input
-            type="radio"
-            name="fold"
-            id="foldRight"
-            value="R"
-            onChange={handleFold}
-            checked={dragons.fold === R}
-          />
+          <input type="radio" name="fold" id="foldLeft" value="L" onChange={handleFold} checked={dragons.fold === L} />
+          <label htmlFor="foldLeft">Left</label>{' '}
+          <input type="radio" name="fold" id="foldRight" value="R" onChange={handleFold} checked={dragons.fold === R} />
           <label htmlFor="foldRight">Right</label>
         </fieldset>
         <fieldset>
@@ -115,8 +94,7 @@ const Dragons: FunctionComponent = () => {
             onChange={handleOrientation}
             checked={dragons.orientation === Plane.Orientation.N}
           />
-          <label htmlFor="orientationNorth">North</label>
-          {' '}
+          <label htmlFor="orientationNorth">North</label>{' '}
           <input
             type="radio"
             name="orientation"
@@ -125,8 +103,7 @@ const Dragons: FunctionComponent = () => {
             onChange={handleOrientation}
             checked={dragons.orientation === Plane.Orientation.E}
           />
-          <label htmlFor="orientationEast">East</label>
-          {' '}
+          <label htmlFor="orientationEast">East</label>{' '}
           <input
             type="radio"
             name="orientation"
@@ -135,8 +112,7 @@ const Dragons: FunctionComponent = () => {
             onChange={handleOrientation}
             checked={dragons.orientation === Plane.Orientation.S}
           />
-          <label htmlFor="orientationSouth">South</label>
-          {' '}
+          <label htmlFor="orientationSouth">South</label>{' '}
           <input
             type="radio"
             name="orientation"
@@ -145,23 +121,16 @@ const Dragons: FunctionComponent = () => {
             onChange={handleOrientation}
             checked={dragons.orientation === Plane.Orientation.W}
           />
-          <label htmlFor="orientationWest">West</label>
-          {' '}
+          <label htmlFor="orientationWest">West</label>{' '}
         </fieldset>
       </div>
       <pre
         className={classNames({
           [styles.dragons]: true,
-          [styles.dragons__medium]:
-            dragons.iterations > 10 && dragons.iterations <= 13,
+          [styles.dragons__medium]: dragons.iterations > 10 && dragons.iterations <= 13,
           [styles.dragons__small]: dragons.iterations > 13,
-        })}
-      >
-        {getDragonFractal(
-          dragons.iterations,
-          dragons.fold,
-          dragons.orientation
-        ).toString()}
+        })}>
+        {getDragonFractal(dragons.iterations, dragons.fold, dragons.orientation).toString()}
       </pre>
     </div>
   );

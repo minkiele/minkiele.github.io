@@ -1,6 +1,6 @@
-@use "sass:math";
-@use "../../styles/colors";
-@use "../../styles/mixins";
+@use 'sass:math';
+@use '../../styles/colors';
+@use '../../styles/mixins';
 
 .vietnam {
   display: flex;
@@ -25,7 +25,7 @@
     background-color: colors.$fg;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    &[draggable="true"] {
+    &[draggable='true'] {
       cursor: pointer;
     }
     &:not(:last-child) {

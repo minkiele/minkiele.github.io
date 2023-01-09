@@ -1,119 +1,124 @@
-@use "../../styles/colors";
-@use "../../styles/mixins";
-@use "sass:math";
+@use '../../styles/colors';
+@use '../../styles/mixins';
+@use 'sass:math';
 
 :global {
-    html, body {
-        &.stopScrolling {
-            overflow: hidden !important;
-            // This is to avoid my mistake to trying and make a "focused" board and gamepad
-            // https://stackoverflow.com/questions/63625709/css-not-selector-being-ignored
-        }
+  html,
+  body {
+    &.stopScrolling {
+      overflow: hidden !important;
+      // This is to avoid my mistake to trying and make a "focused" board and gamepad
+      // https://stackoverflow.com/questions/63625709/css-not-selector-being-ignored
     }
+  }
 }
 
 $cols: 24;
 $rows: 17;
 
 :root {
-    --snake-game-spacing: 3px;
-    --snake-game-cell-width: 10px;
-    --snake-game-cell-height: 10px;
-    --snake-game-gutter: 2px;
+  --snake-game-spacing: 3px;
+  --snake-game-cell-width: 10px;
+  --snake-game-cell-height: 10px;
+  --snake-game-gutter: 2px;
 }
 
-$boardWidth: calc((var(--snake-game-cell-width) * #{$cols}) + (var(--snake-game-gutter) * #{($cols - 1)}) + (2 * var(--snake-game-spacing)));
-$boardHeight: calc((var(--snake-game-cell-height) * #{$rows}) + (var(--snake-game-gutter) * #{($rows - 1)}) + (2 * var(--snake-game-spacing)));
+$boardWidth: calc(
+  (var(--snake-game-cell-width) * #{$cols}) + (var(--snake-game-gutter) * #{($cols - 1)}) + (2 * var(--snake-game-spacing))
+);
+$boardHeight: calc(
+  (var(--snake-game-cell-height) * #{$rows}) + (var(--snake-game-gutter) * #{($rows - 1)}) + (2 * var(--snake-game-spacing))
+);
 
 .board {
-    width: $boardWidth;
-    height: $boardHeight;
-    position: relative;
-    border: 1px solid colors.$fg;
-    pointer-events: none;
-    user-select: none;
-    &#{&}__noWalls {
-        border-style: dashed;
-    }
-    margin: 0 auto;
+  width: $boardWidth;
+  height: $boardHeight;
+  position: relative;
+  border: 1px solid colors.$fg;
+  pointer-events: none;
+  user-select: none;
+  &#{&}__noWalls {
+    border-style: dashed;
+  }
+  margin: 0 auto;
 }
 
 .cell {
-    width: var(--snake-game-cell-width);
-    height: var(--snake-game-cell-height);
-    position: absolute;
-    background-color: colors.$bg;
-    &#{&}__snake {
-        background-color: colors.$fg;
-    }
-    &#{&}__apple {
-        background-color: #f00;
-    }
+  width: var(--snake-game-cell-width);
+  height: var(--snake-game-cell-height);
+  position: absolute;
+  background-color: colors.$bg;
+  &#{&}__snake {
+    background-color: colors.$fg;
+  }
+  &#{&}__apple {
+    background-color: #f00;
+  }
 }
 
 .gamepad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(45deg);
+  margin-top: 50px;
+  margin-bottom: 50px;
+
+  &_row {
     display: flex;
-    flex-direction: column;
+    width: math.div(100%, math.pow(2, 0.5));
     align-items: center;
     justify-content: center;
-    transform: rotate(45deg);
-    margin-top: 50px;
-    margin-bottom: 50px;
-
-    &_row {
-        display: flex;
-        width: math.div(100%, math.pow(2, 0.5));
-        align-items: center;
-        justify-content: center;
+  }
+  &_col {
+    display: flex;
+    width: 50%;
+    aspect-ratio: 1;
+    align-items: center;
+    justify-content: center;
+  }
+  &_button {
+    display: block;
+    width: 90%;
+    height: 90%;
+    font-family: 'Noto Emoji';
+    font-size: 58px;
+    &,
+    &:active {
+      transform: rotate(-45deg);
+      border: 0;
+      box-shadow: none;
     }
-    &_col {
-        display: flex;
-        width: 50%;
-        aspect-ratio: 1;
-        align-items: center;
-        justify-content: center;
+    &:focus {
+      outline: none;
     }
-    &_button {
-        display: block;
-        width: 90%;
-        height: 90%;
-        font-family: 'Noto Emoji';
-        font-size: 58px;
-        &, &:active {
-            transform: rotate(-45deg);
-            border: 0;
-            box-shadow: none;
-        }
-        &:focus {
-            outline: none;
-        }
-    }
+  }
 }
 
-@media(min-width: 768px) {
-    .gamepad {
-        display: none;
-    }
+@media (min-width: 768px) {
+  .gamepad {
+    display: none;
+  }
 }
 
-@media(min-width: 840px) {
-    :root {
-        --snake-game-spacing: 6px;
-        --snake-game-cell-width: 20px;
-        --snake-game-cell-height: 20px;
-    }
+@media (min-width: 840px) {
+  :root {
+    --snake-game-spacing: 6px;
+    --snake-game-cell-width: 20px;
+    --snake-game-cell-height: 20px;
+  }
 }
 
 @include mixins.when-dark() {
+  .board {
+    border: 1px solid colors.$dark-fg;
+  }
 
-    .board {
-        border: 1px solid colors.$dark-fg;
+  .cell {
+    background-color: colors.$dark-bg;
+    &#{&}__snake {
+      background-color: colors.$dark-fg;
     }
-
-    .cell {
-        background-color: colors.$dark-bg;
-        &#{&}__snake {
-            background-color: colors.$dark-fg;
-        }
-    }
+  }
 }

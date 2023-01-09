@@ -34,7 +34,9 @@
     "dotenv": "^10.0.0",
     "dotenv-expand": "^5.1.0",
     "eslint": "^8.3.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-webpack-plugin": "^3.1.1",
     "file-loader": "^6.2.0",
     "fs-extra": "^10.0.0",
@@ -84,14 +86,8 @@
     "test": "node scripts/test.js",
     "typecheck": "tsc --noemit",
     "lint": "eslint src --quiet --fix --ext .js,.ts,.jsx,.tsx",
-    "format:nonlinted": "prettier --write --check \"src/**/*.scss\" \"src/**/*.css\"  --no-error-on-unmatched-pattern",
+    "format:nonlinted": "prettier --write --check \"src/**/*.scss\" \"src/**/*.css\"  \"src/**/*.md\" --no-error-on-unmatched-pattern",
     "pre-commit": "npm run lint && npm run typecheck && npm run format:nonlinted"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

@@ -1,15 +1,15 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import "./index.scss";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import dayjs from "dayjs";
-import "dayjs/locale/it";
-import Router from "./Router";
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.scss';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import dayjs from 'dayjs';
+import 'dayjs/locale/it';
+import Router from './Router';
 
-dayjs.locale("it");
+dayjs.locale('it');
 
-const root = createRoot(document.getElementById("root") as HTMLElement);
+const root = createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
   <React.StrictMode>

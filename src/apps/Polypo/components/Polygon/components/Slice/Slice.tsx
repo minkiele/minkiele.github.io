@@ -1,6 +1,6 @@
-import classNames from "classnames";
-import { FunctionComponent, memo } from "react";
-import styles from "./Slice.module.scss";
+import classNames from 'classnames';
+import { FunctionComponent, memo } from 'react';
+import styles from './Slice.module.scss';
 
 export interface SliceProps {
   radius: number;
@@ -21,7 +21,7 @@ const Slice: FunctionComponent<SliceProps> = memo(({ sides, side }) => {
       className={classNames({
         [styles.slice]: true,
         [styles.slice__even]: even,
-        [styles.slice__odd]: !even
+        [styles.slice__odd]: !even,
       })}
       style={{ width: `${width}%`, height: `${height}%`, transform }}
     />

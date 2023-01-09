@@ -1,6 +1,6 @@
-@use "sass:math";
-@use "../../styles/colors";
-@use "../../styles/mixins";
+@use 'sass:math';
+@use '../../styles/colors';
+@use '../../styles/mixins';
 
 .cell {
   border: 1px colors.$fg solid;
@@ -12,7 +12,7 @@
   &__visible {
     opacity: 1;
     @for $cell from 1 through 25 {
-      &[data-c="#{$cell}"] {
+      &[data-c='#{$cell}'] {
         transition-delay: #{math.div($cell - 1, 2)}s;
       }
     }

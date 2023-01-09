@@ -5,9 +5,11 @@ export class JumpMatrix {
   public isSolved(): boolean {
     return this.move === this.size ** 2;
   }
-  private matrix: Array<Array<number | undefined>> = Array(this.size).fill(undefined).map(() => Array(this.size).fill(undefined));
+  private matrix: Array<Array<number | undefined>> = Array(this.size)
+    .fill(undefined)
+    .map(() => Array(this.size).fill(undefined));
 
-  public constructor (private size = 5) {}
+  public constructor(private size = 5) {}
 
   private getRandomUpTo(limit: number): number {
     return Math.floor(Math.random() * limit);
@@ -17,7 +19,7 @@ export class JumpMatrix {
     do {
       this.row = this.getRandomUpTo(this.size);
       this.col = this.getRandomUpTo(this.size);
-    } while(this.getValueAtCurrentPosition() != null);
+    } while (this.getValueAtCurrentPosition() != null);
   }
 
   private advandceOneMove() {
@@ -40,14 +42,14 @@ export class JumpMatrix {
   }
 
   private advance() {
-    while(this.move < this.size ** 2) {
+    while (this.move < this.size ** 2) {
       const testedPositions: Array<boolean> = Array(8).fill(false);
       let advanced = false;
       let rowCandidate = -1;
       let colCandidate = -1;
       do {
         const direction = this.getRandomUpTo(8);
-        switch(direction) {
+        switch (direction) {
           case 0: {
             [rowCandidate, colCandidate] = this.getCandidateCoordinates(-3);
             break;
@@ -81,13 +83,13 @@ export class JumpMatrix {
             break;
           }
         }
-        if(!testedPositions[direction] && this.isPositionCandidate(rowCandidate, colCandidate)) {
+        if (!testedPositions[direction] && this.isPositionCandidate(rowCandidate, colCandidate)) {
           this.advancePosition(rowCandidate, colCandidate);
           advanced = true;
         }
         testedPositions[direction] = true;
-      } while(!advanced && testedPositions.includes(false));
-      if(!testedPositions.includes(false) && !advanced) {
+      } while (!advanced && testedPositions.includes(false));
+      if (!testedPositions.includes(false) && !advanced) {
         throw new Error('Cannot move anymore');
       }
     }
@@ -125,10 +127,12 @@ export class JumpMatrix {
   }
 
   public toString(): string {
-    return this.matrix.map((row) => {
-      const printableRow = row.map((col) => `${(col == null || col < 10) ? ' '  : ''}${col == null ? ' ' : col}`).join(' ');
-      return `[ ${printableRow} ]`;
-    }).join("\n");
+    return this.matrix
+      .map((row) => {
+        const printableRow = row.map((col) => `${col == null || col < 10 ? ' ' : ''}${col == null ? ' ' : col}`).join(' ');
+        return `[ ${printableRow} ]`;
+      })
+      .join('\n');
   }
 
   public getMatrix(): Array<Array<number | undefined>> {
@@ -143,5 +147,4 @@ export class JumpMatrix {
   public getMove(): number {
     return this.move;
   }
-
 }

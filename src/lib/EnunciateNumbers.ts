@@ -7,25 +7,25 @@
 const pronunciaUnità = (unità: number): string => {
   switch (unità) {
     case 1:
-      return "uno";
+      return 'uno';
     case 2:
-      return "due";
+      return 'due';
     case 3:
-      return "tre";
+      return 'tre';
     case 4:
-      return "quattro";
+      return 'quattro';
     case 5:
-      return "cinque";
+      return 'cinque';
     case 6:
-      return "sei";
+      return 'sei';
     case 7:
-      return "sette";
+      return 'sette';
     case 8:
-      return "otto";
+      return 'otto';
     case 9:
-      return "nove";
+      return 'nove';
     default:
-      return "";
+      return '';
   }
 };
 
@@ -37,9 +37,9 @@ const pronunciaUnità = (unità: number): string => {
 const pronunciaCentinaia = (centinaia: number): string => {
   switch (centinaia) {
     case 0:
-      return "";
+      return '';
     case 1:
-      return "cento";
+      return 'cento';
     default:
       return `${pronunciaUnità(centinaia)}cento`;
   }
@@ -51,8 +51,7 @@ const pronunciaCentinaia = (centinaia: number): string => {
  * @param unità
  * @returns
  */
-const aggiungiUltimaVocale = (vocale: string, unità: number): string =>
-  unità === 1 || unità === 8 ? "" : vocale;
+const aggiungiUltimaVocale = (vocale: string, unità: number): string => (unità === 1 || unità === 8 ? '' : vocale);
 
 /**
  * Pronuncia i numeri da 1 a 99, con l'elisione dell'ultima vocale della decina se cozzano
@@ -69,60 +68,48 @@ const pronunciaDecineEdUnità = (decine: number, unità: number): string => {
     case 1:
       switch (unità) {
         case 0:
-          return "dieci";
+          return 'dieci';
         case 1:
-          return "undici";
+          return 'undici';
         case 2:
-          return "dodici";
+          return 'dodici';
         case 3:
-          return "tredici";
+          return 'tredici';
         case 4:
-          return "quattordici";
+          return 'quattordici';
         case 5:
-          return "quindici";
+          return 'quindici';
         case 6:
-          return "sedici";
+          return 'sedici';
         case 7:
-          return "diciassette";
+          return 'diciassette';
         case 8:
-          return "diciotto";
+          return 'diciotto';
         case 9:
-          return "diciannove";
+          return 'diciannove';
         default:
-          return "";
+          return '';
       }
     // E questo è il modo standard di comporre i numeri da 20 a 99
     case 2:
-      return `vent${aggiungiUltimaVocale("i", unità)}${pronunciaUnità(unità)}`;
+      return `vent${aggiungiUltimaVocale('i', unità)}${pronunciaUnità(unità)}`;
     case 3:
-      return `trent${aggiungiUltimaVocale("a", unità)}${pronunciaUnità(unità)}`;
+      return `trent${aggiungiUltimaVocale('a', unità)}${pronunciaUnità(unità)}`;
     case 4:
-      return `quarant${aggiungiUltimaVocale("a", unità)}${pronunciaUnità(
-        unità
-      )}`;
+      return `quarant${aggiungiUltimaVocale('a', unità)}${pronunciaUnità(unità)}`;
     case 5:
-      return `cinquant${aggiungiUltimaVocale("a", unità)}${pronunciaUnità(
-        unità
-      )}`;
+      return `cinquant${aggiungiUltimaVocale('a', unità)}${pronunciaUnità(unità)}`;
     case 6:
-      return `sessant${aggiungiUltimaVocale("a", unità)}${pronunciaUnità(
-        unità
-      )}`;
+      return `sessant${aggiungiUltimaVocale('a', unità)}${pronunciaUnità(unità)}`;
     case 7:
-      return `settant${aggiungiUltimaVocale("a", unità)}${pronunciaUnità(
-        unità
-      )}`;
+      return `settant${aggiungiUltimaVocale('a', unità)}${pronunciaUnità(unità)}`;
     case 8:
-      return `ottant${aggiungiUltimaVocale("a", unità)}${pronunciaUnità(
-        unità
-      )}`;
+      return `ottant${aggiungiUltimaVocale('a', unità)}${pronunciaUnità(unità)}`;
     case 9:
-      return `novant${aggiungiUltimaVocale("a", unità)}${pronunciaUnità(
-        unità
-      )}`;
+      return `novant${aggiungiUltimaVocale('a', unità)}${pronunciaUnità(unità)}`;
     // Typescript vuole il caso di default
     default:
-      return "";
+      return '';
   }
 };
 
@@ -133,29 +120,26 @@ const pronunciaDecineEdUnità = (decine: number, unità: number): string => {
  * @param casoSpecialeUno
  * @returns
  */
-const pronunciaPotenza = (
-  potenzaDiMille: number,
-  casoSpecialeUno = false
-): string => {
+const pronunciaPotenza = (potenzaDiMille: number, casoSpecialeUno = false): string => {
   switch (potenzaDiMille) {
     case 0:
-      return "";
+      return '';
     case 1:
-      return casoSpecialeUno ? " mille" : "mila ";
+      return casoSpecialeUno ? ' mille' : 'mila ';
     case 2:
-      return casoSpecialeUno ? " un milione" : " milioni ";
+      return casoSpecialeUno ? ' un milione' : ' milioni ';
     case 3:
-      return casoSpecialeUno ? " un miliardo" : " miliardi ";
+      return casoSpecialeUno ? ' un miliardo' : ' miliardi ';
     default: {
       // E qui richiamo la pronuncia della potenza con una ricorsione di coda
-      const parole = ["", pronunciaPotenza(potenzaDiMille - 3), "miliardi", ""];
+      const parole = ['', pronunciaPotenza(potenzaDiMille - 3), 'miliardi', ''];
       // Se la potenza è superiore a 4 stiamo ragionando su
       // numeri sul milione o miliardo di miliardi e quindi
       // serve la preposizione "di" fra le parole
       if (potenzaDiMille > 4) {
-        parole.splice(2, 0, "di");
+        parole.splice(2, 0, 'di');
       }
-      return parole.join(" ");
+      return parole.join(' ');
     }
   }
 };
@@ -166,22 +150,19 @@ const pronunciaPotenza = (
  * @param potenzaDi1000
  * @returns
  */
-const pronunciaSottogruppo = (
-  sottogruppo: string,
-  potenzaDi1000: number
-): string => {
+const pronunciaSottogruppo = (sottogruppo: string, potenzaDi1000: number): string => {
   const centinaia = parseInt(sottogruppo[0]);
   const decine = parseInt(sottogruppo[1]);
   const unità = parseInt(sottogruppo[2]);
   const parole: Array<string> = [];
   // Salta la pronuncia se tutto un sottogruppo è 0
-  if (sottogruppo === "000") {
-    return "";
+  if (sottogruppo === '000') {
+    return '';
   }
   // Se il numero è una potenza di 10 >= 1000
   // Allora è sufficiente pronunciare la potenza
   // per il caso speciale
-  if (sottogruppo === "001" && potenzaDi1000 > 0) {
+  if (sottogruppo === '001' && potenzaDi1000 > 0) {
     parole.push(pronunciaPotenza(potenzaDi1000, true));
   } else {
     parole.push(pronunciaCentinaia(centinaia));
@@ -189,7 +170,7 @@ const pronunciaSottogruppo = (
     parole.push(pronunciaDecineEdUnità(decine, unità));
     parole.push(pronunciaPotenza(potenzaDi1000));
   }
-  return parole.join("");
+  return parole.join('');
 };
 
 /**
@@ -199,32 +180,23 @@ const pronunciaSottogruppo = (
  * @param potenzaDi1000
  * @returns
  */
-const pronunciaGruppo = (
-  gruppo: Array<string>,
-  potenzaDi1000: number
-): string => {
+const pronunciaGruppo = (gruppo: Array<string>, potenzaDi1000: number): string => {
   // Se il gruppo completo è un 1 e non si tratta del primo allora è sufficiente
   // pronunciare la potenza di 10 con il caso particolare 1,
   // sapendo che per un gruppo di 3 è necessario triplicarla
-  if (gruppo.length === 1 && gruppo[0] === "001" && potenzaDi1000 > 0) {
+  if (gruppo.length === 1 && gruppo[0] === '001' && potenzaDi1000 > 0) {
     return pronunciaPotenza(potenzaDi1000 * 3, true);
   } else {
     const parole: Array<string> = [];
     // Pronuncio ogni sottogruppo e li unisco in una parola separata da spazi
-    parole.push(
-      gruppo
-        .map((sottogruppo, indice) =>
-          pronunciaSottogruppo(sottogruppo, gruppo.length - indice - 1)
-        )
-        .join(" ")
-    );
+    parole.push(gruppo.map((sottogruppo, indice) => pronunciaSottogruppo(sottogruppo, gruppo.length - indice - 1)).join(' '));
     // Se l'intero gruppo è fatto di zeri allora salta la pronuncia della potenza
-    if (!gruppo.every((sottogruppo) => sottogruppo === "000")) {
+    if (!gruppo.every((sottogruppo) => sottogruppo === '000')) {
       // Altrimenti pronuncia la potenza,
       // sapendo che per un gruppo di 3 è necessario triplicarla
       parole.push(pronunciaPotenza(potenzaDi1000 * 3));
     }
-    return parole.join("");
+    return parole.join('');
   }
 };
 
@@ -233,7 +205,7 @@ const pronunciaGruppo = (
  * @param quanti
  * @returns
  */
-const aggiungiZeri = (quanti: number): string => Array(quanti).fill(0).join("");
+const aggiungiZeri = (quanti: number): string => Array(quanti).fill(0).join('');
 
 /**
  * Mettiamo insieme i pezzi
@@ -244,14 +216,14 @@ export const pronunciaNumero = (numero: string | number): string => {
   // Converto il numero in stringa (se non lo era già prima)
   numero = numero.toString();
   // Verifico se c'è il meno
-  const haMeno = numero[0] === "-";
+  const haMeno = numero[0] === '-';
 
   // Tolgo il segno dal numero
-  const numeroSenzaSegno = numero.replace("-", "");
+  const numeroSenzaSegno = numero.replace('-', '');
 
   // Se il numero è 0 allora cortocircuita e pronuncia zero (senza segno)
-  if (numeroSenzaSegno === "0") {
-    return "zero";
+  if (numeroSenzaSegno === '0') {
+    return 'zero';
   }
 
   // Trovo di quanti sottogruppi è composto il numero
@@ -262,42 +234,33 @@ export const pronunciaNumero = (numero: string | number): string => {
   const numeroConZeri = `${aggiungiZeri(quantiZeriMancano)}${numeroSenzaSegno}`;
 
   // Divido il numero in sottogruppi di 3 cifre, ogni 3 sottogruppi verranno raggruppati in un gruppo
-  const gruppi = numeroConZeri
-    .match(/\d{3}/g)
-    ?.reduce<Array<Array<string>>>((gruppi, sottogruppo, indice) => {
-      const indiceGruppo = Math.floor(indice / 3);
-      // Creo il nuovo gruppo
-      if (gruppi[indiceGruppo] == null) {
-        gruppi[indiceGruppo] = [];
-      }
-      // La condizione al contrario è meglio: se sono nel primo gruppo e non ho ancora inserito sottogruppi
-      // e il sottogruppo che sto osservando in questo momento è zero allora non lo aggiungo, altrimenti
-      // vengono pronunciati sottogruppi che non servono prima dell'inizio del numero vero e proprio
-      if (
-        indiceGruppo > 0 ||
-        gruppi[indiceGruppo].length > 0 ||
-        sottogruppo !== "000"
-      ) {
-        gruppi[indiceGruppo].push(sottogruppo);
-      }
-      return gruppi;
-    }, []);
+  const gruppi = numeroConZeri.match(/\d{3}/g)?.reduce<Array<Array<string>>>((gruppi, sottogruppo, indice) => {
+    const indiceGruppo = Math.floor(indice / 3);
+    // Creo il nuovo gruppo
+    if (gruppi[indiceGruppo] == null) {
+      gruppi[indiceGruppo] = [];
+    }
+    // La condizione al contrario è meglio: se sono nel primo gruppo e non ho ancora inserito sottogruppi
+    // e il sottogruppo che sto osservando in questo momento è zero allora non lo aggiungo, altrimenti
+    // vengono pronunciati sottogruppi che non servono prima dell'inizio del numero vero e proprio
+    if (indiceGruppo > 0 || gruppi[indiceGruppo].length > 0 || sottogruppo !== '000') {
+      gruppi[indiceGruppo].push(sottogruppo);
+    }
+    return gruppi;
+  }, []);
 
   // Pronuncio ogni gruppo per avere il numero totale senza segno
-  const parole =
-    gruppi?.map((gruppo, indice, gruppi) =>
-      pronunciaGruppo(gruppo, gruppi?.length - indice - 1)
-    ) ?? [];
+  const parole = gruppi?.map((gruppo, indice, gruppi) => pronunciaGruppo(gruppo, gruppi?.length - indice - 1)) ?? [];
 
   // Aggiungo il meno se ce l'ha
   if (haMeno) {
-    parole.unshift("meno");
+    parole.unshift('meno');
   }
 
   // Unisco tutto, rimuovo gli spazi in più
-  const numeroInParole = parole.join(" ").trim();
-  if (numeroSenzaSegno !== "3" && /3$/.test(numeroSenzaSegno)) {
-    return numeroInParole.replace(/tre$/, "tré");
+  const numeroInParole = parole.join(' ').trim();
+  if (numeroSenzaSegno !== '3' && /3$/.test(numeroSenzaSegno)) {
+    return numeroInParole.replace(/tre$/, 'tré');
   }
   return numeroInParole;
 };
@@ -307,119 +270,119 @@ export const pronunciaOra = (data: Date) => {
   const minuti = data.getMinutes();
   const secondi = data.getSeconds();
   const parole: Array<string> = [];
-  parole.push(ore === 0 || ore === 1 || ore === 12 ? "è" : "sono le");
+  parole.push(ore === 0 || ore === 1 || ore === 12 ? 'è' : 'sono le');
   switch (ore) {
     case 0:
-      parole.push("mezzanotte");
+      parole.push('mezzanotte');
       break;
     case 1:
       parole.push("l'una");
       break;
     case 12:
-      parole.push("mezzogiorno");
+      parole.push('mezzogiorno');
       break;
     default:
       parole.push(pronunciaNumero(ore));
       break;
   }
   if (minuti > 0 && secondi > 0) {
-    parole.push(",");
+    parole.push(',');
   } else if (minuti > 0) {
-    parole.push("e");
+    parole.push('e');
   }
   switch (minuti) {
     case 0:
       break;
     case 1:
-      parole.push("un minuto");
+      parole.push('un minuto');
       break;
     default:
       parole.push(`${pronunciaNumero(minuti)} minuti`);
       break;
   }
   if (secondi > 0) {
-    parole.push("e");
+    parole.push('e');
   }
   switch (secondi) {
     case 0:
       break;
     case 1:
-      parole.push("un secondo");
+      parole.push('un secondo');
       break;
     default:
       parole.push(`${pronunciaNumero(secondi)} secondi`);
       break;
   }
 
-  return parole.join(" ").replace(" ,", ",");
+  return parole.join(' ').replace(' ,', ',');
 };
 
 const pronunciaGiorno = (giorno: number): string => {
   switch (giorno) {
     case 0:
-      return "Domenica";
+      return 'Domenica';
     case 1:
-      return "Lunedì";
+      return 'Lunedì';
     case 2:
-      return "Martedì";
+      return 'Martedì';
     case 3:
-      return "Mercoledì";
+      return 'Mercoledì';
     case 4:
-      return "Giovedì";
+      return 'Giovedì';
     case 5:
-      return "Venerdì";
+      return 'Venerdì';
     case 6:
-      return "Sabato";
+      return 'Sabato';
     default:
-      return "";
+      return '';
   }
 };
 
 const pronunciaMese = (mese: number): string => {
   switch (mese) {
     case 0:
-      return "Gennaio";
+      return 'Gennaio';
     case 1:
-      return "Febbraio";
+      return 'Febbraio';
     case 2:
-      return "Marzo";
+      return 'Marzo';
     case 3:
-      return "Aprile";
+      return 'Aprile';
     case 4:
-      return "Maggio";
+      return 'Maggio';
     case 5:
-      return "Giugno";
+      return 'Giugno';
     case 6:
-      return "Luglio";
+      return 'Luglio';
     case 7:
-      return "Agosto";
+      return 'Agosto';
     case 8:
-      return "Settembre";
+      return 'Settembre';
     case 9:
-      return "Ottobre";
+      return 'Ottobre';
     case 10:
-      return "Novembre";
+      return 'Novembre';
     case 11:
-      return "Dicembre";
+      return 'Dicembre';
     default:
-      return "";
+      return '';
   }
 };
 
 export const pronunciaData = (date: Date): string => {
   const parole: Array<string> = [
-    "oggi è",
+    'oggi è',
     pronunciaGiorno(date.getDay()),
     pronunciaNumero(date.getDate()),
     pronunciaMese(date.getMonth()),
     pronunciaNumero(date.getFullYear()).replace(/\s+/, ''),
   ];
-  return parole.join(" ");
+  return parole.join(' ');
 };
 
 export const pronunciaDataOra = (date: Date): string => {
   const parole: Array<string> = [pronunciaData(date), pronunciaOra(date)];
   const oraCorrente = date.getHours();
-  parole.splice(1, 0, `e${oraCorrente < 2 || oraCorrente === 12 ? "d" : ""}`);
-  return parole.join(" ");
+  parole.splice(1, 0, `e${oraCorrente < 2 || oraCorrente === 12 ? 'd' : ''}`);
+  return parole.join(' ');
 };

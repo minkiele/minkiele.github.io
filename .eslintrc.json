@@ -1,0 +1,10 @@
+{
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "overrides": [{
+      "extends": ["plugin:prettier/recommended"],
+      "files": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"]
+    }]
+}

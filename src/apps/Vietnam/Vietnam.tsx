@@ -1,29 +1,17 @@
-import {
-  ChangeEventHandler,
-  DragEventHandler,
-  FunctionComponent,
-  useEffect,
-  useRef,
-} from "react";
-import { Column, Move } from "./Vietnam.models";
-import styles from "./Vietnam.module.scss";
-import {
-  getMoves,
-  getStoneStyle,
-  useTouchSelect,
-  useVietnam,
-} from "./Vietnam.utils";
-import VietnamMd from "./README.md";
-import { thunkify } from "ramda";
-import classNames from "classnames";
-import useClock from "../../hooks/useClock";
+import { ChangeEventHandler, DragEventHandler, FunctionComponent, useEffect, useRef } from 'react';
+import { Column, Move } from './Vietnam.models';
+import styles from './Vietnam.module.scss';
+import { getMoves, getStoneStyle, useTouchSelect, useVietnam } from './Vietnam.utils';
+import VietnamMd from './README.md';
+import { thunkify } from 'ramda';
+import classNames from 'classnames';
+import useClock from '../../hooks/useClock';
 
-const COLS: Array<Column> = ["left", "center", "right"];
+const COLS: Array<Column> = ['left', 'center', 'right'];
 const DEFAULT_SIZE = 3;
 
 const Vietnam: FunctionComponent = () => {
-  const { board, moves, isValid, size, setSize, move, reset } =
-    useVietnam(DEFAULT_SIZE);
+  const { board, moves, isValid, size, setSize, move, reset } = useVietnam(DEFAULT_SIZE);
   const { touchSelected, touchSelect } = useTouchSelect(move);
   const timerRef = useRef<ReturnType<typeof setInterval>>();
   const { start: startClock, stop: stopClock, reset: resetClock, elapsed: timeElapsed } = useClock();
@@ -31,7 +19,7 @@ const Vietnam: FunctionComponent = () => {
   const handleDragStart =
     (column: Column): DragEventHandler<HTMLDivElement> =>
     (evt) => {
-      evt.dataTransfer.setData("text/plain", column);
+      evt.dataTransfer.setData('text/plain', column);
     };
 
   const handleDragOver: DragEventHandler<HTMLDivElement> = (evt) => {
@@ -42,7 +30,7 @@ const Vietnam: FunctionComponent = () => {
     (toColumn: Column): DragEventHandler<HTMLDivElement> =>
     (evt) => {
       evt.preventDefault();
-      const fromColumn = evt.dataTransfer.getData("text/plain") as Column;
+      const fromColumn = evt.dataTransfer.getData('text/plain') as Column;
       move(fromColumn, toColumn);
     };
 
@@ -66,7 +54,7 @@ const Vietnam: FunctionComponent = () => {
 
   const handleSolve = () => {
     handleReset();
-    const moves = getMoves(size, "left", "right");
+    const moves = getMoves(size, 'left', 'right');
 
     const intervalLength = size > 1 ? 1000 / (3 * Math.log2(size)) : 0;
 
@@ -83,9 +71,9 @@ const Vietnam: FunctionComponent = () => {
   const handleTouchSelect = thunkify(touchSelect);
 
   useEffect(() => {
-    if(isValid) {
+    if (isValid) {
       stopClock();
-    } else if(moves > 0) {
+    } else if (moves > 0) {
       startClock();
     }
   }, [startClock, stopClock, isValid, moves]);
@@ -99,28 +87,24 @@ const Vietnam: FunctionComponent = () => {
             key={col}
             className={classNames({
               [styles.vietnam_column]: true,
-              [styles.vietnam_column__touchSelected]:
-                touchSelected.includes(col),
+              [styles.vietnam_column__touchSelected]: touchSelected.includes(col),
             })}
             onDragOver={handleDragOver}
             onDrop={handleDrop(col)}
-            onTouchEnd={handleTouchSelect(col)}
-          >
+            onTouchEnd={handleTouchSelect(col)}>
             {board[col].map((stone, index) => (
               <div
                 key={`${col}-${stone}`}
                 className={styles.vietnam_stone}
                 style={getStoneStyle(stone, size, 30)}
                 draggable={index === 0}
-                onDragStart={handleDragStart(col)}
-              ></div>
+                onDragStart={handleDragStart(col)}></div>
             ))}
           </div>
         ))}
       </div>
       <p>
-        To move this tower you'll need 2<sup>{size}</sup> - 1 = {2 ** size - 1}{" "}
-        moves, so far you made {moves} moves in {timeElapsed}s.
+        To move this tower you'll need 2<sup>{size}</sup> - 1 = {2 ** size - 1} moves, so far you made {moves} moves in {timeElapsed}s.
       </p>
       {isValid &&
         (moves === 2 ** size - 1 ? (
@@ -131,16 +115,10 @@ const Vietnam: FunctionComponent = () => {
       <div>
         <fieldset>
           <legend>Controls</legend>
-          <label htmlFor="setSize">Size of the tower:</label>{" "}
-          <input
-            id="setSize"
-            type="number"
-            onChange={handleSetSize}
-            value={size}
-          />{" "}
+          <label htmlFor="setSize">Size of the tower:</label> <input id="setSize" type="number" onChange={handleSetSize} value={size} />{' '}
           <button type="button" onClick={handleReset}>
             Reset
-          </button>{" "}
+          </button>{' '}
           <button type="button" onClick={handleSolve}>
             Solve
           </button>

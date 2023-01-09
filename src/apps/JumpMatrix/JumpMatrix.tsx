@@ -1,6 +1,6 @@
-import classNames from "classnames";
-import { FunctionComponent, useEffect, useState } from "react";
-import { JumpMatrix as JumpMatrixLogic } from "../../lib/JumpMatrix";
+import classNames from 'classnames';
+import { FunctionComponent, useEffect, useState } from 'react';
+import { JumpMatrix as JumpMatrixLogic } from '../../lib/JumpMatrix';
 import styles from './JumpMatrix.module.scss';
 import JumpMatrixMd from './README.md';
 
@@ -30,9 +30,7 @@ const runJumpMatrix = (): JumpMatrixState => {
 };
 
 const JumpMatrix: FunctionComponent = () => {
-  const [{ matrix, moves, tries }, setMatrixState] = useState<JumpMatrixState>(
-    runJumpMatrix()
-  );
+  const [{ matrix, moves, tries }, setMatrixState] = useState<JumpMatrixState>(runJumpMatrix());
 
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -64,10 +62,15 @@ const JumpMatrix: FunctionComponent = () => {
           {matrix.getMatrix().map((row, index) => (
             <tr key={`${row.toString()}-${index}`}>
               {row.map((col, colIndex) => (
-                <td key={`${col}-${colIndex}`} className={classNames({
-                  [styles.cell]: true,
-                  [styles.cell__visible]: visible
-                })} data-c={col}>{col}</td>
+                <td
+                  key={`${col}-${colIndex}`}
+                  className={classNames({
+                    [styles.cell]: true,
+                    [styles.cell__visible]: visible,
+                  })}
+                  data-c={col}>
+                  {col}
+                </td>
               ))}
             </tr>
           ))}

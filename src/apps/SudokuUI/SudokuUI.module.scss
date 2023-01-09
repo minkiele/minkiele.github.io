@@ -1,6 +1,6 @@
-@use "sass:math";
-@use "../../styles/colors";
-@use "../../styles/mixins";
+@use 'sass:math';
+@use '../../styles/colors';
+@use '../../styles/mixins';
 
 .cell {
   $side: math.div(100%, 9);

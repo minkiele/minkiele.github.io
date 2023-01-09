@@ -1,3 +1,3 @@
 export const useWindow = (): Window => {
-    return window;
+  return window;
 };

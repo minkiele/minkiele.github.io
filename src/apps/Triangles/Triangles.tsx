@@ -1,8 +1,5 @@
-import { ChangeEventHandler, FunctionComponent, useMemo, useState } from "react";
-import {
-  getTriangle,
-  triangleToString,
-} from "../../lib/triangles-dragons/triangles";
+import { ChangeEventHandler, FunctionComponent, useMemo, useState } from 'react';
+import { getTriangle, triangleToString } from '../../lib/triangles-dragons/triangles';
 import styles from './Triangles.module.scss';
 import TrianglesMd from './README.md';
 
@@ -23,15 +20,9 @@ const Triangles: FunctionComponent = () => {
       <fieldset>
         <legend>Generator controls</legend>
         <label htmlFor="newTriangles">
-          This will generate 2<sup>{triangles}</sup> ({2**triangles}) rows
-        </label>
-        {' '}
-        <input
-          id="newTriangles"
-          type="number"
-          onChange={handleTriangles}
-          value={triangles}
-        />
+          This will generate 2<sup>{triangles}</sup> ({2 ** triangles}) rows
+        </label>{' '}
+        <input id="newTriangles" type="number" onChange={handleTriangles} value={triangles} />
       </fieldset>
       <pre className={styles.triangles_render}>{cachedRender}</pre>
     </div>

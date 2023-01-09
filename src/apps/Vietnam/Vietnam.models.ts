@@ -1,4 +1,4 @@
-export type Column = "left" | "center" | "right";
+export type Column = 'left' | 'center' | 'right';
 export type ReducerState = {
   size: number;
   board: Record<Column, Array<number>>;
@@ -7,16 +7,16 @@ export type ReducerState = {
 };
 export type ReducerAction =
   | {
-      type: "move";
+      type: 'move';
       from: Column;
       to: Column;
     }
   | {
-      type: "setSize";
+      type: 'setSize';
       size: number;
     }
   | {
-      type: "reset";
+      type: 'reset';
     };
 
 export interface Move {

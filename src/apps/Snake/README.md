@@ -25,9 +25,9 @@ change with different techniques but didn't notice any improvement without a dra
 
 ## Instructions
 
-To play on desktop press the *arrows*, *WSAD*, spacebar or
+To play on desktop press the _arrows_, _WSAD_, spacebar or
 enter. To pause the game press spacebar or enter, to resume it press
-the *arrows*, *WSAD*, spacebar or enter. When game is over you can reset
+the _arrows_, _WSAD_, spacebar or enter. When game is over you can reset
 it by pressing the Reset button or spacebar or enter.
 
 To play on mobile just press the buttons (swipe would be too slow to capture).

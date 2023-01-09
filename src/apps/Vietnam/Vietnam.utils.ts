@@ -1,13 +1,6 @@
-import { range } from "ramda";
-import {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from "react";
-import { Column, Move, ReducerAction, ReducerState } from "./Vietnam.models";
+import { range } from 'ramda';
+import { CSSProperties, useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import { Column, Move, ReducerAction, ReducerState } from './Vietnam.models';
 
 const getInitialState = (size: number): ReducerState => ({
   size,
@@ -20,24 +13,18 @@ export const useVietnam = (defaultSize: number) => {
   const [currentState, dispatch] = useReducer(
     (state: ReducerState, action: ReducerAction) => {
       switch (action.type) {
-        case "move": {
+        case 'move': {
           const isValidMove =
             action.from !== action.to &&
             state.board[action.from].length > 0 &&
-            (state.board[action.to].length === 0 ||
-              state.board[action.from][0] < state.board[action.to][0]);
+            (state.board[action.to].length === 0 || state.board[action.from][0] < state.board[action.to][0]);
           if (isValidMove) {
-            const newBoard: ReducerState["board"] = {
+            const newBoard: ReducerState['board'] = {
               ...state.board,
               [action.from]: state.board[action.from].slice(1),
-              [action.to]: [
-                state.board[action.from][0],
-                ...state.board[action.to],
-              ],
+              [action.to]: [state.board[action.from][0], ...state.board[action.to]],
             };
-            const isValid =
-              newBoard.center.length === state.size ||
-              newBoard.right.length === state.size;
+            const isValid = newBoard.center.length === state.size || newBoard.right.length === state.size;
             return {
               ...state,
               board: newBoard,
@@ -47,10 +34,10 @@ export const useVietnam = (defaultSize: number) => {
           }
           return state;
         }
-        case "setSize": {
+        case 'setSize': {
           return getInitialState(action.size);
         }
-        case "reset": {
+        case 'reset': {
           return getInitialState(state.size);
         }
       }
@@ -63,15 +50,9 @@ export const useVietnam = (defaultSize: number) => {
     }
   );
 
-  const setSize = useCallback(
-    (size: number) => dispatch({ type: "setSize", size }),
-    []
-  );
-  const move = useCallback(
-    (from: Column, to: Column) => dispatch({ type: "move", from, to }),
-    []
-  );
-  const reset = useCallback(() => dispatch({ type: "reset" }), []);
+  const setSize = useCallback((size: number) => dispatch({ type: 'setSize', size }), []);
+  const move = useCallback((from: Column, to: Column) => dispatch({ type: 'move', from, to }), []);
+  const reset = useCallback(() => dispatch({ type: 'reset' }), []);
 
   useEffect(() => {
     setSize(defaultSize);
@@ -88,24 +69,18 @@ export const useVietnam = (defaultSize: number) => {
   );
 };
 
-export const getStoneStyle = (
-  stone: number,
-  stones: number,
-  minSize = 30
-): CSSProperties => ({
-  width: `calc(${minSize}% + ${
-    ((100 - minSize) / Math.max(1, stones - 1)) * (stone - 1)
-  }%)`,
+export const getStoneStyle = (stone: number, stones: number, minSize = 30): CSSProperties => ({
+  width: `calc(${minSize}% + ${((100 - minSize) / Math.max(1, stones - 1)) * (stone - 1)}%)`,
 });
 
 const getThirdColumn = (from: Column, to: Column) => {
   switch (from) {
-    case "left":
-      return to === "right" ? "center" : "right";
-    case "center":
-      return to === "right" ? "left" : "right";
-    case "right":
-      return to === "left" ? "center" : "left";
+    case 'left':
+      return to === 'right' ? 'center' : 'right';
+    case 'center':
+      return to === 'right' ? 'left' : 'right';
+    case 'right':
+      return to === 'left' ? 'center' : 'left';
   }
 };
 
@@ -116,11 +91,7 @@ const getThirdColumn = (from: Column, to: Column) => {
  * @param to Finishing column
  * @returns a list of moves to solve a Tower of Hanoi
  */
-export const getMoves = (
-  size: number,
-  from: Column,
-  to: Column
-): Array<Move> => {
+export const getMoves = (size: number, from: Column, to: Column): Array<Move> => {
   const moves: Array<Move> = [];
   const subStackTo = getThirdColumn(from, to);
   if (size > 1) {
@@ -133,9 +104,7 @@ export const getMoves = (
   return moves;
 };
 
-export const useTouchSelect = (
-  callback: (from: Column, to: Column) => void
-) => {
+export const useTouchSelect = (callback: (from: Column, to: Column) => void) => {
   const [selected, setColumns] = useState<Array<Column>>([]);
   useEffect(() => {
     if (selected.length === 2) {
@@ -146,8 +115,5 @@ export const useTouchSelect = (
   const touchSelect = useCallback((column: Column) => {
     setColumns((current) => [...current, column]);
   }, []);
-  return useMemo(
-    () => ({ touchSelected: selected, touchSelect }),
-    [selected, touchSelect]
-  );
+  return useMemo(() => ({ touchSelected: selected, touchSelect }), [selected, touchSelect]);
 };
