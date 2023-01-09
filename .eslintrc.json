@@ -3,6 +3,7 @@
       "react-app",
       "react-app/jest"
     ],
+    "ignorePatterns": ["config", "docs", "public"],
     "overrides": [{
       "extends": ["plugin:prettier/recommended"],
       "files": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"]
