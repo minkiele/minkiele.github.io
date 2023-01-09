@@ -12,8 +12,6 @@ import { SudokuMatrix } from "minkiele-sudoku-matrix";
 import SudokuUIMd from './README.md';
 import useClock from "../../hooks/useClock";
 import { generateStartSudokuMatrix } from "./Sudoku.utils";
-// import { ClockRef } from "../../hooks/useClock";
-// import Clock from "../../components/Clock/Clock";
 
 interface MatrixReducerAction {
   row: number;
@@ -50,7 +48,6 @@ function SudokuUI() {
     setValid(validator.isValid());
   }, [matrix]);
 
-  // const captionRef = useRef<ClockRef | null>(null);
   const { start: startClock, stop: stopClock, reset: resetClock, elapsed: elapsedTime } = useClock();
 
   useEffect(() => {
