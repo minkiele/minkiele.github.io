@@ -1,0 +1,8 @@
+.container {
+    width: 100%;
+    min-height: 400px;
+    height: 50vh;
+    &:not(:last-child) {
+        margin-bottom: 1rem;
+    }
+}

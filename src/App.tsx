@@ -21,6 +21,7 @@ const Factorizer = lazy(() => import('./apps/Factorizer/Factorizer'));
 const Vietnam = lazy(() => import('./apps/Vietnam/Vietnam'));
 const Snake = lazy(() => import('./apps/Snake/Snake'));
 const Minesweeper = lazy(() => import('./apps/Minesweeper/Minesweeper'));
+const Three = lazy(() => import('./apps/Three/Three'));
 
 const allLazyRouteComponents: Array<LazyRouteComponent> = [
   {
@@ -116,6 +117,12 @@ const allLazyRouteComponents: Array<LazyRouteComponent> = [
     route: '/archive',
     name: 'The Archive',
     component: TheArchive,
+  },
+  {
+    route: '/three',
+    name: 'Three',
+    component: Three,
+    archived: true,
   },
 ];
 
