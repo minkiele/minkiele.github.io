@@ -6,6 +6,9 @@
     "ignorePatterns": ["config", "docs", "public"],
     "overrides": [{
       "extends": ["plugin:prettier/recommended"],
-      "files": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"]
+      "files": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],
+      "rules": {
+        "prettier/prettier": "warn"
+      }
     }]
 }
