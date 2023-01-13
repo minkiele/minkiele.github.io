@@ -1,8 +1,13 @@
 import { Camera, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 
 abstract class ThreeAnimation<C extends Camera> {
+  public static readonly P2 = 2 * Math.PI;
+
   public static degToRad(deg: number): number {
     return (deg * Math.PI) / 180;
+  }
+  public static radToDeg(rad: number): number {
+    return (rad * 180) / Math.PI;
   }
 
   private scene = new Scene();
@@ -116,6 +121,14 @@ abstract class ThreeAnimation<C extends Camera> {
   public renderFrame() {
     this.update();
     this.applyAnimationAndRenderFrame(0);
+  }
+
+  public addContainerListener(...params: Parameters<InstanceType<typeof Element>['addEventListener']>) {
+    this.container.addEventListener(...params);
+  }
+
+  public removeContainerListener(...params: Parameters<InstanceType<typeof Element>['removeEventListener']>) {
+    this.container.removeEventListener(...params);
   }
 }
 
