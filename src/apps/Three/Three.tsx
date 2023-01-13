@@ -1,52 +1,19 @@
-import { FunctionComponent, useEffect, useRef } from 'react';
+import { FunctionComponent, useCallback } from 'react';
 import ThreeMD from './README.md';
-import styles from './Three.module.scss';
-import debounce from 'lodash.debounce';
-import { getDocsCubeAnimation, getSrcCubeAnimation } from './Three.utils';
+import { DocsCubeThreeAnimation, LightingThreeAnimation, SrcCubeThreeAnimation } from './Three.utils';
+import Container from './components/Container/Container';
 
 const Three: FunctionComponent = () => {
-  const containerDocsRef = useRef<HTMLDivElement | null>(null);
-  const containerSrcRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const container = containerDocsRef.current;
-    if (container != null) {
-      const { start, stop, update, mount, unmount } = getDocsCubeAnimation(container);
-      const updateOnResize = debounce(update, 50);
-      window.addEventListener('resize', updateOnResize);
-      mount();
-      start();
-      return () => {
-        window.removeEventListener('resize', updateOnResize);
-        updateOnResize.cancel();
-        stop();
-        unmount();
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    const container = containerSrcRef.current;
-    if (container != null) {
-      const { start, stop, update, mount, unmount } = getSrcCubeAnimation(container);
-      const updateOnResize = debounce(update, 50);
-      window.addEventListener('resize', updateOnResize);
-      mount();
-      start();
-      return () => {
-        window.removeEventListener('resize', updateOnResize);
-        updateOnResize.cancel();
-        stop();
-        unmount();
-      };
-    }
-  }, []);
+  const handleInitDocsCubeAnimation = useCallback((container: HTMLElement) => new DocsCubeThreeAnimation(container), []);
+  const handleInitSrcCubeAnimation = useCallback((container: HTMLElement) => new SrcCubeThreeAnimation(container), []);
+  const handleInitLightingAnimation = useCallback((container: HTMLElement) => new LightingThreeAnimation(container), []);
 
   return (
     <div>
       <ThreeMD />
-      <div className={styles.container} ref={containerDocsRef}></div>
-      <div className={styles.container} ref={containerSrcRef}></div>
+      <Container onInit={handleInitLightingAnimation} />
+      <Container onInit={handleInitDocsCubeAnimation} />
+      <Container onInit={handleInitSrcCubeAnimation} />
     </div>
   );
 };

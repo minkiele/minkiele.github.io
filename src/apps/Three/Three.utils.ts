@@ -1,127 +1,102 @@
-import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, MeshBasicMaterial, Mesh, MeshNormalMaterial } from 'three';
+import {
+  Scene,
+  PerspectiveCamera,
+  BoxGeometry,
+  Mesh,
+  MeshNormalMaterial,
+  MeshBasicMaterial,
+  MeshPhongMaterial,
+  HemisphereLight,
+} from 'three';
+import { ThreeAnimationWithPerspectiveCamera } from './Three.lib';
 
 /**
  * @link https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene
  * @param container
  * @returns The functions dedicated to run this sample
  */
-export const getDocsCubeAnimation = (container: HTMLElement) => {
-  const scene = new Scene();
-  const renderer = new WebGLRenderer();
 
-  let camera = new PerspectiveCamera(75, 1, 0.1, 1000);
-  camera.position.z = 5;
+export class DocsCubeThreeAnimation extends ThreeAnimationWithPerspectiveCamera {
+  private cube: Mesh | undefined;
 
-  const updateRendererAndCameraAspect = () => {
-    const { width: newContainerWidth, height: newContainerHeight } = container.getBoundingClientRect();
-    camera.aspect = newContainerWidth / newContainerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(newContainerWidth, newContainerHeight);
-  };
+  protected createCamera(): PerspectiveCamera {
+    return new PerspectiveCamera(75, 1, 0.1, 1000);
+  }
 
-  updateRendererAndCameraAspect();
+  protected setupScene(scene: Scene, camera: PerspectiveCamera): void {
+    camera.position.z = 5;
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshBasicMaterial({
+      color: 0xf4bb00,
+    });
+    this.cube = new Mesh(geometry, material);
+    scene.add(this.cube);
+  }
 
-  const geometry = new BoxGeometry(1, 1, 1);
-  const material = new MeshBasicMaterial({
-    color: 0xf4bb00,
-  });
-  const cube = new Mesh(geometry, material);
-  scene.add(cube);
-
-  let runAnimation = false;
-
-  const animate = (time: DOMHighResTimeStamp) => {
-    if (runAnimation) {
-      requestAnimationFrame(animate);
-      cube.rotation.x = time / 2000;
-      cube.rotation.y = time / 1000;
-      renderer.render(scene, camera);
+  protected animate(): void {
+    if (this.cube != null) {
+      this.cube.rotation.x += 0.01;
+      this.cube.rotation.y += 0.01;
     }
-  };
-
-  const update = () => {
-    updateRendererAndCameraAspect();
-  };
-
-  const mount = () => {
-    container.appendChild(renderer.domElement);
-  };
-  const unmount = () => {
-    stop();
-    container.removeChild(renderer.domElement);
-  };
-
-  const start = () => {
-    update();
-    runAnimation = true;
-    animate(0);
-  };
-
-  const stop = () => {
-    runAnimation = false;
-  };
-
-  return { start, stop, update, mount, unmount };
-};
+  }
+}
 
 /**
  * @link https://github.com/mrdoob/three.js/tree/r148 for the sample
  * @param container
  * @returns The functions dedicated to run this sample
  */
-export const getSrcCubeAnimation = (container: HTMLElement) => {
-  const scene = new Scene();
-  const renderer = new WebGLRenderer();
+export class SrcCubeThreeAnimation extends ThreeAnimationWithPerspectiveCamera {
+  private cube: Mesh | undefined;
 
-  let camera = new PerspectiveCamera(70, 1, 0.01, 10);
-  camera.position.z = 1;
+  protected createCamera(): PerspectiveCamera {
+    return new PerspectiveCamera(70, 1, 0.01, 10);
+  }
 
-  const updateRendererAndCameraAspect = () => {
-    const { width: newContainerWidth, height: newContainerHeight } = container.getBoundingClientRect();
-    camera.aspect = newContainerWidth / newContainerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(newContainerWidth, newContainerHeight);
-  };
+  protected setupScene(scene: Scene, camera: PerspectiveCamera): void {
+    camera.position.z = 1;
+    const geometry = new BoxGeometry(0.2, 0.2, 0.2);
+    const material = new MeshNormalMaterial();
+    this.cube = new Mesh(geometry, material);
+    scene.add(this.cube);
+  }
 
-  updateRendererAndCameraAspect();
-
-  const geometry = new BoxGeometry(0.2, 0.2, 0.2);
-  const material = new MeshNormalMaterial();
-  const cube = new Mesh(geometry, material);
-  scene.add(cube);
-
-  let runAnimation = false;
-
-  const animate = () => {
-    if (runAnimation) {
-      requestAnimationFrame(animate);
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-      renderer.render(scene, camera);
+  protected animate(time: number): void {
+    if (this.cube != null) {
+      this.cube.rotation.x = time / 2000;
+      this.cube.rotation.y = time / 1000;
     }
-  };
+  }
+}
 
-  const update = () => {
-    updateRendererAndCameraAspect();
-  };
+export class LightingThreeAnimation extends ThreeAnimationWithPerspectiveCamera {
+  private cube: Mesh | undefined;
 
-  const mount = () => {
-    container.appendChild(renderer.domElement);
-  };
-  const unmount = () => {
-    stop();
-    container.removeChild(renderer.domElement);
-  };
+  protected createCamera(): PerspectiveCamera {
+    return new PerspectiveCamera(75, 1, 0.1, 1000);
+  }
 
-  const start = () => {
-    update();
-    runAnimation = true;
-    animate();
-  };
+  protected setupScene(scene: Scene, camera: PerspectiveCamera): void {
+    camera.position.x = 0;
+    camera.position.y = 5;
+    camera.position.z = 5;
+    camera.rotateX(DocsCubeThreeAnimation.degToRad(-45));
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshPhongMaterial({
+      color: 0xf4bb00,
+    });
+    this.cube = new Mesh(geometry, material);
+    scene.add(this.cube);
 
-  const stop = () => {
-    runAnimation = false;
-  };
+    const light = new HemisphereLight(0xffffbb, 0x080820, 1);
+    scene.add(light);
+  }
 
-  return { start, stop, update, mount, unmount };
-};
+  protected animate(time: DOMHighResTimeStamp): void {
+    if (this.cube != null) {
+      this.cube.rotation.x = time / 2000;
+      this.cube.rotation.y = time / 1000;
+      this.cube.rotation.z = time / 3000;
+    }
+  }
+}
