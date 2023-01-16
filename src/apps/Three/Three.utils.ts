@@ -1,83 +1,25 @@
-import {
-  Scene,
-  PerspectiveCamera,
-  BoxGeometry,
-  Mesh,
-  MeshNormalMaterial,
-  MeshBasicMaterial,
-  MeshPhongMaterial,
-  HemisphereLight,
-} from 'three';
-import ThreeAnimation, { ThreeAnimationWithPerspectiveCamera } from './Three.lib';
-
-/**
- * @link https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene
- * @param container
- * @returns The functions dedicated to run this sample
- */
-
-export class DocsCubeThreeAnimation extends ThreeAnimationWithPerspectiveCamera {
-  private cube: Mesh | undefined;
-
-  protected createCamera(): PerspectiveCamera {
-    return new PerspectiveCamera(75, 1, 0.1, 1000);
-  }
-
-  protected setupScene(scene: Scene, camera: PerspectiveCamera): void {
-    camera.position.z = 5;
-    const geometry = new BoxGeometry(1, 1, 1);
-    const material = new MeshBasicMaterial({
-      color: 0xf4bb00,
-    });
-    this.cube = new Mesh(geometry, material);
-    scene.add(this.cube);
-  }
-
-  protected animate(): void {
-    if (this.cube != null) {
-      this.cube.rotation.x += 0.01;
-      this.cube.rotation.y += 0.01;
-    }
-  }
-}
-
-/**
- * @link https://github.com/mrdoob/three.js/tree/r148 for the sample
- * @param container
- * @returns The functions dedicated to run this sample
- */
-export class SrcCubeThreeAnimation extends ThreeAnimationWithPerspectiveCamera {
-  private cube: Mesh | undefined;
-
-  protected createCamera(): PerspectiveCamera {
-    return new PerspectiveCamera(70, 1, 0.01, 10);
-  }
-
-  protected setupScene(scene: Scene, camera: PerspectiveCamera): void {
-    camera.position.z = 1;
-    const geometry = new BoxGeometry(0.2, 0.2, 0.2);
-    const material = new MeshNormalMaterial();
-    this.cube = new Mesh(geometry, material);
-    scene.add(this.cube);
-  }
-
-  protected animate(time: number): void {
-    if (this.cube != null) {
-      this.cube.rotation.x = time / 2000;
-      this.cube.rotation.y = time / 1000;
-    }
-  }
-}
+import { Scene, PerspectiveCamera, BoxGeometry, Mesh, MeshPhongMaterial, HemisphereLight, ConeGeometry, SphereGeometry } from 'three';
+import ThreeAnimation, { MouseDragger, MovementDirection, ThreeAnimationWithPerspectiveCamera } from './Three.lib';
 
 export class LightingThreeAnimation extends ThreeAnimationWithPerspectiveCamera {
   private cube: Mesh | undefined;
+  private mouseDragger: MouseDragger | undefined;
+
+  /**
+   * @link https://en.wikipedia.org/wiki/Spherical_coordinate_system on how to move the camera on spherical coords
+   */
+  private cameraRho = 4;
+  // Azimuth (height on the horizon)
+  private cameraPhi = Math.PI / 4;
+  // Theta (in this case rotation on the Y axis)
+  private cameraTheta = this.cameraPhi + 0;
 
   protected createCamera(): PerspectiveCamera {
     return new PerspectiveCamera(75, 1, 0.1, 1000);
   }
 
   protected setupScene(scene: Scene, camera: PerspectiveCamera): void {
-    camera.position.set(0, 0, 4);
+    camera.position.setFromSphericalCoords(this.cameraRho, this.cameraPhi, this.cameraTheta);
     camera.lookAt(0, 0, 0);
     const geometry = new BoxGeometry(1, 1, 1);
     const material = new MeshPhongMaterial({
@@ -86,11 +28,26 @@ export class LightingThreeAnimation extends ThreeAnimationWithPerspectiveCamera 
     this.cube = new Mesh(geometry, material);
     scene.add(this.cube);
 
+    const cubeX = new Mesh(new ConeGeometry(0.1, 0.2), new MeshPhongMaterial({ color: 0xff0000 }));
+    const cubeY = new Mesh(new ConeGeometry(0.1, 0.2), new MeshPhongMaterial({ color: 0x00ff00 }));
+    const cubeZ = new Mesh(new ConeGeometry(0.1, 0.2), new MeshPhongMaterial({ color: 0x0000ff }));
+    const sphere = new Mesh(new SphereGeometry(0.1), new MeshPhongMaterial({ color: 0xffffff }));
+    cubeX.position.set(1, 0, 0);
+    cubeX.rotation.z = -Math.PI / 2;
+    cubeY.position.set(0, 1, 0);
+    cubeZ.position.set(0, 0, 1);
+    cubeZ.rotation.x = Math.PI / 2;
+
+    scene.add(cubeX);
+    scene.add(cubeY);
+    scene.add(cubeZ);
+    scene.add(sphere);
+
     const light = new HemisphereLight(0xffffbb, 0x080820, 1);
     scene.add(light);
   }
 
-  protected animate(time: DOMHighResTimeStamp): void {
+  protected animate(time: DOMHighResTimeStamp, { camera }: { camera: PerspectiveCamera }): void {
     if (this.cube != null) {
       this.cube.rotation.set((time / 2000) % ThreeAnimation.P2, (time / 1000) % ThreeAnimation.P2, (time / 3000) % ThreeAnimation.P2);
       this.cube.position.set(
@@ -99,6 +56,9 @@ export class LightingThreeAnimation extends ThreeAnimationWithPerspectiveCamera 
         this.getAxisRocker(6000, time) * 3 - 1.5
       );
     }
+    // This will set camera position along a sphere
+    camera.position.setFromSphericalCoords(this.cameraRho, this.cameraPhi, this.cameraTheta);
+    camera.lookAt(0, 0, 0);
   }
 
   /**
@@ -120,5 +80,21 @@ export class LightingThreeAnimation extends ThreeAnimationWithPerspectiveCamera 
 
   private easeInOutSine(x: number): number {
     return -(Math.cos(Math.PI * x) - 1) / 2;
+  }
+
+  protected override setupCanvas(canvas: HTMLCanvasElement): void {
+    this.mouseDragger = new MouseDragger(canvas, this.dragCameraAround.bind(this));
+  }
+  protected override teardownCanvas(): void {
+    this.mouseDragger?.teardown();
+    this.mouseDragger = undefined;
+  }
+
+  private dragCameraAround({ x, y, z }: MovementDirection) {
+    // Since we can rotate as we please on the Y axis we limit values between 0 and 2 PI
+    this.cameraTheta = ThreeAnimation.getNormalizedSphericAngle(this.cameraTheta - x / 100);
+    // Limit value between 0 and PI because full rotation's a bitch.
+    this.cameraPhi = ThreeAnimation.limitNumericValue(0, Math.PI, this.cameraPhi + y / 100);
+    this.cameraRho = ThreeAnimation.limitNumericValue(2, 7, this.cameraRho + z / 100);
   }
 }

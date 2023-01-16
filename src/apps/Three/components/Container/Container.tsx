@@ -1,11 +1,10 @@
 import debounce from 'lodash.debounce';
 import { useEffect, useRef } from 'react';
-import { Camera } from 'three';
-import ThreeAnimation from '../../Three.lib';
+import { ThreeAnimationWithPerspectiveCamera } from '../../Three.lib';
 import styles from '../../Three.module.scss';
 
 interface ContainerProps {
-  onInit: (container: HTMLElement) => ThreeAnimation<Camera>;
+  onInit: (container: HTMLElement) => ThreeAnimationWithPerspectiveCamera;
 }
 
 const Container = ({ onInit }: ContainerProps) => {
