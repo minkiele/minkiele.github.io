@@ -115,32 +115,36 @@ export class LightingThreeAnimation extends ThreeAnimationWithPerspectiveCamera 
     this.setCameraRhoDelta(z / 100);
   }
 
+  private getKeyDefaultDelta(delta: number, defaultDelta: number): number {
+    return delta > 0 ? delta : defaultDelta;
+  }
+
   private moveCameraAround(key: string, delta: number, preventDefault: () => void) {
     let willPreventDefault = true;
     switch (key) {
       // Move up
       case 'w':
-        this.setCameraPhiDelta(delta / 1000);
+        this.setCameraPhiDelta(this.getKeyDefaultDelta(delta, 50) / 1000);
         break;
       // Move left
       case 'a':
-        this.setCameraThetaDelta(delta / 1000);
+        this.setCameraThetaDelta(this.getKeyDefaultDelta(delta, 50) / 1000);
         break;
       // Move down
       case 's':
-        this.setCameraPhiDelta(-delta / 1000);
+        this.setCameraPhiDelta(-this.getKeyDefaultDelta(delta, 50) / 1000);
         break;
       // Move right
       case 'd':
-        this.setCameraThetaDelta(-delta / 1000);
+        this.setCameraThetaDelta(-this.getKeyDefaultDelta(delta, 50) / 1000);
         break;
       // Zoom in (moving towards center rho lowers)
       case '+':
-        this.setCameraRhoDelta(-delta / 1000);
+        this.setCameraRhoDelta(-this.getKeyDefaultDelta(delta, 50) / 1000);
         break;
       // Zoom out (moving away from center rho increases)
       case '-':
-        this.setCameraRhoDelta(delta / 1000);
+        this.setCameraRhoDelta(this.getKeyDefaultDelta(delta, 50) / 1000);
         break;
       default:
         willPreventDefault = false;

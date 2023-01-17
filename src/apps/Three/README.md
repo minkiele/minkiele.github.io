@@ -12,6 +12,6 @@ To navigate the example you can click and drag the scene to rotate it
 and scroll the mousewheel to zoom in and out.
 
 To navigate the example with keyboard you can use **WSAD** to move around the scene
-and **+ and -** to zoom in and out.
+and **+ and -** to zoom in and out (keep the key pressed for a smoother experience).
 
 After expanding the example I phased out the initial examples I built.
