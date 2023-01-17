@@ -230,4 +230,36 @@ export class MouseDragger {
   }
 }
 
+export class KeyboardPresser {
+  private key: string | undefined;
+  private timeStamp: number | undefined;
+  constructor(private element: HTMLElement, private callback: (key: string, deltaMillis: number, preventDefault: () => void) => void) {
+    this.element.addEventListener('keydown', this.onKeyDown);
+    this.element.addEventListener('keyup', this.onKeyUp);
+  }
+
+  private onKeyDownImpl(evt: KeyboardEvent) {
+    if (this.key !== evt.key) {
+      this.timeStamp = undefined;
+    }
+    this.callback(evt.key, this.timeStamp == null ? 0 : evt.timeStamp - this.timeStamp, () => evt.preventDefault());
+    if (evt.defaultPrevented) {
+      this.key = evt.key;
+      this.timeStamp = evt.timeStamp;
+    }
+  }
+  private onKeyDown = this.onKeyDownImpl.bind(this);
+
+  private onKeyUpImpl() {
+    this.key = undefined;
+    this.timeStamp = undefined;
+  }
+  private onKeyUp = this.onKeyUpImpl.bind(this);
+
+  public teardown() {
+    this.element.removeEventListener('keydown', this.onKeyDown);
+    this.element.removeEventListener('keyup', this.onKeyUp);
+  }
+}
+
 export default ThreeAnimation;

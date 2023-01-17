@@ -1,9 +1,10 @@
 import { Scene, PerspectiveCamera, BoxGeometry, Mesh, MeshPhongMaterial, HemisphereLight, ConeGeometry, SphereGeometry } from 'three';
-import ThreeAnimation, { MouseDragger, MovementDirection, ThreeAnimationWithPerspectiveCamera } from './Three.lib';
+import ThreeAnimation, { KeyboardPresser, MouseDragger, MovementDirection, ThreeAnimationWithPerspectiveCamera } from './Three.lib';
 
 export class LightingThreeAnimation extends ThreeAnimationWithPerspectiveCamera {
   private cube: Mesh | undefined;
   private mouseDragger: MouseDragger | undefined;
+  private keyboardPresser: KeyboardPresser | undefined;
 
   /**
    * @link https://en.wikipedia.org/wiki/Spherical_coordinate_system on how to move the camera on spherical coords
@@ -84,17 +85,69 @@ export class LightingThreeAnimation extends ThreeAnimationWithPerspectiveCamera 
 
   protected override setupCanvas(canvas: HTMLCanvasElement): void {
     this.mouseDragger = new MouseDragger(canvas, this.dragCameraAround.bind(this));
+    this.keyboardPresser = new KeyboardPresser(document.documentElement, this.moveCameraAround.bind(this));
   }
   protected override teardownCanvas(): void {
     this.mouseDragger?.teardown();
     this.mouseDragger = undefined;
+    this.keyboardPresser?.teardown();
+    this.keyboardPresser = undefined;
+  }
+
+  private setCameraThetaDelta(delta: number) {
+    // Since we can rotate as we please on the Y axis we limit values between 0 and 2 PI
+    this.cameraTheta = ThreeAnimation.getNormalizedSphericAngle(this.cameraTheta + delta);
+  }
+
+  private setCameraPhiDelta(delta: number) {
+    // Limit value between 0 and PI because full rotation's a bitch.
+    this.cameraPhi = ThreeAnimation.limitNumericValue(0, Math.PI, this.cameraPhi + delta);
+  }
+
+  private setCameraRhoDelta(delta: number) {
+    // Zoom in and out between 2 and 7 (empirically determined values, nothing scientific)
+    this.cameraRho = ThreeAnimation.limitNumericValue(2, 7, this.cameraRho + delta);
   }
 
   private dragCameraAround({ x, y, z }: MovementDirection) {
-    // Since we can rotate as we please on the Y axis we limit values between 0 and 2 PI
-    this.cameraTheta = ThreeAnimation.getNormalizedSphericAngle(this.cameraTheta - x / 100);
-    // Limit value between 0 and PI because full rotation's a bitch.
-    this.cameraPhi = ThreeAnimation.limitNumericValue(0, Math.PI, this.cameraPhi + y / 100);
-    this.cameraRho = ThreeAnimation.limitNumericValue(2, 7, this.cameraRho + z / 100);
+    this.setCameraThetaDelta(-x / 100);
+    this.setCameraPhiDelta(x / 100);
+    this.setCameraRhoDelta(z / 100);
+  }
+
+  private moveCameraAround(key: string, delta: number, preventDefault: () => void) {
+    let willPreventDefault = true;
+    switch (key) {
+      // Move up
+      case 'w':
+        this.setCameraPhiDelta(delta / 1000);
+        break;
+      // Move left
+      case 'a':
+        this.setCameraThetaDelta(delta / 1000);
+        break;
+      // Move down
+      case 's':
+        this.setCameraPhiDelta(-delta / 1000);
+        break;
+      // Move right
+      case 'd':
+        this.setCameraThetaDelta(-delta / 1000);
+        break;
+      // Zoom in (moving towards center rho lowers)
+      case '+':
+        this.setCameraRhoDelta(-delta / 1000);
+        break;
+      // Zoom out (moving away from center rho increases)
+      case '-':
+        this.setCameraRhoDelta(delta / 1000);
+        break;
+      default:
+        willPreventDefault = false;
+        break;
+    }
+    if (willPreventDefault) {
+      preventDefault();
+    }
   }
 }
