@@ -111,7 +111,7 @@ export class LightingThreeAnimation extends ThreeAnimationWithPerspectiveCamera 
 
   private dragCameraAround({ x, y, z }: MovementDirection) {
     this.setCameraThetaDelta(-x / 100);
-    this.setCameraPhiDelta(x / 100);
+    this.setCameraPhiDelta(y / 100);
     this.setCameraRhoDelta(z / 100);
   }
 
