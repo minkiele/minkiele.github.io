@@ -397,7 +397,7 @@ function Cruciverba() {
   return (
     <div>
       <CruciverbaMd />
-      {renderedApp}
+      <div className="app_wrapper">{renderedApp}</div>
       {settings}
     </div>
   );

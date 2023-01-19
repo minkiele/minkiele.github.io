@@ -1,6 +1,6 @@
 import { ChangeEvent, Children, useCallback, useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
-import anagrammator, { countAnagrams } from 'anagrammator-minkiele';
+import anagrammator, { countAnagrams, getCountAnagramFactors } from 'anagrammator-minkiele';
 import { UberMath } from '../../lib/ubermath';
 import AnagrammatorMd from './README.md';
 
@@ -10,6 +10,7 @@ interface AnagrammatorState {
   size: number;
   total: number;
   skipped: number;
+  formula: { numerator: number; denominator: Array<number> } | undefined;
 }
 
 const normalizeInput = (input: string) => {
@@ -18,12 +19,13 @@ const normalizeInput = (input: string) => {
 };
 
 function Anagrammator() {
-  const [{ value, anagramms, size, total, skipped }, setState] = useState<AnagrammatorState>({
+  const [{ value, anagramms, size, total, skipped, formula }, setState] = useState<AnagrammatorState>({
     value: '',
     anagramms: [],
     size: 0,
     total: 0,
     skipped: 0,
+    formula: undefined,
   });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,6 +52,7 @@ function Anagrammator() {
               size: newSize,
               total: newTotal,
               skipped: newSkipped,
+              formula: getCountAnagramFactors(input),
             };
           });
         },
@@ -62,6 +65,7 @@ function Anagrammator() {
               size: newSize,
               total: newTotal,
               skipped: newSkipped,
+              formula: getCountAnagramFactors(input),
             };
           });
         }
@@ -106,6 +110,15 @@ function Anagrammator() {
             <dt>Skipped Combinations:</dt>
             <dd>{skipped}</dd>
           </dl>
+          {formula != null && (
+            <dl>
+              <dt>Formula:</dt>
+              <dd>
+                {formula.numerator} / ({formula.denominator.join(' * ')})
+              </dd>
+            </dl>
+          )}
+
           {anagramms.length > 0 && (
             <>
               <h2>The anagrams</h2>

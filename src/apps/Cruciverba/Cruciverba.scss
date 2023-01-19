@@ -64,6 +64,18 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .app_wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .app {
+    align-items: flex-start;
+  }
+}
+
 @include mixins.when-dark() {
   .app {
     &_td {
