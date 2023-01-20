@@ -9,9 +9,9 @@ interface NavProps {
 const Nav: FunctionComponent<NavProps> = ({ menu }) => (
   <nav>
     <ul>
-      {menu.map(({ name, route }) => (
+      {menu.map(({ name, route, prefetch }) => (
         <li key={route}>
-          <Link href={route}>{name}</Link>
+          <Link href={route} prefetch={prefetch}>{name}</Link>
         </li>
       ))}
     </ul>

@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { join, pickOne, weight } from '../../lib/polygram/Collection';
 import DemoDogsMd from './README.md';
 
@@ -64,20 +64,23 @@ const getDemoDogs = (): Array<string> => {
 };
 
 const DemoDogs: FunctionComponent = () => {
-  const [demoDogs, setDemoDogs] = useState<Array<string>>(getDemoDogs());
+  const [demoDogs, setDemoDogs] = useState<Array<string>>();
   const handleDemoDogs = () => {
     setDemoDogs(getDemoDogs());
   };
+  useEffect(() => {
+    handleDemoDogs();
+  }, []);
   return (
     <div>
       <DemoDogsMd />
       <div>
         <h3>Dog breeds</h3>
-        <ul>
+        {demoDogs != null && <ul>
           {demoDogs.map((demoDog) => (
             <li key={demoDog}>{demoDog}</li>
           ))}
-        </ul>
+        </ul>}
         <p>
           <button onClick={handleDemoDogs}>Gimme more dog breeds</button>
         </p>

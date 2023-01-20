@@ -5,9 +5,10 @@ import OraInParoleMd from './README.md';
 const orora = () => pronunciaDataOra(new Date());
 
 const OraInParole: FunctionComponent = () => {
-  const [oraInParole, setOraInParole] = useState<string>(orora());
+  const [oraInParole, setOraInParole] = useState<string>();
 
   useEffect(() => {
+    setOraInParole(orora());
     const intervalId = setInterval(() => {
       setOraInParole(orora());
     }, 1000);

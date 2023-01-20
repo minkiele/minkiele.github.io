@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { pronunciaNumero } from '../../lib/EnunciateNumbers';
 import NumeriCasualiMd from './README.md';
 
@@ -30,18 +30,22 @@ const pronunciaNumeroACaso = (): NumeroCasuale => {
 };
 
 const NumeriCasuali: FunctionComponent = () => {
-  const [numeroCasuale, impostaNumeroCasuale] = useState<NumeroCasuale>(pronunciaNumeroACaso());
+  const [numeroCasuale, impostaNumeroCasuale] = useState<NumeroCasuale>();
 
   const handleNextRandom = () => {
     impostaNumeroCasuale(pronunciaNumeroACaso());
   };
 
+  useEffect(() => {
+    handleNextRandom();
+  }, []);
+
   return (
     <div>
       <NumeriCasualiMd />
-      <h2>
+      {numeroCasuale != null && <h2>
         {numeroCasuale.aParole} (<small>{numeroCasuale.inNumero}</small>)
-      </h2>
+      </h2>}
       <button onClick={handleNextRandom}>Prossimo numero</button>
     </div>
   );

@@ -30,7 +30,15 @@ const runJumpMatrix = (): JumpMatrixState => {
 };
 
 const JumpMatrix: FunctionComponent = () => {
-  const [{ matrix, moves, tries }, setMatrixState] = useState<JumpMatrixState>(runJumpMatrix());
+  const [result, setMatrixState] = useState<JumpMatrixState>();
+
+  const matrix = result?.matrix;
+  const moves = result?.moves;
+  const tries = result?.tries;
+
+  useEffect(() => {
+    setMatrixState(runJumpMatrix());
+  }, []);
 
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -51,6 +59,7 @@ const JumpMatrix: FunctionComponent = () => {
     <div>
       <JumpMatrixMd />
       <h3>Facts</h3>
+      {moves != null && tries != null && matrix != null && <>
       <dl>
         <dt>Total tries:</dt>
         <dd>{tries}</dd>
@@ -76,6 +85,7 @@ const JumpMatrix: FunctionComponent = () => {
           ))}
         </tbody>
       </table>
+      </>}
       <p>
         <button onClick={handleUpdate}>More magic please</button>
       </p>
