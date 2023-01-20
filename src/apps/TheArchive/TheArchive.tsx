@@ -1,10 +1,9 @@
 import { FunctionComponent } from 'react';
-import { LazyRouteComponent } from '../../App.models';
-import Nav from '../../Nav';
+import { LazyRouteComponent } from '../App/App.models';
+import Nav from '../App/Nav';
 import TheArchiveMd from './README.md';
-import './TheArchive.scss';
 
-interface TheArchiveProps {
+export interface TheArchiveProps extends LazyRouteComponent {
   components: Array<LazyRouteComponent>;
 }
 

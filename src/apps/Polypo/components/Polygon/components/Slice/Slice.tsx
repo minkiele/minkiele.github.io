@@ -28,4 +28,6 @@ const Slice: FunctionComponent<SliceProps> = memo(({ sides, side }) => {
   );
 });
 
+Slice.displayName = 'Slice';
+
 export default Slice;

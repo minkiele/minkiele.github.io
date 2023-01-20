@@ -2,7 +2,6 @@ import { assocPath, repeat, times } from 'ramda';
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import generateClassName from '../../lib/generateClassName';
 import styles from './SudokuUI.module.scss';
-import { SudokuMatrix } from 'minkiele-sudoku-matrix';
 import SudokuUIMd from './README.md';
 import useClock from '../../hooks/useClock';
 import { generateStartSudokuMatrix } from './Sudoku.utils';
@@ -34,9 +33,20 @@ function SudokuUI() {
 
   const [valid, setValid] = useState<boolean>(false);
 
+
+  /**
+   * @link https://stackoverflow.com/questions/66096260/why-am-i-getting-referenceerror-self-is-not-defined-when-i-import-a-client-side
+   * to see why I did adopt this solution to make validation work
+   */
+  const validatorRef = useRef(import('minkiele-sudoku-matrix').then(({
+    SudokuMatrix
+  }) => SudokuMatrix));
+
   useEffect(() => {
-    const validator = new SudokuMatrix(getSudokuMatrix(matrix));
-    setValid(validator.isValid());
+    validatorRef.current.then((SudokuMatrix) => {
+      const validator = new SudokuMatrix(getSudokuMatrix(matrix));
+      setValid(validator.isValid());
+    });
   }, [matrix]);
 
   const { start: startClock, stop: stopClock, reset: resetClock, elapsed: elapsedTime } = useClock();

@@ -2,18 +2,6 @@
 @use '../../styles/colors';
 @use '../../styles/mixins';
 
-:root {
-  --minesweeper-tile-width: 30px;
-  --minesweeper-tile-height: 30px;
-}
-
-@media (min-width: 900px) {
-  :root {
-    --minesweeper-tile-width: 20px;
-    --minesweeper-tile-height: 20px;
-  }
-}
-
 .scrollable {
   overflow: auto;
   max-width: 100%;

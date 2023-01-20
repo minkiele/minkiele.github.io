@@ -185,10 +185,10 @@ const Snake: FunctionComponent = () => {
         )}
         {status === SnakeGame.STATUS.COMPLETE && (
           <p>
-            <strong>And that's how it's done.</strong>
+            <strong>And that&#39;s how it&#39;s done.</strong>
           </p>
         )}
-        {status === SnakeGame.STATUS.PAUSE && <p>Do your thing, I'll wait here...</p>}
+        {status === SnakeGame.STATUS.PAUSE && <p>Do your thing, I&#39;ll wait here...</p>}
         {status === SnakeGame.STATUS.RUNNING && <p>Run Forrest, Run!</p>}
       </div>
       <div className={styles.gamepad}>
