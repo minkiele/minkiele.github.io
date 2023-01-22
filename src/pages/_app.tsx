@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }: AppProps<LazyRouteComponen
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{'Minkiele - The wrong website, by definition.' + (pageProps.setTitle && ` - #${pageProps.name}`) }</title>
+        <title>{'Minkiele - The wrong website, by definition.' + (pageProps.setTitle !== false ? ` - #${pageProps.name}` : '') }</title>
       </Head>
       <div className="App">
         <aside>
