@@ -6,9 +6,10 @@ import CirclesMd from './README.md';
 const getCircleSizes = () => getClockSizes(new Date());
 
 const Circles: FunctionComponent = () => {
-  const [circleSizes, setCircleSizes] = useState<ClockData>(getCircleSizes());
+  const [circleSizes, setCircleSizes] = useState<ClockData>();
 
   useEffect(() => {
+    setCircleSizes(getCircleSizes());
     const intervalId = setInterval(() => {
       setCircleSizes(getCircleSizes());
     }, 1000);
@@ -25,7 +26,7 @@ const Circles: FunctionComponent = () => {
     return circle === 'hour' || circle === 'minute' || circle === 'second' ? hour : undefined;
   }, []);
 
-  const renderedApp = (
+  const renderedApp = circleSizes != null && (
     <div className={styles.circles}>
       {CIRCLES.map((circle) => (
         <div className={styles.circles_circleContainer} key={circle}>

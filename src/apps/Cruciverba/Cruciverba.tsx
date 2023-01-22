@@ -1,4 +1,3 @@
-import './Cruciverba.scss';
 import { clone, repeat, times } from 'ramda';
 import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, useMemo, useReducer, useRef } from 'react';
 import CruciverbaMd from './README.md';

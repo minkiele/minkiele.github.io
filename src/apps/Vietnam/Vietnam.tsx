@@ -104,7 +104,7 @@ const Vietnam: FunctionComponent = () => {
         ))}
       </div>
       <p>
-        To move this tower you'll need 2<sup>{size}</sup> - 1 = {2 ** size - 1} moves, so far you made {moves} moves in {timeElapsed}s.
+        To move this tower you&#39;ll need 2<sup>{size}</sup> - 1 = {2 ** size - 1} moves, so far you made {moves} moves in {timeElapsed}s.
       </p>
       {isValid &&
         (moves === 2 ** size - 1 ? (

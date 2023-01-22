@@ -26,6 +26,11 @@ Then I started styling the website, to give it a cool nerdy retro look. After
 that I added support for dark theme. After that I started to optimize and tweak
 the build, trying to learn new things, mostly on Webpack.
 
+This is the original version I built upon [Create React App](https://create-react-app.dev/),
+before porting it to[Next.js](https://nextjs.org/). Some of the accomodation I made for
+Next.js have been copied here, mostly to provide a predictable initial state if these sources
+will be statically built (and to avoid React's errors).
+
 ## About other little projects
 
 Yes, I have another little project published in Github:

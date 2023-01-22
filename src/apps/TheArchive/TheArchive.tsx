@@ -4,7 +4,7 @@ import Nav from '../../Nav';
 import TheArchiveMd from './README.md';
 import './TheArchive.scss';
 
-interface TheArchiveProps {
+export interface TheArchiveProps extends LazyRouteComponent {
   components: Array<LazyRouteComponent>;
 }
 

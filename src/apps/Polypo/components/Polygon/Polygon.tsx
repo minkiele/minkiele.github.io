@@ -34,4 +34,6 @@ const Polygon: FunctionComponent<PolygonProps> = memo(({ sides, radius, classNam
   </div>
 ));
 
+Polygon.displayName = 'Polygon';
+
 export default Polygon;
