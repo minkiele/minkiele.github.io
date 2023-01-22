@@ -9,9 +9,10 @@ interface NavProps {
 const Nav: FunctionComponent<NavProps> = ({ menu }) => (
   <nav>
     <ul>
-      {menu.map(({ name, route, prefetch }) => (
+      {menu.map(({ name, route, prefetch, archived }) => (
         <li key={route}>
-          <Link href={route} prefetch={prefetch}>{name}</Link>
+          {/* Do not prefetch archived apps or apps where prefetch was explicitly disabled */}
+          <Link href={route} prefetch={prefetch === false ? false : (archived === true ? false : undefined)}>{name}</Link>
         </li>
       ))}
     </ul>

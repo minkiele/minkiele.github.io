@@ -29,14 +29,17 @@ const Snake: FunctionComponent = () => {
   const [hasWalls, setWalls] = useState<boolean>(true);
   const [status, setStatus] = useState<symbol>(SnakeGame.STATUS.IDLE);
   const snakeGame = useRef<SnakeGame>(new SnakeGame(speed, hasWalls));
-  const [snake, setSnake] = useState<Array<SnakeGameCoords>>(getSortedSnake(snakeGame.current.getSnake()));
-  const [apple, setApple] = useState<SnakeGameCoords | undefined>(snakeGame.current.getApple());
+  const [snake, setSnake] = useState<Array<SnakeGameCoords>>();
+  const [apple, setApple] = useState<SnakeGameCoords>();
 
   useEffect(() => {
     const updateData = () => {
       setSnake(getSortedSnake(snakeGame.current.getSnake()));
       setApple(snakeGame.current.getApple());
     };
+
+    updateData();
+
     snakeGame.current.on(SnakeGame.EVENT.ADVANCE, updateData);
     snakeGame.current.on(SnakeGame.EVENT.RESET, updateData);
     const updateStatus = (statusVariation: symbol) => {
@@ -171,7 +174,7 @@ const Snake: FunctionComponent = () => {
           [styles.board]: true,
           [styles.board__noWalls]: !hasWalls,
         })}>
-        {snake.map((tile) => (
+        {snake?.map((tile) => (
           <SnakeTile tile={tile} className={styles.cell__snake} key={`tile-x-${tile.x}-y-${tile.y}`} />
         ))}
         {apple != null && <SnakeTile tile={apple} className={styles.cell__apple} />}
