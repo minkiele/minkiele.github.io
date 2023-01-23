@@ -1,9 +1,5 @@
 import "@/styles/index.scss";
 import "@/apps/App/App.scss";
-import "@/apps/Snake/Snake.scss";
-import "@/apps/Minesweeper/Minesweeper.scss";
-import '@/apps/TheArchive/TheArchive.scss';
-import '@/apps/Cruciverba/Cruciverba.scss';
 
 import type { AppProps } from "next/app";
 import Nav from "@/apps/App/Nav";

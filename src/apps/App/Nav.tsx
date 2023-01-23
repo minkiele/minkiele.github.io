@@ -4,10 +4,11 @@ import { LazyRouteComponent } from './App.models';
 
 interface NavProps {
   menu: Array<LazyRouteComponent>;
+  className?: string;
 }
 
-const Nav: FunctionComponent<NavProps> = ({ menu }) => (
-  <nav>
+const Nav: FunctionComponent<NavProps> = ({ menu, className }) => (
+  <nav className={className}>
     <ul>
       {menu.map(({ name, route, prefetch, archived }) => (
         <li key={route}>

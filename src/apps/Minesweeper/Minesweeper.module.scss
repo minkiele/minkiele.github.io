@@ -8,6 +8,15 @@
 }
 
 .table {
+
+  --minesweeper-tile-width: 30px;
+  --minesweeper-tile-height: 30px;
+
+  @media (min-width: 900px) {
+    --minesweeper-tile-width: 20px;
+    --minesweeper-tile-height: 20px;
+  }
+  
   border-collapse: collapse;
   border: 2px solid colors.$fg;
   user-select: none;

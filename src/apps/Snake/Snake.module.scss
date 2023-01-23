@@ -2,6 +2,12 @@
 @use '../../styles/mixins';
 @use 'sass:math';
 
+.stopScrolling {
+  overflow: hidden !important;
+  // This is to avoid my mistake to trying and make a "focused" board and gamepad
+  // https://stackoverflow.com/questions/63625709/css-not-selector-being-ignored
+}
+
 $cols: 24;
 $rows: 17;
 
@@ -13,6 +19,19 @@ $boardHeight: calc(
 );
 
 .board {
+  --snake-game-spacing: 3px;
+  --snake-game-cell-width: 10px;
+  --snake-game-cell-height: 10px;
+  --snake-game-gutter: 2px;
+
+  @media (min-width: 840px) {
+    --snake-game-spacing: 6px;
+    --snake-game-cell-width: 20px;
+    --snake-game-cell-height: 20px;
+  }
+  
+
+
   width: $boardWidth;
   height: $boardHeight;
   position: relative;

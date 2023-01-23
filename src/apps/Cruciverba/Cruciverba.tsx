@@ -1,6 +1,7 @@
 import { clone, repeat, times } from 'ramda';
 import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, useMemo, useReducer, useRef } from 'react';
 import CruciverbaMd from './README.md';
+import styles from './Cruciverba.module.scss';
 
 const DEFAULT_ROWS = 12;
 const DEFAULT_COLS = 22;
@@ -297,9 +298,9 @@ function Cruciverba() {
 
   // Workaround to avoid a whole tab shifting
   const renderedApp = (
-    <div className="app">
-      <table className="app_table">
-        <caption className="app_caption">Parole Crociate</caption>
+    <div className={styles.app}>
+      <table className={styles.app_table}>
+        <caption className={styles.app_caption}>Parole Crociate</caption>
         <tbody>
           {times(
             (row) => (
@@ -307,14 +308,14 @@ function Cruciverba() {
                 {times((col) => {
                   const definition = definitions.find((definition) => definition.row === row && definition.col === col);
                   return (
-                    <td className="app_td" key={`${row}-${col}`} onDoubleClick={handleToggleBlackFactory(row, col)}>
+                    <td className={styles.app_td} key={`${row}-${col}`} onDoubleClick={handleToggleBlackFactory(row, col)}>
                       {shouldBeBlack(row, col, matrix) ? (
-                        <span className="app_black"></span>
+                        <span className={styles.app_black}></span>
                       ) : (
                         <>
-                          {definition != null && <span className="app_definition">{definition.order}</span>}
+                          {definition != null && <span className={styles.app_definition}>{definition.order}</span>}
                           <input
-                            className="app_input"
+                            className={styles.app_input}
                             name={`input-${row}-${col}`}
                             type="text"
                             value={matrix[row][col] as string}
@@ -337,15 +338,15 @@ function Cruciverba() {
         </tbody>
       </table>
       {showDefs && (
-        <div className="app_definitions">
+        <div className={styles.app_definitions}>
           {horizontalDefs.length && (
-            <div className="app_directionDefinitions">
+            <div className={styles.app_directionDefinitions}>
               <h2>Orizzontali</h2>
               <ol>
                 {horizontalDefs.map((definition, index) => (
                   <li value={definition.order} key={`h-${definition.order}-${index}`}>
                     <input
-                      className="app_definitionInput"
+                      className={styles.app_definitionInput}
                       name={`h-${definition.order}`}
                       type="text"
                       value={definition.horizontalDefinition}
@@ -357,13 +358,13 @@ function Cruciverba() {
             </div>
           )}
           {verticalDefs.length && (
-            <div className="app_directionDefinitions">
+            <div className={styles.app_directionDefinitions}>
               <h2>Verticali</h2>
               <ol>
                 {verticalDefs.map((definition, index) => (
                   <li value={definition.order} key={`v-${definition.order}-${index}`}>
                     <input
-                      className="app_definitionInput"
+                      className={styles.app_definitionInput}
                       name={`v-${definition.order}`}
                       type="text"
                       value={definition.verticalDefinition}
@@ -396,7 +397,7 @@ function Cruciverba() {
   return (
     <div>
       <CruciverbaMd />
-      <div className="app_wrapper">{renderedApp}</div>
+      <div className={styles.app_wrapper}>{renderedApp}</div>
       {settings}
     </div>
   );

@@ -129,11 +129,11 @@ const Snake: FunctionComponent = () => {
 
   useEffect(() => {
     if (status === SnakeGame.STATUS.RUNNING) {
-      document.body.classList.add('stopScrolling');
-      document.querySelector('html')?.classList.add('stopScrolling');
+      document.body.classList.add(styles.stopScrolling);
+      document.querySelector('html')?.classList.add(styles.stopScrolling);
     } else {
-      document.body.classList.remove('stopScrolling');
-      document.querySelector('html')?.classList.remove('stopScrolling');
+      document.body.classList.remove(styles.stopScrolling);
+      document.querySelector('html')?.classList.remove(styles.stopScrolling);
     }
   }, [status]);
 
