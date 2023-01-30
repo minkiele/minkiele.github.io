@@ -1,11 +1,12 @@
 import { clone, repeat, times } from 'ramda';
-import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, useMemo, useReducer, useRef } from 'react';
+import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, MouseEventHandler, useMemo, useReducer, useRef } from 'react';
 import CruciverbaMd from './README.md';
 import styles from './Cruciverba.module.scss';
 
 const DEFAULT_ROWS = 12;
 const DEFAULT_COLS = 22;
 const DEFAULT_SHOW_DEFS = false;
+const DEFAULT_SHOW_NUMBERS = true;
 
 type ReducerState = {
   matrix: Array<Array<string | null>>;
@@ -13,6 +14,7 @@ type ReducerState = {
   rows: number;
   cols: number;
   showDefs: boolean;
+  showNumbers: boolean;
 };
 
 type ReducerAction =
@@ -42,6 +44,13 @@ type ReducerAction =
   | {
       type: 'setShowDefs';
       showDefs: boolean;
+    }
+    | {
+        type: 'setShowNumbers';
+        showNumbers: boolean;
+    }
+  | {
+      type: 'setIncrociObbligatiMode';
     };
 
 interface Definition {
@@ -93,14 +102,14 @@ const getDefinitions = (matrix: Array<Array<string | null>>): Array<Definition> 
   return definitions;
 };
 
-const initReducer = ({ rows, cols, showDefs = true }: { rows: number; cols: number; showDefs?: boolean }) => {
+const initReducer = ({ rows, cols, showDefs = true, showNumbers = true }: { rows: number; cols: number; showDefs?: boolean, showNumbers?: boolean }) => {
   const matrix = times(() => repeat('', cols), rows);
   const definitions = getDefinitions(matrix);
-  return { matrix, definitions, rows, cols, showDefs };
+  return { matrix, definitions, rows, cols, showDefs, showNumbers };
 };
 
 function Cruciverba() {
-  const [{ matrix, definitions, rows: ROWS, cols: COLS, showDefs }, dispatch] = useReducer(
+  const [{ matrix, definitions, rows: ROWS, cols: COLS, showDefs, showNumbers }, dispatch] = useReducer(
     (state: ReducerState, action: ReducerAction) => {
       switch (action.type) {
         case 'setValue': {
@@ -122,6 +131,7 @@ function Cruciverba() {
             rows: action.rows,
             cols: action.cols,
             showDefs: state.showDefs,
+            showNumbers: state.showNumbers,
           });
           for (let i = 0; i < newState.matrix.length; i += 1) {
             for (let j = 0; j < newState.matrix[i].length; j += 1) {
@@ -159,12 +169,37 @@ function Cruciverba() {
             showDefs: action.showDefs,
           };
         }
+        case 'setShowNumbers': {
+          return {
+            ...state,
+            showNumbers: action.showNumbers,
+          };
+        }
+        case 'setIncrociObbligatiMode': {
+          const newState: ReducerState = initReducer({
+            rows: 13,
+            cols: 9,
+            showDefs: false,
+            showNumbers: false,
+          });
+          for (let i = 0; i < newState.matrix.length; i += 1) {
+            for (let j = 0; j < newState.matrix[i].length; j += 1) {
+              if (i < state.matrix.length && j < state.matrix[i].length) {
+                newState.matrix[i][j] = state.matrix[i][j];
+              }
+            }
+          }
+          // Overwrite the definitions
+          newState.definitions = getDefinitions(newState.matrix);
+          return newState;
+        }
       }
     },
     {
       rows: DEFAULT_ROWS,
       cols: DEFAULT_COLS,
       showDefs: DEFAULT_SHOW_DEFS,
+      showNumbers: DEFAULT_SHOW_NUMBERS,
     },
     initReducer
   );
@@ -244,6 +279,18 @@ function Cruciverba() {
     });
   };
 
+  const handleToggleNumbers: ChangeEventHandler<HTMLInputElement> = (evt) => {
+    dispatch({
+      type: 'setShowNumbers',
+      showNumbers: evt.target.checked,
+    });
+  };
+
+  const handleIncrociObbligatiMode: MouseEventHandler<HTMLButtonElement> = () => {
+    dispatch({type: 'setIncrociObbligatiMode'});
+  };
+
+
   const handleKeyDownNavigateFactory =
     (row: number, col: number): KeyboardEventHandler<HTMLInputElement> =>
     (evt) => {
@@ -296,11 +343,13 @@ function Cruciverba() {
       }
     };
 
+  const isIncrociObbligati = ROWS === 13 && COLS === 9 && !showDefs && !showNumbers;
+
   // Workaround to avoid a whole tab shifting
   const renderedApp = (
     <div className={styles.app}>
       <table className={styles.app_table}>
-        <caption className={styles.app_caption}>Parole Crociate</caption>
+        <caption className={styles.app_caption}>{isIncrociObbligati ? 'Incroci Obbligati' : 'Parole Crociate'}</caption>
         <tbody>
           {times(
             (row) => (
@@ -313,7 +362,7 @@ function Cruciverba() {
                         <span className={styles.app_black}></span>
                       ) : (
                         <>
-                          {definition != null && <span className={styles.app_definition}>{definition.order}</span>}
+                          {showNumbers && definition != null && <span className={styles.app_definition}>{definition.order}</span>}
                           <input
                             className={styles.app_input}
                             name={`input-${row}-${col}`}
@@ -390,6 +439,11 @@ function Cruciverba() {
         <br />
         <input id="showDefs" name="showDefs" checked={showDefs} onChange={handleToggleDefs} type="checkbox" value="showDefs" />
         <label htmlFor="showDefs">Mostra definizioni</label>
+        <br />
+        <input id="showNumbers" name="showNumbers" checked={showNumbers} onChange={handleToggleNumbers} type="checkbox" value="showNumbers" />
+        <label htmlFor="showNumbers">Mostra numeri</label>
+        <br />
+        <button onClick={handleIncrociObbligatiMode}><em>Incroci obbligati</em> mode</button>
       </fieldset>
     </form>
   );
