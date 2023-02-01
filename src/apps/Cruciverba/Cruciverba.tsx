@@ -1,5 +1,5 @@
 import { clone, repeat, times } from 'ramda';
-import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, MouseEventHandler, useMemo, useReducer, useRef } from 'react';
+import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, MouseEventHandler, useEffect, useMemo, useReducer, useRef } from 'react';
 import CruciverbaMd from './README.md';
 import styles from './Cruciverba.module.scss';
 
@@ -7,6 +7,11 @@ const DEFAULT_ROWS = 12;
 const DEFAULT_COLS = 22;
 const DEFAULT_SHOW_DEFS = false;
 const DEFAULT_SHOW_NUMBERS = true;
+
+const INCROCI_OBBLIGATI_ROWS = 13;
+const INCROCI_OBBLIGATI_COLS = 9;
+const INCROCI_OBBLIGATI_SHOW_DEFS = false;
+const INCROCI_OBBLIGATI_SHOW_NUMBERS = false;
 
 type ReducerState = {
   matrix: Array<Array<string | null>>;
@@ -343,7 +348,17 @@ function Cruciverba() {
       }
     };
 
-  const isIncrociObbligati = ROWS === 13 && COLS === 9 && !showDefs && !showNumbers;
+  const isIncrociObbligati = ROWS === INCROCI_OBBLIGATI_ROWS && COLS === INCROCI_OBBLIGATI_COLS && showDefs === INCROCI_OBBLIGATI_SHOW_DEFS && showNumbers === INCROCI_OBBLIGATI_SHOW_NUMBERS;
+
+  // Update settings when changing
+  useEffect(() => {
+    if(rowsRef.current != null) {
+      rowsRef.current.value = `${ROWS}`;
+    }
+    if(colsRef.current != null) {
+      colsRef.current.value = `${COLS}`;
+    }
+  }, [ROWS, COLS]);
 
   // Workaround to avoid a whole tab shifting
   const renderedApp = (
@@ -443,7 +458,7 @@ function Cruciverba() {
         <input id="showNumbers" name="showNumbers" checked={showNumbers} onChange={handleToggleNumbers} type="checkbox" value="showNumbers" />
         <label htmlFor="showNumbers">Mostra numeri</label>
         <br />
-        <button onClick={handleIncrociObbligatiMode}><em>Incroci obbligati</em> mode</button>
+        <button onClick={handleIncrociObbligatiMode} type="button"><em>Incroci obbligati</em> mode</button>
       </fieldset>
     </form>
   );
