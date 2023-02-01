@@ -29,7 +29,6 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
   {
     route: '/cruciverba',
     name: 'Cruciverba',
-    archived: true,
   },
   {
     route: '/numeri-a-caso',
