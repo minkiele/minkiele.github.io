@@ -107,9 +107,26 @@ const getDefinitions = (matrix: Array<Array<string | null>>): Array<Definition> 
   return definitions;
 };
 
-const initReducer = ({ rows, cols, showDefs = true, showNumbers = true }: { rows: number; cols: number; showDefs?: boolean, showNumbers?: boolean }) => {
+const dumpMatrix = (fromMatrix: ReducerState['matrix'], toMatrix: ReducerState['matrix']) => {
+  for (let i = 0; i < toMatrix.length; i += 1) {
+    for (let j = 0; j < toMatrix[i].length; j += 1) {
+      if (i < fromMatrix.length && j < fromMatrix[i].length) {
+        toMatrix[i][j] = fromMatrix[i][j];
+      }
+    }
+  }
+}
+
+const initReducer = ({ rows, cols, showDefs = true, showNumbers = true, oldState }: { rows: number; cols: number; showDefs?: boolean, showNumbers?: boolean, oldState?: ReducerState }) => {
   const matrix = times(() => repeat('', cols), rows);
-  const definitions = getDefinitions(matrix);
+  let definitions: Array<Definition>;
+  if(oldState == null) {
+    definitions = getDefinitions(matrix);
+  } else {
+    // If providing an old state copy some data from the old matrix
+    dumpMatrix(oldState.matrix, matrix);
+    definitions = getDefinitions(oldState.matrix);
+  }
   return { matrix, definitions, rows, cols, showDefs, showNumbers };
 };
 
@@ -132,22 +149,13 @@ function Cruciverba() {
           };
         }
         case 'setSize': {
-          const newState: ReducerState = initReducer({
+          return initReducer({
             rows: action.rows,
             cols: action.cols,
             showDefs: state.showDefs,
             showNumbers: state.showNumbers,
+            oldState: state
           });
-          for (let i = 0; i < newState.matrix.length; i += 1) {
-            for (let j = 0; j < newState.matrix[i].length; j += 1) {
-              if (i < state.matrix.length && j < state.matrix[i].length) {
-                newState.matrix[i][j] = state.matrix[i][j];
-              }
-            }
-          }
-          // Overwrite the definitions
-          newState.definitions = getDefinitions(newState.matrix);
-          return newState;
         }
         case 'setDefinition': {
           return {
@@ -181,22 +189,13 @@ function Cruciverba() {
           };
         }
         case 'setIncrociObbligatiMode': {
-          const newState: ReducerState = initReducer({
+          return initReducer({
             rows: 13,
             cols: 9,
             showDefs: false,
             showNumbers: false,
+            oldState: state,
           });
-          for (let i = 0; i < newState.matrix.length; i += 1) {
-            for (let j = 0; j < newState.matrix[i].length; j += 1) {
-              if (i < state.matrix.length && j < state.matrix[i].length) {
-                newState.matrix[i][j] = state.matrix[i][j];
-              }
-            }
-          }
-          // Overwrite the definitions
-          newState.definitions = getDefinitions(newState.matrix);
-          return newState;
         }
       }
     },

@@ -20,6 +20,7 @@ export type ReducerAction =
     };
 
 export interface Move {
+  stone: number;
   from: Column;
   to: Column;
 }

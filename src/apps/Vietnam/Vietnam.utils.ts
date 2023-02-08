@@ -97,7 +97,7 @@ export const getMoves = (size: number, from: Column, to: Column): Array<Move> =>
   if (size > 1) {
     moves.push(...getMoves(size - 1, from, subStackTo));
   }
-  moves.push({ from, to });
+  moves.push({ stone: size, from, to });
   if (size > 1) {
     moves.push(...getMoves(size - 1, subStackTo, to));
   }

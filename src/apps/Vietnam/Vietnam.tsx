@@ -1,4 +1,4 @@
-import { ChangeEventHandler, DragEventHandler, FunctionComponent, useEffect, useRef } from 'react';
+import { ChangeEventHandler, Children, DragEventHandler, FunctionComponent, useEffect, useRef, useState } from 'react';
 import { Column, Move } from './Vietnam.models';
 import styles from './Vietnam.module.scss';
 import { getMoves, getStoneStyle, useTouchSelect, useVietnam } from './Vietnam.utils';
@@ -15,6 +15,7 @@ const Vietnam: FunctionComponent = () => {
   const { touchSelected, touchSelect } = useTouchSelect(move);
   const timerRef = useRef<ReturnType<typeof setInterval>>();
   const { start: startClock, stop: stopClock, reset: resetClock, elapsed: timeElapsed } = useClock();
+  const [solution, setSolution] = useState<Array<Move>>([]);
 
   const handleDragStart =
     (column: Column): DragEventHandler<HTMLDivElement> =>
@@ -42,8 +43,12 @@ const Vietnam: FunctionComponent = () => {
 
   const handleSetSize: ChangeEventHandler<HTMLInputElement> = (evt) => {
     const intSize = parseInt(evt.target.value);
-    setSize(Math.max(1, isNaN(intSize) ? 1 : intSize));
+    const newSize = Math.max(1, isNaN(intSize) ? 1 : intSize);
+    setSize(newSize);
     resetProgress();
+    if(solution.length > 0) {
+      setSolutionMoves(newSize);
+    }
   };
 
   const handleReset = () => {
@@ -67,6 +72,15 @@ const Vietnam: FunctionComponent = () => {
       }
     }, intervalLength);
   };
+
+  const setSolutionMoves = (size: number) => {
+    setSolution(getMoves(size, 'left', 'right'));
+  };
+
+  const handleShowSolution = () => {
+    setSolutionMoves(size);
+  }
+
 
   const handleTouchSelect = thunkify(touchSelect);
 
@@ -98,7 +112,7 @@ const Vietnam: FunctionComponent = () => {
                 className={styles.vietnam_stone}
                 style={getStoneStyle(stone, size, 30)}
                 draggable={index === 0}
-                onDragStart={handleDragStart(col)}></div>
+                onDragStart={handleDragStart(col)}>{stone}</div>
             ))}
           </div>
         ))}
@@ -121,9 +135,16 @@ const Vietnam: FunctionComponent = () => {
           </button>{' '}
           <button type="button" onClick={handleSolve}>
             Solve
+          </button>{' '}
+          <button type="button" onClick={handleShowSolution}>
+            Show me the money
           </button>
         </fieldset>
       </div>
+      {solution.length > 0  && <div>
+        <h3>The money</h3>
+        <ol>{Children.toArray(solution.map(({stone, to}) => <li>Move stone {stone} to the {to}</li>))}</ol>
+      </div>}
     </div>
   );
 };

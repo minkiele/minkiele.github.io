@@ -21,10 +21,15 @@
     }
   }
   &_stone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 30px;
     background-color: colors.$fg;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+    color: colors.$bg;
+    font-size: .8em;
     &[draggable='true'] {
       cursor: pointer;
     }
@@ -46,6 +51,7 @@
       }
     }
     &_stone {
+      color: colors.$dark-bg;
       background-color: colors.$dark-fg;
       &:not(:last-child) {
         border-bottom-color: colors.$dark-bg;
