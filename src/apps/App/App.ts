@@ -1,4 +1,6 @@
+import { FunctionComponent, PropsWithChildren, createElement } from 'react';
 import { LazyRouteComponent } from './App.models';
+import { notoEmoji } from './App.utils';
 
 export const allLazyRouteComponents: Array<LazyRouteComponent> = [
   {
@@ -87,3 +89,5 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
 
 export const lazyRouteComponents = allLazyRouteComponents.filter((lazyRouteComponent) => lazyRouteComponent.archived !== true);
 export const archivedLazyRouteComponents = allLazyRouteComponents.filter((lazyRouteComponent) => lazyRouteComponent.archived === true);
+
+export const Emoji: FunctionComponent<PropsWithChildren> = ({children}) => createElement('span', { className: notoEmoji.className }, children);

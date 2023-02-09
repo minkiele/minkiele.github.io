@@ -17,9 +17,6 @@ export default function Document() {
           user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
         */}
         <link rel="manifest" href="/manifest.json" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Noto+Emoji&display=swap" rel="stylesheet" />
       </Head>
       <body>
         <Main />

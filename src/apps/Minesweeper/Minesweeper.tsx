@@ -13,6 +13,7 @@ import {
   useState,
 } from 'react';
 import useClock from '../../hooks/useClock';
+import { Emoji } from '../App/App';
 import { Minefield, MinefieldTile, Minesweeper as MinesweeperGame, MinesweeperOptions } from './Minesweeper.lib';
 import styles from './Minesweeper.module.scss';
 import { getMinefieldStyle, isCoastingTile, isEmptyTile } from './Minesweeper.utils';
@@ -100,7 +101,7 @@ const Minesweeper: FunctionComponent = () => {
           tile.isFlag ||
           (!(stepMode || tile.isSteppedOn) && !(status === MinesweeperGame.STATUS.COMPLETE || status === MinesweeperGame.STATUS.GAME_OVER))
         ) {
-          content = '🏴';
+          content = <Emoji>🏴</Emoji>;
         } else if (tile.isSteppedOn && tile.surroundingMines > 0) {
           content = `${tile.surroundingMines}`;
         }
@@ -131,11 +132,11 @@ const Minesweeper: FunctionComponent = () => {
           }
           case MinesweeperGame.STATUS.GAME_OVER: {
             if (!tile.isFlag && tile.isMine) {
-              content = '💣';
+              content = <Emoji>💣</Emoji>;
             } else if (!tile.isSteppedOn && tile.isFlag && tile.isMine) {
-              content = '🏴';
+              content = <Emoji>🏴</Emoji>;
             } else if (tile.isFlag && !tile.isMine) {
-              content = '❌';
+              content = <Emoji>❌</Emoji>;
             }
             return cloneElement(
               element,

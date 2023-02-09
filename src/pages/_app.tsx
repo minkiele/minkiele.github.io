@@ -1,5 +1,6 @@
 import "@/styles/index.scss";
 import "@/apps/App/App.scss";
+import { inconsolata } from '@/apps/App/App.utils'
 
 import type { AppProps } from "next/app";
 import Nav from "@/apps/App/Nav";
@@ -14,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps<LazyRouteComponen
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{'Minkiele - The wrong website, by definition.' + (pageProps.setTitle !== false ? ` - #${pageProps.name}` : '') }</title>
       </Head>
-      <div className="App">
+      <div className={`App ${inconsolata.className}`}>
         <aside>
           <Nav menu={lazyRouteComponents} />
         </aside>
