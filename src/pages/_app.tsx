@@ -25,6 +25,7 @@ export default function App({ Component, pageProps }: AppProps<LazyRouteComponen
           gtag('config', '${process.env.NEXT_PUBLIC_ANALYTICS_ID}');`
         }} id="googleAnalyticsSetup" />
       <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_ANALYTICS_ID}`} />
+      <Script src={`https://www.googleoptimize.com/optimize.js?id=${process.env.NEXT_PUBLIC_OPTIMIZE_ID}`} />
       <div className="App">
         <aside>
           <Nav menu={lazyRouteComponents} />

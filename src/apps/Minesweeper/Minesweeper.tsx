@@ -13,6 +13,7 @@ import {
   useState,
 } from 'react';
 import useClock from '../../hooks/useClock';
+import { event } from '../App/App.utils';
 import { Minefield, MinefieldTile, Minesweeper as MinesweeperGame, MinesweeperOptions } from './Minesweeper.lib';
 import styles from './Minesweeper.module.scss';
 import { getMinefieldStyle, isCoastingTile, isEmptyTile } from './Minesweeper.utils';
@@ -63,11 +64,21 @@ const Minesweeper: FunctionComponent = () => {
         }
       }
     };
+    const handleComplete = (status: symbol) => {
+      if(status === MinesweeperGame.STATUS.COMPLETE) {
+        event({
+          action: 'minesweeper'
+        });
+      }
+    };
+    minesweeperRef.current.on(MinesweeperGame.EVENT.STATUS, handleComplete);
     minesweeperRef.current.on(MinesweeperGame.EVENT.STATUS, handleStatus);
     return () => {
       minesweeperRef.current.off(MinesweeperGame.EVENT.STEP, handleUpdate);
       // eslint-disable-next-line react-hooks/exhaustive-deps
       minesweeperRef.current.off(MinesweeperGame.EVENT.STATUS, handleStatus);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      minesweeperRef.current.off(MinesweeperGame.EVENT.STATUS, handleComplete);
     };
   }, [options, resetClock, startClock, stopClock]);
 
