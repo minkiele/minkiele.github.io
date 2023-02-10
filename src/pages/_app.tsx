@@ -6,14 +6,25 @@ import Nav from "@/apps/App/Nav";
 import { lazyRouteComponents } from "@/apps/App/App";
 import Head from "next/head";
 import { LazyRouteComponent } from "@/apps/App/App.models";
+import Script from 'next/script';
+import { useGoogleAnalyticsPageviews } from "@/apps/App/App.utils";
 
 export default function App({ Component, pageProps }: AppProps<LazyRouteComponent>) {
+  useGoogleAnalyticsPageviews();
   return (
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{'Minkiele - The wrong website, by definition.' + (pageProps.setTitle !== false ? ` - #${pageProps.name}` : '') }</title>
       </Head>
+      <Script dangerouslySetInnerHTML={{
+          __html: `window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', '${process.env.NEXT_PUBLIC_ANALYTICS_ID}');`
+        }} id="googleAnalyticsSetup" />
+      <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_ANALYTICS_ID}`} />
       <div className="App">
         <aside>
           <Nav menu={lazyRouteComponents} />

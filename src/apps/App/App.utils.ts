@@ -1,4 +1,6 @@
 import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { allLazyRouteComponents } from "./App";
 import { LazyRouteComponent } from "./App.models";
 
@@ -16,3 +18,19 @@ export const getGetStaticProps = <L extends LazyRouteComponent>(
     props: { ...props, ...staticProps }
   });
 };
+
+export const pageview = (url: string) => {
+  (window as any).gtag('config', process.env.NEXT_PUBLIC_ANALYTICS_ID, {
+    page_path: url
+  });
+}
+
+export const useGoogleAnalyticsPageviews = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.events.on('routeChangeComplete', pageview);
+    return () => {
+      router.events.off('routeChangeComplete', pageview);
+    }
+  }, [router.events]);
+}
