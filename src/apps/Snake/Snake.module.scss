@@ -29,7 +29,7 @@ $boardHeight: calc(
     --snake-game-cell-width: 20px;
     --snake-game-cell-height: 20px;
   }
-  
+
 
 
   width: $boardWidth;
@@ -50,10 +50,43 @@ $boardHeight: calc(
   position: absolute;
   background-color: colors.$bg;
   &#{&}__snake {
-    background-color: colors.$fg;
+    // background-color: colors.$fg;
   }
   &#{&}__apple {
+    // The manego
     background-color: #f00;
+    &::before {
+      content: " ";
+      width: 4px;
+      height: 12px;
+      background-color: colors.$fg;
+      display: block;
+      position: absolute;
+      top: -7px;
+      left: 50%;
+      transform: translateX(-10%) rotate(45deg);
+    }
+  }
+  $border-width: 4px;
+  &#{&}__snake_U, &#{&}__snake_D {
+    border-left: $border-width colors.$fg solid;
+    border-right: $border-width colors.$fg solid;
+  }
+  &#{&}__snake_L, &#{&}__snake_R {
+    border-top: $border-width colors.$fg solid;
+    border-bottom: $border-width colors.$fg solid;
+  }
+  &#{&}__snake_U#{&}_snake_H, &#{&}__snake_D#{&}_snake_T {
+    border-top: $border-width colors.$fg solid;
+  }
+  &#{&}__snake_D#{&}_snake_H, &#{&}__snake_U#{&}_snake_T {
+    border-bottom: $border-width colors.$fg solid;
+  }
+  &#{&}__snake_L#{&}_snake_H, &#{&}__snake_R#{&}_snake_T {
+    border-left: $border-width colors.$fg solid;
+  }
+  &#{&}__snake_R#{&}_snake_H, &#{&}__snake_L#{&}_snake_T {
+    border-right: $border-width colors.$fg solid;
   }
 }
 
@@ -111,6 +144,10 @@ $boardHeight: calc(
   .cell {
     background-color: colors.$dark-bg;
     &#{&}__snake {
+      background-color: colors.$dark-fg;
+    }
+    &#{&}__apple::before {
+      // Change manego color
       background-color: colors.$dark-fg;
     }
   }

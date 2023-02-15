@@ -1,17 +1,17 @@
 import classNames from 'classnames';
 import { thunkify } from 'ramda';
 import { ChangeEventHandler, FunctionComponent, memo, useCallback, useEffect, useRef, useState } from 'react';
-import { SnakeGame, SnakeGameCoords } from './Snake.lib';
+import { SnakeGame, SnakeGameCoords, SnakeGameData } from './Snake.lib';
 import styles from './Snake.module.scss';
 import SnakeMd from './README.md';
 import { getCellStyle, getSortedSnake } from './Snake.utils';
 
-interface SnakeTileProps {
-  tile: SnakeGameCoords;
+interface SnakeTileProps<T extends SnakeGameCoords> {
+  tile: T;
   className?: string;
 }
 
-const SnakeTile: FunctionComponent<SnakeTileProps> = memo(({ tile, className }) => (
+const SnakeBasicTile = memo(<T extends SnakeGameCoords = SnakeGameCoords>({ tile, className }: SnakeTileProps<T>) => (
   <div
     className={classNames({
       [styles.cell]: true,
@@ -22,6 +22,19 @@ const SnakeTile: FunctionComponent<SnakeTileProps> = memo(({ tile, className }) 
   </div>
 ));
 
+SnakeBasicTile.displayName = 'SnakeTile';
+
+const SnakeTile: FunctionComponent<SnakeTileProps<SnakeGameData>> = memo(({ tile, className }) => {
+  const tileClassName = classNames({
+    [className as string]: className,
+    [styles.cell__snake_U]: tile.direction === SnakeGame.DIRECTION.U,
+    [styles.cell__snake_D]: tile.direction === SnakeGame.DIRECTION.D,
+    [styles.cell__snake_L]: tile.direction === SnakeGame.DIRECTION.L,
+    [styles.cell__snake_R]: tile.direction === SnakeGame.DIRECTION.R,
+  })
+  return <SnakeBasicTile tile={tile} className={tileClassName} />
+});
+
 SnakeTile.displayName = 'SnakeTile';
 
 const Snake: FunctionComponent = () => {
@@ -29,7 +42,7 @@ const Snake: FunctionComponent = () => {
   const [hasWalls, setWalls] = useState<boolean>(true);
   const [status, setStatus] = useState<symbol>(SnakeGame.STATUS.IDLE);
   const snakeGame = useRef<SnakeGame>(new SnakeGame(speed, hasWalls));
-  const [snake, setSnake] = useState<Array<SnakeGameCoords>>();
+  const [snake, setSnake] = useState<Array<SnakeGameData>>();
   const [apple, setApple] = useState<SnakeGameCoords>();
 
   useEffect(() => {
@@ -177,7 +190,7 @@ const Snake: FunctionComponent = () => {
         {snake?.map((tile) => (
           <SnakeTile tile={tile} className={styles.cell__snake} key={`tile-x-${tile.x}-y-${tile.y}`} />
         ))}
-        {apple != null && <SnakeTile tile={apple} className={styles.cell__apple} />}
+        {apple != null && <SnakeBasicTile tile={apple} className={styles.cell__apple} />}
       </div>
       <div>
         {status === SnakeGame.STATUS.IDLE && <p>Insert coin to play...</p>}

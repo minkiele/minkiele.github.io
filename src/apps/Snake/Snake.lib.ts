@@ -12,8 +12,9 @@ type SnakeGameDirections = SnakeGameEnum<'U' | 'D' | 'L' | 'R'>;
 type SnakeGameStatus = SnakeGameEnum<'IDLE' | 'RUNNING' | 'PAUSE' | 'OVER' | 'COMPLETE'>;
 type SnakeGameEvent = SnakeGameEnum<'ADVANCE' | 'STOP' | 'RESET' | 'STATUS'>;
 
-interface SnakeGameData extends SnakeGameCoords {
+export interface SnakeGameData extends SnakeGameCoords {
   eating: boolean;
+  direction: symbol;
 }
 
 /**
@@ -83,6 +84,7 @@ export class SnakeGame {
       x: SnakeGame.INITIAL_LENGTH + 3 - x,
       y,
       eating: false,
+      direction: SnakeGame.DIRECTION.R,
     }));
   }
 
@@ -158,6 +160,7 @@ export class SnakeGame {
         tract.x = nextTract.x;
         tract.y = nextTract.y;
         tract.eating = nextTract.eating;
+        tract.direction = nextTract.direction;
       }
       snakeHead.x = nextHeadPosition.x;
       snakeHead.y = nextHeadPosition.y;
@@ -167,6 +170,7 @@ export class SnakeGame {
       if (snakeHead.eating) {
         this.apple = this.getNewAppleCoords();
       }
+      snakeHead.direction = nextDirection;
       this.nextDirection = undefined;
       this.currentDirection = nextDirection;
       this.emit(SnakeGame.EVENT.ADVANCE);
@@ -299,8 +303,8 @@ export class SnakeGame {
     }
   }
 
-  public getSnake(): Array<SnakeGameCoords> {
-    return this.snake.map((tract) => ({ x: tract.x, y: tract.y }));
+  public getSnake(): Array<SnakeGameData> {
+    return this.snake.map((tract) => ({ ...tract }));
   }
 
   public getApple(): SnakeGameCoords | undefined {
