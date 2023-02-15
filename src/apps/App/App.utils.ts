@@ -1,5 +1,6 @@
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
+import { either, isEmpty, isNil } from "ramda";
 import { useEffect } from "react";
 import { allLazyRouteComponents } from "./App";
 import { LazyRouteComponent } from "./App.models";
@@ -20,13 +21,13 @@ export const getGetStaticProps = <L extends LazyRouteComponent>(
 };
 
 export const pageview = (url: string) => {
-  (window as any).gtag('config', process.env.NEXT_PUBLIC_ANALYTICS_ID, {
+  (window as any).gtag?.('config', process.env.NEXT_PUBLIC_ANALYTICS_ID, {
     page_path: url
   });
 }
 
 export const event = ({ action, category, label, value }: { action: string, category?: string, label?: string, value?: number }) => {
-  (window as any).gtag('event', action, {
+  (window as any)?.gtag?.('event', action, {
     event_category: category,
     event_label: label,
     value: value,
@@ -42,3 +43,5 @@ export const useGoogleAnalyticsPageviews = () => {
     }
   }, [router.events]);
 }
+
+export const isNullOrEmpty = either(isNil, isEmpty);

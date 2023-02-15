@@ -64,19 +64,25 @@ const Minesweeper: FunctionComponent = () => {
         }
       }
     };
-    const handleComplete = (status: symbol) => {
-      if(status === MinesweeperGame.STATUS.COMPLETE) {
-        event({
-          action: 'minesweeper'
-        });
-      }
-    };
-    minesweeperRef.current.on(MinesweeperGame.EVENT.STATUS, handleComplete);
     minesweeperRef.current.on(MinesweeperGame.EVENT.STATUS, handleStatus);
     return () => {
       minesweeperRef.current.off(MinesweeperGame.EVENT.STEP, handleUpdate);
       // eslint-disable-next-line react-hooks/exhaustive-deps
       minesweeperRef.current.off(MinesweeperGame.EVENT.STATUS, handleStatus);
+    };
+  }, [options, resetClock, startClock, stopClock]);
+
+
+  useEffect(() => {
+    const handleComplete = (status: symbol) => {
+      if(status === MinesweeperGame.STATUS.COMPLETE) {
+        event({
+          action: 'minesweeper',
+        });
+      }
+    };
+    minesweeperRef.current.on(MinesweeperGame.EVENT.STATUS, handleComplete);
+    return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       minesweeperRef.current.off(MinesweeperGame.EVENT.STATUS, handleComplete);
     };
