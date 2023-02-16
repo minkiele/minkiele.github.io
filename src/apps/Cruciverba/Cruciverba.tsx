@@ -13,6 +13,11 @@ const INCROCI_OBBLIGATI_COLS = 9;
 const INCROCI_OBBLIGATI_SHOW_DEFS = false;
 const INCROCI_OBBLIGATI_SHOW_NUMBERS = false;
 
+const RICERCA_ROWS = 12;
+const RICERCA_COLS = 14;
+const RICERCA_SHOW_DEFS = false;
+const RICERCA_SHOW_NUMBERS = true;
+
 type ReducerState = {
   matrix: Array<Array<string | null>>;
   definitions: Array<Definition>;
@@ -24,39 +29,39 @@ type ReducerState = {
 
 type ReducerAction =
   | {
-      type: 'setValue';
-      row: number;
-      col: number;
-      value: string;
-    }
+    type: 'setValue';
+    row: number;
+    col: number;
+    value: string;
+  }
   | {
-      type: 'toggleBlack';
-      row: number;
-      col: number;
-    }
+    type: 'toggleBlack';
+    row: number;
+    col: number;
+  }
   | {
-      type: 'setSize';
-      rows: number;
-      cols: number;
-    }
+    type: 'setSize';
+    rows: number;
+    cols: number;
+  }
   | {
-      type: 'setDefinition';
-      horizontalDefinition: string;
-      verticalDefinition: string;
-      row: number;
-      col: number;
-    }
+    type: 'setDefinition';
+    horizontalDefinition: string;
+    verticalDefinition: string;
+    row: number;
+    col: number;
+  }
   | {
-      type: 'setShowDefs';
-      showDefs: boolean;
-    }
-    | {
-        type: 'setShowNumbers';
-        showNumbers: boolean;
-    }
+    type: 'setShowDefs';
+    showDefs: boolean;
+  }
   | {
-      type: 'setIncrociObbligatiMode';
-    };
+    type: 'setShowNumbers';
+    showNumbers: boolean;
+  }
+  | {
+    type: 'setIncrociObbligatiMode' | 'setRicercaMode';
+  };
 
 interface Definition {
   order: number;
@@ -120,7 +125,7 @@ const dumpMatrix = (fromMatrix: ReducerState['matrix'], toMatrix: ReducerState['
 const initReducer = ({ rows, cols, showDefs = true, showNumbers = true, oldState }: { rows: number; cols: number; showDefs?: boolean, showNumbers?: boolean, oldState?: ReducerState }) => {
   const matrix = times(() => repeat('', cols), rows);
   let definitions: Array<Definition>;
-  if(oldState == null) {
+  if (oldState == null) {
     definitions = getDefinitions(matrix);
   } else {
     // If providing an old state copy some data from the old matrix
@@ -167,9 +172,9 @@ function Cruciverba() {
                   ...definition,
                   ...(definition.row === action.row &&
                     definition.col === action.col && {
-                      horizontalDefinition: action.horizontalDefinition,
-                      verticalDefinition: action.verticalDefinition,
-                    }),
+                    horizontalDefinition: action.horizontalDefinition,
+                    verticalDefinition: action.verticalDefinition,
+                  }),
                 },
               ],
               []
@@ -190,12 +195,29 @@ function Cruciverba() {
         }
         case 'setIncrociObbligatiMode': {
           return initReducer({
-            rows: 13,
-            cols: 9,
-            showDefs: false,
-            showNumbers: false,
+            rows: INCROCI_OBBLIGATI_ROWS,
+            cols: INCROCI_OBBLIGATI_COLS,
+            showDefs: INCROCI_OBBLIGATI_SHOW_DEFS,
+            showNumbers: INCROCI_OBBLIGATI_SHOW_NUMBERS,
             oldState: state,
           });
+        }
+        case 'setRicercaMode': {
+          const newState = initReducer({
+            rows: RICERCA_ROWS,
+            cols: RICERCA_COLS,
+            showDefs: RICERCA_SHOW_DEFS,
+            showNumbers: RICERCA_SHOW_NUMBERS,
+            oldState: state
+          });
+          // First 3 cells usually are marked black
+          for (let i = 0; i < 3; i += 1) {
+            (newState.matrix as ReducerState['matrix'])[0][i] = null;
+          }
+          return {
+            ...newState,
+            definitions: getDefinitions(newState.matrix)
+          };
         }
       }
     },
@@ -291,70 +313,75 @@ function Cruciverba() {
   };
 
   const handleIncrociObbligatiMode: MouseEventHandler<HTMLButtonElement> = () => {
-    dispatch({type: 'setIncrociObbligatiMode'});
+    dispatch({ type: 'setIncrociObbligatiMode' });
+  };
+
+  const handleRicercaMode: MouseEventHandler<HTMLButtonElement> = () => {
+    dispatch({ type: 'setRicercaMode' });
   };
 
 
   const handleKeyDownNavigateFactory =
     (row: number, col: number): KeyboardEventHandler<HTMLInputElement> =>
-    (evt) => {
-      if (evt.key === 'ArrowUp' && row > 0) {
-        inputsRef.current
-          .reduceRight<HTMLInputElement | null>(
-            (acc, current, index) => (acc == null && index < row && current[col] != null ? current[col] : acc),
-            null
-          )
-          ?.focus();
-      }
-      if (evt.key === 'ArrowDown' && row < matrix.length - 1) {
-        inputsRef.current
-          .reduce<HTMLInputElement | null>(
-            (acc, current, index) => (acc == null && index > row && current[col] != null ? current[col] : acc),
-            null
-          )
-          ?.focus();
-      }
-      if (evt.key === 'ArrowLeft' && col > 0) {
-        inputsRef.current[row]
-          .reduceRight<HTMLInputElement | null>(
-            (acc, current, index) => (acc == null && index < col && current != null ? current : acc),
-            null
-          )
-          ?.focus();
-      }
-      if (evt.key === 'ArrowRight' && col < matrix[row].length - 1) {
-        inputsRef.current[row]
-          .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > col && current != null ? current : acc), null)
-          ?.focus();
-      }
-      if (evt.key === 'Backspace' && (inputsRef.current[row][col]?.value as string).length === 0 && col > 0) {
-        inputsRef.current[row]
-          .reduceRight<HTMLInputElement | null>(
-            (acc, current, index) => (acc == null && index < col && current != null ? current : acc),
-            null
-          )
-          ?.focus();
-      }
-    };
+      (evt) => {
+        if (evt.key === 'ArrowUp' && row > 0) {
+          inputsRef.current
+            .reduceRight<HTMLInputElement | null>(
+              (acc, current, index) => (acc == null && index < row && current[col] != null ? current[col] : acc),
+              null
+            )
+            ?.focus();
+        }
+        if (evt.key === 'ArrowDown' && row < matrix.length - 1) {
+          inputsRef.current
+            .reduce<HTMLInputElement | null>(
+              (acc, current, index) => (acc == null && index > row && current[col] != null ? current[col] : acc),
+              null
+            )
+            ?.focus();
+        }
+        if (evt.key === 'ArrowLeft' && col > 0) {
+          inputsRef.current[row]
+            .reduceRight<HTMLInputElement | null>(
+              (acc, current, index) => (acc == null && index < col && current != null ? current : acc),
+              null
+            )
+            ?.focus();
+        }
+        if (evt.key === 'ArrowRight' && col < matrix[row].length - 1) {
+          inputsRef.current[row]
+            .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > col && current != null ? current : acc), null)
+            ?.focus();
+        }
+        if (evt.key === 'Backspace' && (inputsRef.current[row][col]?.value as string).length === 0 && col > 0) {
+          inputsRef.current[row]
+            .reduceRight<HTMLInputElement | null>(
+              (acc, current, index) => (acc == null && index < col && current != null ? current : acc),
+              null
+            )
+            ?.focus();
+        }
+      };
 
   const handleKeyUpNavigateFactory =
     (row: number, col: number): KeyboardEventHandler<HTMLInputElement> =>
-    (evt) => {
-      if (/^[a-zA-Z]$/.test(evt.key) && col < matrix[row].length - 1) {
-        inputsRef.current[row]
-          .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > col && current != null ? current : acc), null)
-          ?.focus();
-      }
-    };
+      (evt) => {
+        if (/^[a-zA-Z]$/.test(evt.key) && col < matrix[row].length - 1) {
+          inputsRef.current[row]
+            .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > col && current != null ? current : acc), null)
+            ?.focus();
+        }
+      };
 
-  const isIncrociObbligati = ROWS === INCROCI_OBBLIGATI_ROWS && COLS === INCROCI_OBBLIGATI_COLS && showDefs === INCROCI_OBBLIGATI_SHOW_DEFS && showNumbers === INCROCI_OBBLIGATI_SHOW_NUMBERS;
+  const isIncrociObbligatiMode = ROWS === INCROCI_OBBLIGATI_ROWS && COLS === INCROCI_OBBLIGATI_COLS && showDefs === INCROCI_OBBLIGATI_SHOW_DEFS && showNumbers === INCROCI_OBBLIGATI_SHOW_NUMBERS;
+  const isRicercaMode = ROWS === RICERCA_ROWS && COLS === RICERCA_COLS && showDefs === RICERCA_SHOW_DEFS && showNumbers === RICERCA_SHOW_NUMBERS && matrix[0][0] == null && matrix[0][1] == null && matrix[0][2] == null;
 
   // Update settings when changing
   useEffect(() => {
-    if(rowsRef.current != null) {
+    if (rowsRef.current != null) {
       rowsRef.current.value = `${ROWS}`;
     }
-    if(colsRef.current != null) {
+    if (colsRef.current != null) {
       colsRef.current.value = `${COLS}`;
     }
   }, [ROWS, COLS]);
@@ -363,7 +390,7 @@ function Cruciverba() {
   const renderedApp = (
     <div className={styles.app}>
       <table className={styles.app_table}>
-        <caption className={styles.app_caption}>{isIncrociObbligati ? 'Incroci Obbligati' : 'Parole Crociate'}</caption>
+        <caption className={styles.app_caption}>{isIncrociObbligatiMode ? 'Incroci Obbligati' : (isRicercaMode ? 'Ricerca di Parole Crociate' : 'Parole Crociate')}</caption>
         <tbody>
           {times(
             (row) => (
@@ -458,6 +485,8 @@ function Cruciverba() {
         <label htmlFor="showNumbers">Mostra numeri</label>
         <br />
         <button onClick={handleIncrociObbligatiMode} type="button"><em>Incroci obbligati</em> mode</button>
+        {' '}
+        <button onClick={handleRicercaMode} type="button"><em>Ricerca di Parole Crociate</em> mode</button>
       </fieldset>
     </form>
   );
