@@ -27,6 +27,8 @@ type ReducerState = {
   showNumbers: boolean;
 };
 
+type ReducerSimpleAction = 'setIncrociObbligatiMode' | 'setRicercaMode' | 'wipe';
+
 type ReducerAction =
   | {
     type: 'setValue';
@@ -60,7 +62,7 @@ type ReducerAction =
     showNumbers: boolean;
   }
   | {
-    type: 'setIncrociObbligatiMode' | 'setRicercaMode';
+    type: ReducerSimpleAction;
   };
 
 interface Definition {
@@ -219,6 +221,14 @@ function Cruciverba() {
             definitions: getDefinitions(newState.matrix)
           };
         }
+        case 'wipe': {
+          return initReducer({
+            rows: state.rows,
+            cols: state.cols,
+            showDefs: state.showDefs,
+            showNumbers: state.showNumbers,
+          });
+        }
       }
     },
     {
@@ -312,14 +322,9 @@ function Cruciverba() {
     });
   };
 
-  const handleIncrociObbligatiMode: MouseEventHandler<HTMLButtonElement> = () => {
-    dispatch({ type: 'setIncrociObbligatiMode' });
-  };
-
-  const handleRicercaMode: MouseEventHandler<HTMLButtonElement> = () => {
-    dispatch({ type: 'setRicercaMode' });
-  };
-
+  const handleSimpleAction = (type: ReducerSimpleAction): MouseEventHandler<HTMLButtonElement> => () => {
+    dispatch({ type });
+  }
 
   const handleKeyDownNavigateFactory =
     (row: number, col: number): KeyboardEventHandler<HTMLInputElement> =>
@@ -484,9 +489,11 @@ function Cruciverba() {
         <input id="showNumbers" name="showNumbers" checked={showNumbers} onChange={handleToggleNumbers} type="checkbox" value="showNumbers" />
         <label htmlFor="showNumbers">Mostra numeri</label>
         <br />
-        <button onClick={handleIncrociObbligatiMode} type="button"><em>Incroci obbligati</em> mode</button>
+        <button onClick={handleSimpleAction('setIncrociObbligatiMode')} type="button"><em>Incroci obbligati</em> mode</button>
         {' '}
-        <button onClick={handleRicercaMode} type="button"><em>Ricerca di Parole Crociate</em> mode</button>
+        <button onClick={handleSimpleAction('setRicercaMode')} type="button"><em>Ricerca di Parole Crociate</em> mode</button>
+        {' '}
+        <button onClick={handleSimpleAction('wipe')} type="button">Wipe</button>
       </fieldset>
     </form>
   );
