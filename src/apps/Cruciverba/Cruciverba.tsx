@@ -1,7 +1,8 @@
-import { clone, repeat, times } from 'ramda';
-import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, MouseEventHandler, useEffect, useMemo, useReducer, useRef } from 'react';
+import { clone, repeat, times, xor } from 'ramda';
+import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, MouseEventHandler, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
 import CruciverbaMd from './README.md';
 import styles from './Cruciverba.module.scss';
+import classNames from 'classnames';
 
 const DEFAULT_ROWS = 12;
 const DEFAULT_COLS = 22;
@@ -18,6 +19,12 @@ const RICERCA_COLS = 14;
 const RICERCA_SHOW_DEFS = false;
 const RICERCA_SHOW_NUMBERS = true;
 
+const CORNICI_ROWS = 13;
+const CORNICI_COLS = 13;
+const CORNICI_SHOW_DEFS = false;
+const CORNICI_SHOW_NUMBERS = false;
+
+
 type ReducerState = {
   matrix: Array<Array<string | null>>;
   definitions: Array<Definition>;
@@ -27,7 +34,7 @@ type ReducerState = {
   showNumbers: boolean;
 };
 
-type ReducerSimpleAction = 'setIncrociObbligatiMode' | 'setRicercaMode' | 'wipe';
+type ReducerSimpleAction = 'setIncrociObbligatiMode' | 'setRicercaMode' | 'wipe' | 'setCorniciConcentricheMode';
 
 type ReducerAction =
   | {
@@ -137,6 +144,21 @@ const initReducer = ({ rows, cols, showDefs = true, showNumbers = true, oldState
   return { matrix, definitions, rows, cols, showDefs, showNumbers };
 };
 
+const isGreyRow = (
+  isCorniciConcentricheMode: boolean,
+  currentRow: number,
+  currentCol: number
+): boolean =>
+  isCorniciConcentricheMode &&
+  ((currentRow % 2 === 1 &&
+    ((currentCol >= currentRow && currentCol < CORNICI_COLS - currentRow) ||
+      (currentCol >= CORNICI_ROWS - currentRow - 1 &&
+        currentCol < CORNICI_COLS - (CORNICI_ROWS - currentRow - 1)))) ||
+    (currentCol % 2 === 1 &&
+      ((currentRow >= currentCol && currentRow < CORNICI_ROWS - currentCol) ||
+        (currentRow >= CORNICI_COLS - currentCol - 1 &&
+          currentRow < CORNICI_ROWS - (CORNICI_COLS - currentCol - 1)))));
+
 function Cruciverba() {
   const [{ matrix, definitions, rows: ROWS, cols: COLS, showDefs, showNumbers }, dispatch] = useReducer(
     (state: ReducerState, action: ReducerAction) => {
@@ -201,7 +223,6 @@ function Cruciverba() {
             cols: INCROCI_OBBLIGATI_COLS,
             showDefs: INCROCI_OBBLIGATI_SHOW_DEFS,
             showNumbers: INCROCI_OBBLIGATI_SHOW_NUMBERS,
-            oldState: state,
           });
         }
         case 'setRicercaMode': {
@@ -210,7 +231,6 @@ function Cruciverba() {
             cols: RICERCA_COLS,
             showDefs: RICERCA_SHOW_DEFS,
             showNumbers: RICERCA_SHOW_NUMBERS,
-            oldState: state
           });
           // First 3 cells usually are marked black
           for (let i = 0; i < 3; i += 1) {
@@ -222,12 +242,31 @@ function Cruciverba() {
           };
         }
         case 'wipe': {
+          const newMatrix = state.matrix.map((row) => row.map((col) => col == null ? null : ''))
           return initReducer({
             rows: state.rows,
             cols: state.cols,
             showDefs: state.showDefs,
             showNumbers: state.showNumbers,
+            oldState: {
+              ...state,
+              matrix: newMatrix,
+              definitions: getDefinitions(newMatrix)
+            }
           });
+        }
+        case 'setCorniciConcentricheMode': {
+          const newState = initReducer({
+            rows: CORNICI_ROWS,
+            cols: CORNICI_COLS,
+            showDefs: CORNICI_SHOW_DEFS,
+            showNumbers: CORNICI_SHOW_NUMBERS,
+          });
+          (newState.matrix as ReducerState['matrix'])[Math.floor(CORNICI_ROWS / 2)][Math.floor(CORNICI_ROWS / 2)] = null;
+          return {
+            ...newState,
+            definitions: getDefinitions(newState.matrix)
+          };
         }
       }
     },
@@ -243,11 +282,16 @@ function Cruciverba() {
   const rowsRef = useRef<HTMLInputElement | null>(null);
   const colsRef = useRef<HTMLInputElement | null>(null);
 
-  const inputsRef = useRef<Array<Array<HTMLInputElement | null>>>(times(() => repeat(null, COLS), ROWS));
+  const inputsRef = useRef<Array<Array<HTMLInputElement | null>>>([]);
+
+  useMemo(() => {
+    // Every time size of the inputs change ricreate the inputs matrix
+    inputsRef.current = times((row) => times((col) => inputsRef.current?.[row]?.[col], COLS), ROWS);
+  }, [ROWS, COLS]);
+
+
   const setRefCallbackFactory = (row: number, col: number) => (ref: HTMLInputElement) => {
-    if (row < inputsRef.current.length && col < inputsRef.current[row].length) {
-      inputsRef.current[row][col] = ref;
-    }
+    inputsRef.current[row][col] = ref;
   };
 
   const { h: horizontalDefs, v: verticalDefs } = useMemo(
@@ -287,9 +331,6 @@ function Cruciverba() {
     evt.preventDefault();
     const rows = parseInt(rowsRef.current?.value ?? '');
     const cols = parseInt(colsRef.current?.value ?? '');
-
-    // Reset all refs
-    inputsRef.current = times(() => repeat(null, cols), rows);
 
     dispatch({
       type: 'setSize',
@@ -378,8 +419,38 @@ function Cruciverba() {
         }
       };
 
-  const isIncrociObbligatiMode = ROWS === INCROCI_OBBLIGATI_ROWS && COLS === INCROCI_OBBLIGATI_COLS && showDefs === INCROCI_OBBLIGATI_SHOW_DEFS && showNumbers === INCROCI_OBBLIGATI_SHOW_NUMBERS;
-  const isRicercaMode = ROWS === RICERCA_ROWS && COLS === RICERCA_COLS && showDefs === RICERCA_SHOW_DEFS && showNumbers === RICERCA_SHOW_NUMBERS && matrix[0][0] == null && matrix[0][1] == null && matrix[0][2] == null;
+  const isIncrociObbligatiMode =
+    ROWS === INCROCI_OBBLIGATI_ROWS &&
+    COLS === INCROCI_OBBLIGATI_COLS &&
+    showDefs === INCROCI_OBBLIGATI_SHOW_DEFS &&
+    showNumbers === INCROCI_OBBLIGATI_SHOW_NUMBERS;
+
+  const isRicercaMode =
+    ROWS === RICERCA_ROWS &&
+    COLS === RICERCA_COLS &&
+    showDefs === RICERCA_SHOW_DEFS &&
+    showNumbers === RICERCA_SHOW_NUMBERS &&
+    matrix[0][0] == null &&
+    matrix[0][1] == null &&
+    matrix[0][2] == null;
+
+  const isCorniciConcentricheMode = useMemo(
+    () =>
+      ROWS === CORNICI_ROWS &&
+      COLS === CORNICI_COLS &&
+      showDefs === CORNICI_SHOW_DEFS &&
+      showNumbers === CORNICI_SHOW_NUMBERS &&
+      matrix.every((row, rowIndex) =>
+        row.every((col, colIndex) =>
+          xor(
+            rowIndex === Math.floor(CORNICI_ROWS / 2) &&
+              colIndex === Math.floor(CORNICI_COLS / 2),
+            col != null
+          )
+        )
+      ),
+    [matrix, COLS, ROWS, showDefs, showNumbers]
+  );
 
   // Update settings when changing
   useEffect(() => {
@@ -395,7 +466,7 @@ function Cruciverba() {
   const renderedApp = (
     <div className={styles.app}>
       <table className={styles.app_table}>
-        <caption className={styles.app_caption}>{isIncrociObbligatiMode ? 'Incroci Obbligati' : (isRicercaMode ? 'Ricerca di Parole Crociate' : 'Parole Crociate')}</caption>
+        <caption className={styles.app_caption}>{isIncrociObbligatiMode ? 'Incroci Obbligati' : (isRicercaMode ? 'Ricerca di Parole Crociate' : (isCorniciConcentricheMode ? 'Cornici Concentriche' : 'Parole Crociate'))}</caption>
         <tbody>
           {times(
             (row) => (
@@ -403,7 +474,10 @@ function Cruciverba() {
                 {times((col) => {
                   const definition = definitions.find((definition) => definition.row === row && definition.col === col);
                   return (
-                    <td className={styles.app_td} key={`${row}-${col}`} onDoubleClick={handleToggleBlackFactory(row, col)}>
+                    <td className={classNames({
+                      [styles.app_td]: true,
+                      [styles.app_td__grey]: isGreyRow(isCorniciConcentricheMode, row, col)
+                    })} key={`${row}-${col}`} onDoubleClick={handleToggleBlackFactory(row, col)}>
                       {shouldBeBlack(row, col, matrix) ? (
                         <span className={styles.app_black}></span>
                       ) : (
@@ -492,6 +566,8 @@ function Cruciverba() {
         <button onClick={handleSimpleAction('setIncrociObbligatiMode')} type="button"><em>Incroci obbligati</em> mode</button>
         {' '}
         <button onClick={handleSimpleAction('setRicercaMode')} type="button"><em>Ricerca di Parole Crociate</em> mode</button>
+        {' '}
+        <button onClick={handleSimpleAction('setCorniciConcentricheMode')} type="button"><em>Cornici Concentriche</em> mode</button>
         {' '}
         <button onClick={handleSimpleAction('wipe')} type="button">Wipe</button>
       </fieldset>

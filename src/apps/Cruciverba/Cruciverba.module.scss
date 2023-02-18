@@ -14,6 +14,11 @@
     width: 0;
     height: 0;
     position: relative;
+    &__grey {
+      &, .app_input {
+        background-color: #ddd;
+      }
+    }
   }
   &_definition {
     position: absolute;
