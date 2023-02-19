@@ -291,7 +291,9 @@ function Cruciverba() {
 
 
   const setRefCallbackFactory = (row: number, col: number) => (ref: HTMLInputElement) => {
-    inputsRef.current[row][col] = ref;
+    if(row < inputsRef.current.length && col < inputsRef.current[row].length) {
+      inputsRef.current[row][col] = ref;
+    }
   };
 
   const { h: horizontalDefs, v: verticalDefs } = useMemo(
