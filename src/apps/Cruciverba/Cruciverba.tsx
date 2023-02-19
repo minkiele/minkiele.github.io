@@ -372,6 +372,15 @@ function Cruciverba() {
   const handleKeyDownNavigateFactory =
     (row: number, col: number): KeyboardEventHandler<HTMLInputElement> =>
       (evt) => {
+        if (evt.key === ' ') {
+          // Must prevent default otherwise page will slide down!
+          evt.preventDefault();
+          dispatch({
+            type: 'toggleBlack',
+            row,
+            col
+          });
+        }
         if (evt.key === 'ArrowUp' && row > 0) {
           inputsRef.current
             .reduceRight<HTMLInputElement | null>(

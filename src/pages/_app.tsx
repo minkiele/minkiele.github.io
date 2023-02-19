@@ -14,7 +14,8 @@ export default function App({ Component, pageProps }: AppProps<LazyRouteComponen
   return (
     <>
       <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/** {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag#the_effect_of_interactive_ui_widgets} */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=overlays-content" />
         <title>{'Minkiele - The wrong website, by definition.' + (pageProps.setTitle !== false ? ` - #${pageProps.name}` : '') }</title>
       </Head>
       {!isNullOrEmpty(process.env.NEXT_PUBLIC_ANALYTICS_ID) &&

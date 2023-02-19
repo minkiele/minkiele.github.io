@@ -21,6 +21,7 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
   {
     route: '/sudoku',
     name: 'Sudoku',
+    archived: true,
   },
   {
     route: '/anagrammator',
