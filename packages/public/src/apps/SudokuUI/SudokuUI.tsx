@@ -38,7 +38,7 @@ function SudokuUI() {
    * @link https://stackoverflow.com/questions/66096260/why-am-i-getting-referenceerror-self-is-not-defined-when-i-import-a-client-side
    * to see why I did adopt this solution to make validation work
    */
-  const validatorRef = useRef(import('minkiele-sudoku-matrix').then(({
+  const validatorRef = useRef(import('sudoku-matrix').then(({
     SudokuMatrix
   }) => SudokuMatrix));
 

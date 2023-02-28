@@ -1,6 +1,6 @@
 import { ChangeEvent, Children, useCallback, useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
-import anagrammator, { countAnagrams, getCountAnagramFactors } from 'anagrammator-minkiele';
+import anagrammator, { countAnagrams, getCountAnagramFactors } from 'anagrammator';
 import { UberMath } from '../../lib/ubermath';
 import AnagrammatorMd from './README.md';
 
