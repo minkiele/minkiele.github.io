@@ -13,5 +13,16 @@
         ]
       }
     }
+  },
+  "targetDefaults": {
+    "dev": {
+      "dependsOn": ["^build"]
+    },
+    "export": {
+      "dependsOn": ["build"]
+    },
+    "build": {
+      "dependsOn": ["^build"]
+    }
   }
 }
