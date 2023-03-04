@@ -32,6 +32,7 @@ type ReducerState = {
   cols: number;
   showDefs: boolean;
   showNumbers: boolean;
+  direction: string;
 };
 
 type ReducerSimpleAction = 'setIncrociObbligatiMode' | 'setRicercaMode' | 'wipe' | 'setCorniciConcentricheMode';
@@ -67,6 +68,10 @@ type ReducerAction =
   | {
     type: 'setShowNumbers';
     showNumbers: boolean;
+  }
+  | {
+    type: 'setDirection';
+    direction: 'H' | 'V';
   }
   | {
     type: ReducerSimpleAction;
@@ -131,7 +136,7 @@ const dumpMatrix = (fromMatrix: ReducerState['matrix'], toMatrix: ReducerState['
   }
 }
 
-const initReducer = ({ rows, cols, showDefs = true, showNumbers = true, oldState }: { rows: number; cols: number; showDefs?: boolean, showNumbers?: boolean, oldState?: ReducerState }) => {
+const initReducer = ({ rows, cols, showDefs = true, showNumbers = true, direction = 'H', oldState }: { rows: number; cols: number; showDefs?: boolean, showNumbers?: boolean, direction?: 'H' | 'V', oldState?: ReducerState }) => {
   const matrix = times(() => repeat('', cols), rows);
   let definitions: Array<Definition>;
   if (oldState == null) {
@@ -141,7 +146,7 @@ const initReducer = ({ rows, cols, showDefs = true, showNumbers = true, oldState
     dumpMatrix(oldState.matrix, matrix);
     definitions = getDefinitions(oldState.matrix);
   }
-  return { matrix, definitions, rows, cols, showDefs, showNumbers };
+  return { matrix, definitions, rows, cols, showDefs, showNumbers, direction };
 };
 
 const isGreyRow = (
@@ -160,7 +165,7 @@ const isGreyRow = (
           currentRow < CORNICI_ROWS - (CORNICI_COLS - currentCol - 1)))));
 
 function Cruciverba() {
-  const [{ matrix, definitions, rows: ROWS, cols: COLS, showDefs, showNumbers }, dispatch] = useReducer(
+  const [{ matrix, definitions, rows: ROWS, cols: COLS, showDefs, showNumbers, direction }, dispatch] = useReducer(
     (state: ReducerState, action: ReducerAction) => {
       switch (action.type) {
         case 'setValue': {
@@ -268,6 +273,12 @@ function Cruciverba() {
             definitions: getDefinitions(newState.matrix)
           };
         }
+        case'setDirection': {
+          return {
+            ...state,
+            direction: action.direction
+          }
+        }
       }
     },
     {
@@ -275,6 +286,7 @@ function Cruciverba() {
       cols: DEFAULT_COLS,
       showDefs: DEFAULT_SHOW_DEFS,
       showNumbers: DEFAULT_SHOW_NUMBERS,
+      direction: 'H'
     },
     initReducer
   );
@@ -365,6 +377,13 @@ function Cruciverba() {
     });
   };
 
+  const handleChangeDirection: ChangeEventHandler<HTMLInputElement> = (evt) => {
+    dispatch({
+      type: 'setDirection',
+      direction: evt.target.value as 'H' | 'V'
+    })
+  }
+
   const handleSimpleAction = (type: ReducerSimpleAction): MouseEventHandler<HTMLButtonElement> => () => {
     dispatch({ type });
   }
@@ -423,10 +442,16 @@ function Cruciverba() {
   const handleKeyUpNavigateFactory =
     (row: number, col: number): KeyboardEventHandler<HTMLInputElement> =>
       (evt) => {
-        if (/^[a-zA-Z]$/.test(evt.key) && col < matrix[row].length - 1) {
-          inputsRef.current[row]
-            .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > col && current != null ? current : acc), null)
-            ?.focus();
+        if(/^[a-zA-Z]$/.test(evt.key)){
+          if (direction === 'H' && col < matrix[row].length - 1) {
+            inputsRef.current[row]
+              .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > col && current != null ? current : acc), null)
+              ?.focus();
+          } else if (direction === 'V' && row < matrix.length - 1) {
+            inputsRef.current
+              .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > row && current[col] != null ? current[col] : acc), null)
+              ?.focus();
+          }
         }
       };
 
@@ -573,6 +598,12 @@ function Cruciverba() {
         <br />
         <input id="showNumbers" name="showNumbers" checked={showNumbers} onChange={handleToggleNumbers} type="checkbox" value="showNumbers" />
         <label htmlFor="showNumbers">Mostra numeri</label>
+        <br />
+        <input id="directionHorizontal" name="direction" checked={direction === 'H'} onChange={handleChangeDirection} type="radio" value="H" />
+        <label htmlFor="directionHorizontal">Muoviti in orizzontale</label>
+        {' '}
+        <input id="directionVertical" name="direction" checked={direction === 'V'} onChange={handleChangeDirection} type="radio" value="V" />
+        <label htmlFor="directionVertical">Muoviti in verticale</label>
         <br />
         <button onClick={handleSimpleAction('setIncrociObbligatiMode')} type="button"><em>Incroci obbligati</em> mode</button>
         {' '}
