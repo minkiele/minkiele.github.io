@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST={"../apps/SudokuUI/SudokuUI.tsx -> minkiele-sudoku-matrix":{id:4567,files:["static/chunks/567.ebd065ed819f82b8.js"]}};

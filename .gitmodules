@@ -1,0 +1,8 @@
+[submodule "packages/sudoku-matrix"]
+	path = packages/sudoku-matrix
+	url = https://github.com/minkiele/sudoku-matrix.git
+	branch = feature/submodule
+[submodule "packages/anagrammator"]
+	path = packages/anagrammator
+	url = https://github.com/minkiele/anagrammator.git
+	branch = feature/submodule
