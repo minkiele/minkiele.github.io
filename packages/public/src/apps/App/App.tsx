@@ -83,6 +83,10 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     name: 'Three',
     archived: true,
   },
+  {
+    route: '/tictactoe',
+    name: 'Tic Tac Toe',
+  },
 ];
 
 export const lazyRouteComponents = allLazyRouteComponents.filter((lazyRouteComponent) => lazyRouteComponent.archived !== true);

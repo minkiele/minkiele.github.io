@@ -1,0 +1,62 @@
+@use 'sass:math';
+@use '../../styles/colors';
+@use '../../styles/mixins';
+
+.board {
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 1;
+  width: 100%;
+
+  max-width: 500px;
+
+  &_row {
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+  &_col {
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    cursor: pointer;
+    border: 0 solid colors.$fg;
+    &:not(:last-child) {
+      border-right-width: 1px;
+    }
+  }
+  &_row:not(:last-child) .board_col {
+    border-bottom-width: 1px;
+  }
+
+  &_strike {
+    position: relative;
+    &::after {
+      position: absolute;
+      content: ' ';
+      width: 100%;
+      height: 1px;
+      border-top: 3px solid colors.$fg;
+    }
+    @for $i from 0 to 4 {
+      &__#{$i} {
+        &::after {
+          @if $i % 2 == 1 {
+            width: 100% * math.sqrt(2);
+          }
+          transform: rotate(#{90deg - ($i * 45deg)});
+        }
+      }
+    }
+  }
+}
+
+@include mixins.when-dark() {
+  .board_col,
+  .board_strike {
+    border-color: colors.$dark-fg;
+  }
+}
