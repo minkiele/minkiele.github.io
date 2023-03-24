@@ -1,5 +1,11 @@
 import { repeat, times, __ } from 'ramda';
-import { FunctionComponent, useCallback, useEffect, useMemo, useReducer } from 'react';
+import {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+} from 'react';
 import styles from './TicTacToe.module.scss';
 import TicTacToeMD from './README.md';
 
@@ -121,7 +127,10 @@ const TicTacToe: FunctionComponent = () => {
     (state: TicTacToeReducerState, action: TicTacToeReducerAction) => {
       switch (action.type) {
         case 'mark': {
-          if (state.matrix[action.row][action.col] == null && state.victoryCoords == null) {
+          if (
+            state.matrix[action.row][action.col] == null &&
+            state.victoryCoords == null
+          ) {
             const updatedMatrix = [
               ...state.matrix.slice(0, action.row),
               [
@@ -146,12 +155,19 @@ const TicTacToe: FunctionComponent = () => {
         }
         case 'vspc': {
           return {
-            ...getInitialState(),
+            ...state,
             vsPc: action.value,
+            // PC will move only if enabled, match is not over and it's the O turn
+            movePc:
+              action.value && state.victoryCoords == null && state.sign === O,
           };
         }
         case 'reset': {
-          return getInitialState();
+          return {
+            ...getInitialState(),
+            // A reset must not reset the type of play
+            vsPc: state.vsPc,
+          };
         }
         default: {
           return state;
@@ -162,7 +178,7 @@ const TicTacToe: FunctionComponent = () => {
   );
 
   const handleMark = (row: number, col: number) => () => {
-    if(!movePc) {
+    if (!movePc) {
       dispatch({
         type: 'mark',
         row,
@@ -196,10 +212,10 @@ const TicTacToe: FunctionComponent = () => {
   );
 
   useEffect(() => {
-    if(movePc) {
+    if (movePc) {
       const timerId = setTimeout(() => {
         const move = pickEmptyCoordinate(matrix);
-        if(move != null) {
+        if (move != null) {
           dispatch({
             type: 'mark',
             row: move[0],
@@ -228,19 +244,38 @@ const TicTacToe: FunctionComponent = () => {
                 )}`}
                 onClick={handleMark(rowIndex, colIndex)}
               >
-                {col?.description || <>&nbsp;</>}
+                {col === X && '❌'}
+                {col === O && '⭕'}
+                {col == null && <span className={styles.board_empty}>♻️</span>}
               </div>
             ))}
           </div>
         ))}
       </div>
-      {victoryCoords && <p>{sign.description} won!</p>}
-      {!movesPossible && <p>Draw, no moves possible.</p>}
+      {victoryCoords ? (
+        <p>{sign.description} won!</p>
+      ) : (
+        !movesPossible && <p>Draw, no moves possible.</p>
+      )}
       <fieldset>
         <legend>Settings</legend>
-        <input type="radio" name="vspc" id="vspcFalse" value="false" onChange={handleVsPc(false)} checked={!vsPc} />
+        <input
+          type="radio"
+          name="vspc"
+          id="vspcFalse"
+          value="false"
+          onChange={handleVsPc(false)}
+          checked={!vsPc}
+        />
         <label htmlFor="vspcFalse">Player 1 VS Player 2</label>{' '}
-        <input type="radio" name="vspc" id="vspcTrue" value="true" onChange={handleVsPc(true)} checked={vsPc} />
+        <input
+          type="radio"
+          name="vspc"
+          id="vspcTrue"
+          value="true"
+          onChange={handleVsPc(true)}
+          checked={vsPc}
+        />
         <label htmlFor="vspcTrue">Player 1 VS PC</label>
         <br />
         <button type="button" onClick={handleReset}>

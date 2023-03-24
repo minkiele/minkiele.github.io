@@ -21,12 +21,16 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    font-size: 4rem;
+    font-family: 'Noto Emoji';
+    font-size: 2rem;
     cursor: pointer;
     border: 0 solid colors.$fg;
     &:not(:last-child) {
       border-right-width: 1px;
     }
+  }
+  &_empty {
+    visibility: hidden;
   }
   &_row:not(:last-child) .board_col {
     border-bottom-width: 1px;

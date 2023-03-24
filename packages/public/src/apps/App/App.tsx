@@ -74,11 +74,6 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     archived: true,
   },
   {
-    route: '/archive',
-    name: 'The Archive',
-    prefetch: false,
-  },
-  {
     route: '/three',
     name: 'Three',
     archived: true,
@@ -87,7 +82,16 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     route: '/tictactoe',
     name: 'Tic Tac Toe',
   },
+  {
+    route: '/archive',
+    name: 'The Archive',
+    prefetch: false,
+  },
 ];
 
-export const lazyRouteComponents = allLazyRouteComponents.filter((lazyRouteComponent) => lazyRouteComponent.archived !== true);
-export const archivedLazyRouteComponents = allLazyRouteComponents.filter((lazyRouteComponent) => lazyRouteComponent.archived === true);
+export const lazyRouteComponents = allLazyRouteComponents.filter(
+  (lazyRouteComponent) => lazyRouteComponent.archived !== true
+);
+export const archivedLazyRouteComponents = allLazyRouteComponents.filter(
+  (lazyRouteComponent) => lazyRouteComponent.archived === true
+);
