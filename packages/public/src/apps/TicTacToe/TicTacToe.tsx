@@ -1,4 +1,4 @@
-import { repeat, times, __ } from 'ramda';
+import { comparator, repeat, times } from 'ramda';
 import {
   FunctionComponent,
   useCallback,
@@ -101,10 +101,119 @@ const getStrikeData = <T extends unknown>(
     ? classNames[getStrikeDirection(coords)]
     : undefined;
 
-const pickEmptyCoordinate = (
+// This is used get coordinates list with interesting
+// probabilities like that to win a match or to block a potential
+// double chance for the player.
+const getChanceCoords = (
+  sign: symbol,
+  matrix: Array<Array<symbol | null>>,
+  testChance: (signCount: number, emptyCount: number) => boolean
+): Array<Array<Array<number>>> =>
+  victoryTests.filter((victoryTest) => {
+    const [signCount, emptyCount] = victoryTest.reduce(
+      (acc, [row, col]) => {
+        if (matrix[row][col] === sign) {
+          return [acc[0] + 1, acc[1]];
+        } else if (matrix[row][col] == null) {
+          return [acc[0], acc[1] + 1];
+        }
+        return acc;
+      },
+      [0, 0]
+    );
+    return testChance(signCount, emptyCount);
+  });
+
+// Pick a coordinate that will win a match
+const getAboutToWinCoord = (
+  sign: symbol,
   matrix: Array<Array<symbol | null>>
-): [number, number] | undefined => {
-  const emptySpots = matrix.reduce<Array<[number, number]>>(
+): Array<number> | undefined => {
+  const chanceCoordsList = getChanceCoords(
+    sign,
+    matrix,
+    (signCount, emptyCount) =>
+      signCount === TICTACTOE_SIDE - 1 && emptyCount === 1
+  );
+  if (chanceCoordsList.length > 0) {
+    const chanceCoords =
+      chanceCoordsList[Math.floor(Math.random() * chanceCoordsList.length)];
+    return chanceCoords.find(([row, col]) => matrix[row][col] == null);
+  }
+  return undefined;
+};
+
+const isDiagonalCell = (row: number, col: number) =>
+  row === col ||
+  TICTACTOE_SIDE - 1 - col === row ||
+  row - TICTACTOE_SIDE - 1 === col;
+
+interface TicTacToePossibility {
+  coords: [number, number];
+  ranking: number;
+  diagonal: boolean;
+}
+
+// For each empty coord rank them by number of tic-tac-toes
+// they would cause by marking it, then choose randomly
+// a coordinate from those with maximum ranking.
+// There's a fault in the logic here, but it's taken care
+// in the diagonal paradox
+const getPossibilityCoord = (
+  sign: symbol,
+  matrix: Array<Array<symbol | null>>
+): TicTacToePossibility | undefined => {
+  const chanceCoordsList = getChanceCoords(
+    sign,
+    matrix,
+    (signCount, emptyCount) =>
+      signCount === 1 && emptyCount === TICTACTOE_SIDE - 1
+  );
+  const rankings: Array<TicTacToePossibility> = [];
+  for (let i = 0; i < matrix.length; i += 1) {
+    for (let j = 0; j < matrix[i].length; j += 1) {
+      const ranking = chanceCoordsList.reduce<number>((acc, chanceCoords) => {
+        if (
+          chanceCoords.some(
+            ([row, col]) => i == row && j === col && matrix[row][col] == null
+          )
+        ) {
+          return acc + 1;
+        }
+        return acc;
+      }, 0);
+      rankings.push({
+        coords: [i, j],
+        ranking,
+        diagonal: isDiagonalCell(i, j),
+      });
+    }
+  }
+  rankings.sort(
+    comparator((a, b) => {
+      if (a.ranking >= b.ranking) {
+        return true;
+      } else if (a.ranking === b.ranking) {
+        return a.diagonal;
+      }
+      return false;
+    })
+  );
+
+  if (rankings.length > 0) {
+    const maxRatings = rankings.filter(
+      ({ ranking, diagonal }) =>
+        ranking === rankings[0].ranking && (!rankings[0].diagonal || diagonal)
+    );
+    return maxRatings[Math.floor(Math.random() * maxRatings.length)];
+  }
+  return undefined;
+};
+
+const getEmptyCoords = (
+  matrix: Array<Array<symbol | null>>
+): Array<[number, number]> =>
+  matrix.reduce<Array<[number, number]>>(
     (rowAcc, row, rowIndex) => [
       ...rowAcc,
       ...row.reduce<Array<[number, number]>>((colAcc, col, colIndex) => {
@@ -116,8 +225,99 @@ const pickEmptyCoordinate = (
     ],
     []
   );
-  if (emptySpots.length > 0) {
-    return emptySpots[Math.floor(Math.random() * emptySpots.length)];
+
+const pickRandomEmptyFromList = (
+  list: Array<[number, number]>,
+  matrix: Array<Array<symbol | null>>
+): [number, number] | undefined =>
+  [...list]
+    .sort(comparator(() => Math.random() < 0.5))
+    .find(([row, col]) => matrix[row][col] == null);
+
+const inDiagonalParadox = (matrix: Array<Array<symbol | null>>) => {
+  const count = matrix.reduce(
+    (acc, row) =>
+      acc +
+      row.reduce((acc, col) => {
+        if (col != null) {
+          return acc + 1;
+        }
+        return acc;
+      }, 0),
+    0
+  );
+  if (count === TICTACTOE_SIDE) {
+    return (
+      matrix[1][1] === O &&
+      ((matrix[0][0] != null &&
+        matrix[0][0] === matrix[TICTACTOE_SIDE - 1][TICTACTOE_SIDE - 1]) ||
+        (matrix[TICTACTOE_SIDE - 1][0] != null &&
+          matrix[TICTACTOE_SIDE - 1][0] === matrix[0][TICTACTOE_SIDE - 1]))
+    );
+  }
+  return false;
+};
+
+const pickEmptyCoordinate = (
+  matrix: Array<Array<symbol | null>>
+): [number, number] | undefined => {
+  const emptyCoords = getEmptyCoords(matrix);
+  // Find if I am about to win
+  const imAboutToWinCoord = getAboutToWinCoord(O, matrix);
+  if (imAboutToWinCoord) {
+    // Go to win
+    return imAboutToWinCoord as [number, number];
+  }
+  // Find if adversary is about to win
+  const aboutToWinCoord = getAboutToWinCoord(X, matrix);
+  if (aboutToWinCoord != null) {
+    // Block it
+    return aboutToWinCoord as [number, number];
+  }
+  // APPLY STRATEGY ONLY IF SIDE IS 3, OTHERWISE GO RANDOM
+  if (TICTACTOE_SIDE === 3) {
+    // If center cell is free occupy it
+    if (emptyCoords.find(([row, col]) => row === 1 && col === 1)) {
+      return [1, 1];
+    }
+    // Diagonal paradox is a move where normally the algorithm would
+    // wrongly choose a diagonal to defend itself and giving
+    // an automatic win to the player. In this case we force the PC
+    // to play a cross-move to force the player into a draw.
+    if (inDiagonalParadox(matrix)) {
+      return pickRandomEmptyFromList(
+        [
+          [0, 1],
+          [1, 0],
+          [1, 2],
+          [2, 1],
+        ],
+        matrix
+      ) as [number, number];
+    }
+    const possibilityCoord = getPossibilityCoord(O, matrix);
+    const opponentPossibility = getPossibilityCoord(X, matrix);
+    // If I have both an attack and defend moves and the defend
+    // is better then use it
+    if (
+      possibilityCoord != null &&
+      opponentPossibility != null &&
+      opponentPossibility.ranking > possibilityCoord.ranking
+    ) {
+      return opponentPossibility.coords;
+    }
+    // Try to win
+    if (possibilityCoord != null) {
+      return possibilityCoord.coords;
+    }
+    // Defend
+    if (opponentPossibility != null) {
+      return opponentPossibility.coords;
+    }
+  }
+  // No moves found, pick a coord randomly
+  if (emptyCoords.length > 0) {
+    return emptyCoords[Math.floor(Math.random() * emptyCoords.length)];
   }
   return undefined;
 };
@@ -222,7 +422,7 @@ const TicTacToe: FunctionComponent = () => {
             col: move[1],
           });
         }
-      }, 1500);
+      }, 1000);
       return () => {
         clearTimeout(timerId);
       };
