@@ -21,7 +21,6 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    font-family: 'Noto Emoji';
     font-size: 2rem;
     cursor: pointer;
     border: 0 solid colors.$fg;
@@ -56,11 +55,14 @@
       }
     }
   }
+  &_sign {
+    font-family: 'Noto Emoji';
+  }
 }
 
 @include mixins.when-dark() {
   .board_col,
-  .board_strike {
+  .board_strike::after {
     border-color: colors.$dark-fg;
   }
 }

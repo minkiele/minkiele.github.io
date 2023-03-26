@@ -29,18 +29,19 @@ type TicTacToeReducerAction =
     }
   | {
       type: 'vspc';
-      value: boolean;
+      enabled: boolean;
     }
   | {
       type: 'reset';
+      sign?: symbol;
     };
 
 const X = Symbol('X');
 const O = Symbol('O');
 
-const getInitialState = (): TicTacToeReducerState => ({
+const getInitialState = (sign = X): TicTacToeReducerState => ({
   matrix: times(() => repeat(null, TICTACTOE_SIDE), TICTACTOE_SIDE),
-  sign: X,
+  sign,
   victoryCoords: undefined,
   vsPc: false,
   movePc: false,
@@ -182,11 +183,14 @@ const getPossibilityCoord = (
         }
         return acc;
       }, 0);
-      rankings.push({
-        coords: [i, j],
-        ranking,
-        diagonal: isDiagonalCell(i, j),
-      });
+      // Add the candidate coordinates only if they are playable (ranking > 0)
+      if (ranking > 0) {
+        rankings.push({
+          coords: [i, j],
+          ranking,
+          diagonal: isDiagonalCell(i, j),
+        });
+      }
     }
   }
   rankings.sort(
@@ -356,17 +360,18 @@ const TicTacToe: FunctionComponent = () => {
         case 'vspc': {
           return {
             ...state,
-            vsPc: action.value,
+            vsPc: action.enabled,
             // PC will move only if enabled, match is not over and it's the O turn
             movePc:
-              action.value && state.victoryCoords == null && state.sign === O,
+              action.enabled && state.victoryCoords == null && state.sign === O,
           };
         }
         case 'reset': {
           return {
-            ...getInitialState(),
+            ...getInitialState(action.sign),
             // A reset must not reset the type of play
             vsPc: state.vsPc,
+            movePc: state.vsPc && action.sign === O,
           };
         }
         default: {
@@ -387,12 +392,12 @@ const TicTacToe: FunctionComponent = () => {
     }
   };
 
-  const handleReset = () => {
-    dispatch({ type: 'reset' });
+  const handleReset = (sign?: symbol) => () => {
+    dispatch({ type: 'reset', sign });
   };
 
   const handleVsPc = (value: boolean) => () => {
-    dispatch({ type: 'vspc', value });
+    dispatch({ type: 'vspc', enabled: value });
   };
 
   const getStrikeClassName = useCallback(
@@ -444,21 +449,29 @@ const TicTacToe: FunctionComponent = () => {
                 )}`}
                 onClick={handleMark(rowIndex, colIndex)}
               >
-                {col === X && '❌'}
-                {col === O && '⭕'}
-                {col == null && <span className={styles.board_empty}>♻️</span>}
+                <span className={styles.board_sign}>
+                  {col === X && '❌'}
+                  {col === O && '⭕'}
+                  {col == null && (
+                    <span className={styles.board_empty}>♻️</span>
+                  )}
+                </span>
               </div>
             ))}
           </div>
         ))}
       </div>
       {victoryCoords ? (
-        <p>{sign.description} won!</p>
+        <p>
+          <span className={styles.board_sign}>{sign === X ? '❌' : '⭕'}</span>{' '}
+          won!
+        </p>
       ) : (
         !movesPossible && <p>Draw, no moves possible.</p>
       )}
       <fieldset>
         <legend>Settings</legend>
+        Player 1 (<span className={styles.board_sign}>❌</span>) Vs.{' '}
         <input
           type="radio"
           name="vspc"
@@ -467,7 +480,7 @@ const TicTacToe: FunctionComponent = () => {
           onChange={handleVsPc(false)}
           checked={!vsPc}
         />
-        <label htmlFor="vspcFalse">Player 1 VS Player 2</label>{' '}
+        <label htmlFor="vspcFalse">Player 2 </label>{' '}
         <input
           type="radio"
           name="vspc"
@@ -476,10 +489,14 @@ const TicTacToe: FunctionComponent = () => {
           onChange={handleVsPc(true)}
           checked={vsPc}
         />
-        <label htmlFor="vspcTrue">Player 1 VS PC</label>
+        <label htmlFor="vspcTrue">PC </label> (
+        <span className={styles.board_sign}>⭕</span>)
         <br />
-        <button type="button" onClick={handleReset}>
+        <button type="button" onClick={handleReset()}>
           New match
+        </button>{' '}
+        <button type="button" onClick={handleReset(O)}>
+          New match, but starts <span className={styles.board_sign}>⭕</span>
         </button>
       </fieldset>
     </div>
