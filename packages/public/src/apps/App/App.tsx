@@ -15,6 +15,10 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     name: 'Minesweeper',
   },
   {
+    route: '/tictactoe',
+    name: 'Tic Tac Toe',
+  },
+  {
     route: '/vietnam',
     name: 'Vietnam',
   },
@@ -77,10 +81,6 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     route: '/three',
     name: 'Three',
     archived: true,
-  },
-  {
-    route: '/tictactoe',
-    name: 'Tic Tac Toe',
   },
   {
     route: '/archive',
