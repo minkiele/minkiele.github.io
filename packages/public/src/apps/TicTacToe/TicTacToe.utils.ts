@@ -9,8 +9,8 @@ import {
 
 export const TICTACTOE_SIDE = 3;
 
-export const X = Symbol('X');
-export const O = Symbol('O');
+export const X = Symbol('❌');
+export const O = Symbol('⭕️');
 
 const getInitialState = (sign = X): TicTacToeReducerState => ({
   matrix: times(() => repeat(null, TICTACTOE_SIDE), TICTACTOE_SIDE),
@@ -305,6 +305,53 @@ export const pickEmptyCoordinate = (
     return pickOne(emptyCoords);
   }
   return undefined;
+};
+
+const getOrdinalLabel = (
+  n: number,
+  firstLabel: string,
+  centerLabel: string,
+  lastLabel: string
+): string => {
+  if (n === 0) {
+    return firstLabel;
+  }
+  if (n === TICTACTOE_SIDE - 1) {
+    return lastLabel;
+  }
+  if (n === (TICTACTOE_SIDE - 1) / 2) {
+    return centerLabel;
+  }
+  const nmod = (n + 1) % 10;
+  const st = nmod === 1;
+  const nd = nmod === 2;
+  const rd = nmod === 3;
+  return `${n + 1}${
+    nmod < 1 || nmod > 3 || (n > 9 && n < 13)
+      ? 'th'
+      : nmod === 1
+      ? 'st'
+      : nmod === 2
+      ? 'nd'
+      : 'rd'
+  }`;
+};
+
+
+export const getAriaLabel = (rowIndex: number, colIndex: number): string => {
+  const rowLabel = getOrdinalLabel(
+    rowIndex,
+    'top',
+    'center',
+    'bottom'
+  );
+  const colLabel = getOrdinalLabel(
+    colIndex,
+    'left',
+    'center',
+    'right'
+  );
+  return rowLabel === 'center' && rowLabel === colLabel ? 'central' : `${rowLabel}-${colLabel}`;
 };
 
 export const useTicTacToe = () =>

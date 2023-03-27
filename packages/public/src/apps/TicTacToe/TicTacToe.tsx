@@ -1,16 +1,19 @@
-import {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
+import { FunctionComponent, useCallback, useEffect, useMemo } from 'react';
 import styles from './TicTacToe.module.scss';
 import TicTacToeMD from './README.md';
 import classNames from 'classnames';
-import { getStrikeData, O, pickEmptyCoordinate, TICTACTOE_SIDE, useTicTacToe, X } from './TicTacToe.utils';
+import {
+  getAriaLabel,
+  getStrikeData,
+  O,
+  pickEmptyCoordinate,
+  useTicTacToe,
+  X,
+} from './TicTacToe.utils';
 
 const TicTacToe: FunctionComponent = () => {
-  const [{ matrix, victoryCoords, sign, vsPc, movePc, announce }, dispatch] = useTicTacToe();
+  const [{ matrix, victoryCoords, sign, vsPc, movePc, announce }, dispatch] =
+    useTicTacToe();
 
   const handleMark = (row: number, col: number) => () => {
     if (!movePc) {
@@ -64,35 +67,6 @@ const TicTacToe: FunctionComponent = () => {
     }
   }, [movePc, matrix, dispatch]);
 
-  const getOrdinalLabel = (
-    n: number,
-    firstLabel: string,
-    lastLabel: string
-  ): string => {
-    if (n === 0) {
-      return firstLabel;
-    }
-    if (n === TICTACTOE_SIDE - 1) {
-      return lastLabel;
-    }
-    if (n === (TICTACTOE_SIDE - 1) / 2) {
-      return 'center';
-    }
-    const nmod = (n + 1) % 10;
-    const st = nmod === 1;
-    const nd = nmod === 2;
-    const rd = nmod === 3;
-    return `${n + 1}${
-      nmod < 1 || nmod > 3 || (n > 9 && n < 13)
-        ? 'th'
-        : nmod === 1
-        ? 'st'
-        : nmod === 2
-        ? 'nd'
-        : 'rd'
-    }`;
-  };
-
   useEffect(() => {
     if (announce) {
       const timerId = setTimeout(() => {
@@ -125,32 +99,23 @@ const TicTacToe: FunctionComponent = () => {
                     className={styles.board_button}
                     onClick={handleMark(rowIndex, colIndex)}
                     aria-label={`Mark with ${
-                      X ? '❌' : '⭕'
-                    } the ${getOrdinalLabel(
-                      rowIndex,
-                      'top',
-                      'bottom'
-                    )}-${getOrdinalLabel(colIndex, 'left', 'right')} cell`}
+                      sign.description
+                    } the ${getAriaLabel(rowIndex, colIndex)} space`}
                   >
                     <span className={styles.board_sign}>
-                      <span className={styles.board_empty}>♻️</span>
+                      <span className={styles.board_empty} aria-hidden>♻️</span>
                     </span>
                   </button>
                 )}
                 {col != null && (
                   <span
                     className={styles.board_sign}
-                    aria-label={`${getOrdinalLabel(
+                    aria-label={`${getAriaLabel(
                       rowIndex,
-                      'top',
-                      'bottom'
-                    )}-${getOrdinalLabel(
-                      colIndex,
-                      'left',
-                      'right'
-                    )} cell marked with  ${col ? '❌' : '⭕'}`}
+                      colIndex
+                    )} space marked with  ${col.description}`}
                   >
-                    {col === X ? '❌' : '⭕'}
+                    {col.description}
                   </span>
                 )}
               </div>
@@ -159,15 +124,13 @@ const TicTacToe: FunctionComponent = () => {
         ))}
       </div>
       {announce != null && (
-        <p role="alert" aria-live="assertive">
-          PC marked with ⭕ the {getOrdinalLabel(announce[0], 'top', 'bottom')}-
-          {getOrdinalLabel(announce[1], 'left', 'right')} cell
+        <p role="alert" aria-live="assertive" className="sr-only">
+          PC marked with ⭕ the {getAriaLabel(...announce)} space
         </p>
       )}
       {victoryCoords ? (
         <p role="alert" aria-live="assertive">
-          <span className={styles.board_sign}>{sign === X ? '❌' : '⭕'}</span>{' '}
-          won!
+          <span className={styles.board_sign}>{X.description}</span> won!
         </p>
       ) : (
         !movesPossible && (

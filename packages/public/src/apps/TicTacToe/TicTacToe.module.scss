@@ -30,7 +30,6 @@
     @extend %flex-center;
 
     font-size: 2rem;
-    cursor: pointer;
     border: 0 solid colors.$fg;
     &:not(:last-child) {
       border-right-width: 1px;
@@ -47,6 +46,8 @@
 
     border: 0;
     box-shadow: none;
+
+    cursor: pointer;
 
     &:active {
       transform: none;
