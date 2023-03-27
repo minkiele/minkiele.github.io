@@ -19,6 +19,7 @@ interface TicTacToeReducerState {
   victoryCoords: TicTacToeVictoryCoords | undefined;
   vsPc: boolean;
   movePc: boolean;
+  announce: [number, number] | undefined;
 }
 
 type TicTacToeReducerAction =
@@ -34,7 +35,8 @@ type TicTacToeReducerAction =
   | {
       type: 'reset';
       sign?: symbol;
-    };
+    }
+  | { type: 'unannounce' };
 
 const X = Symbol('X');
 const O = Symbol('O');
@@ -45,6 +47,7 @@ const getInitialState = (sign = X): TicTacToeReducerState => ({
   victoryCoords: undefined,
   vsPc: false,
   movePc: false,
+  announce: undefined,
 });
 
 const victoryTests = [
@@ -327,60 +330,70 @@ const pickEmptyCoordinate = (
 };
 
 const TicTacToe: FunctionComponent = () => {
-  const [{ matrix, victoryCoords, sign, vsPc, movePc }, dispatch] = useReducer(
-    (state: TicTacToeReducerState, action: TicTacToeReducerAction) => {
-      switch (action.type) {
-        case 'mark': {
-          if (
-            state.matrix[action.row][action.col] == null &&
-            state.victoryCoords == null
-          ) {
-            const updatedMatrix = [
-              ...state.matrix.slice(0, action.row),
-              [
-                ...state.matrix[action.row].slice(0, action.col),
-                state.sign,
-                ...state.matrix[action.row].slice(action.col + 1),
-              ],
-              ...state.matrix.slice(action.row + 1),
-            ];
-            const victoryCoords = getVictoryCoords(updatedMatrix);
-            const sign =
-              victoryCoords == null ? (state.sign === X ? O : X) : state.sign;
+  const [{ matrix, victoryCoords, sign, vsPc, movePc, announce }, dispatch] =
+    useReducer(
+      (state: TicTacToeReducerState, action: TicTacToeReducerAction) => {
+        switch (action.type) {
+          case 'mark': {
+            if (
+              state.matrix[action.row][action.col] == null &&
+              state.victoryCoords == null
+            ) {
+              const updatedMatrix = [
+                ...state.matrix.slice(0, action.row),
+                [
+                  ...state.matrix[action.row].slice(0, action.col),
+                  state.sign,
+                  ...state.matrix[action.row].slice(action.col + 1),
+                ],
+                ...state.matrix.slice(action.row + 1),
+              ];
+              const victoryCoords = getVictoryCoords(updatedMatrix);
+              const sign =
+                victoryCoords == null ? (state.sign === X ? O : X) : state.sign;
+              return {
+                ...state,
+                matrix: updatedMatrix,
+                sign,
+                victoryCoords,
+                movePc: state.vsPc && !state.movePc,
+                announce:
+                  state.vsPc && state.movePc
+                    ? ([action.row, action.col] as [number, number])
+                    : undefined,
+              };
+            }
+            return state;
+          }
+          case 'vspc': {
             return {
               ...state,
-              matrix: updatedMatrix,
-              sign,
-              victoryCoords,
-              movePc: state.vsPc && !state.movePc,
+              vsPc: action.enabled,
+              // PC will move only if enabled, match is not over and it's the O turn
+              movePc:
+                action.enabled &&
+                state.victoryCoords == null &&
+                state.sign === O,
             };
           }
-          return state;
+          case 'reset': {
+            return {
+              ...getInitialState(action.sign),
+              // A reset must not reset the type of play
+              vsPc: state.vsPc,
+              movePc: state.vsPc && action.sign === O,
+            };
+          }
+          case 'unannounce': {
+            return { ...state, announce: undefined };
+          }
+          default: {
+            return state;
+          }
         }
-        case 'vspc': {
-          return {
-            ...state,
-            vsPc: action.enabled,
-            // PC will move only if enabled, match is not over and it's the O turn
-            movePc:
-              action.enabled && state.victoryCoords == null && state.sign === O,
-          };
-        }
-        case 'reset': {
-          return {
-            ...getInitialState(action.sign),
-            // A reset must not reset the type of play
-            vsPc: state.vsPc,
-            movePc: state.vsPc && action.sign === O,
-          };
-        }
-        default: {
-          return state;
-        }
-      }
-    },
-    getInitialState()
-  );
+      },
+      getInitialState()
+    );
 
   const handleMark = (row: number, col: number) => () => {
     if (!movePc) {
@@ -463,6 +476,17 @@ const TicTacToe: FunctionComponent = () => {
     }`;
   };
 
+  useEffect(() => {
+    if (announce) {
+      const timerId = setTimeout(() => {
+        dispatch({ type: 'unannounce' });
+      }, 2000);
+      return () => {
+        clearTimeout(timerId);
+      };
+    }
+  }, [announce]);
+
   return (
     <div>
       <TicTacToeMD />
@@ -480,21 +504,33 @@ const TicTacToe: FunctionComponent = () => {
                 {col == null && (
                   <button
                     type="button"
+                    className={styles.board_button}
                     onClick={handleMark(rowIndex, colIndex)}
                     aria-label={`Mark with ${
                       X ? '❌' : '⭕'
                     } the ${getOrdinalLabel(
-                      colIndex,
+                      rowIndex,
                       'top',
                       'bottom'
-                    )}-${getOrdinalLabel(rowIndex, 'left', 'right')}`}
+                    )}-${getOrdinalLabel(colIndex, 'left', 'right')} cell`}
                   >
                     <span className={styles.board_sign}>
                       <span className={styles.board_empty}>♻️</span>
                     </span>
                   </button>
                 )}
-                <span className={styles.board_sign}>
+                <span
+                  className={styles.board_sign}
+                  aria-label={`${getOrdinalLabel(
+                    rowIndex,
+                    'top',
+                    'bottom'
+                  )}-${getOrdinalLabel(
+                    colIndex,
+                    'left',
+                    'right'
+                  )} cell marked with  ${col ? '❌' : '⭕'}`}
+                >
                   {col === X && '❌'}
                   {col === O && '⭕'}
                 </span>
@@ -503,13 +539,23 @@ const TicTacToe: FunctionComponent = () => {
           </div>
         ))}
       </div>
+      {announce != null && (
+        <p role="alert" aria-live="assertive">
+          PC marked with ⭕ the {getOrdinalLabel(announce[0], 'top', 'bottom')}-
+          {getOrdinalLabel(announce[1], 'left', 'right')} cell
+        </p>
+      )}
       {victoryCoords ? (
-        <p role="alert">
+        <p role="alert" aria-live="assertive">
           <span className={styles.board_sign}>{sign === X ? '❌' : '⭕'}</span>{' '}
           won!
         </p>
       ) : (
-        !movesPossible && <p role="alert">Draw, no moves possible.</p>
+        !movesPossible && (
+          <p role="alert" aria-live="assertive">
+            Draw game, no moves possible.
+          </p>
+        )
       )}
       <fieldset>
         <legend>Settings</legend>
