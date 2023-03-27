@@ -130,7 +130,7 @@ const TicTacToe: FunctionComponent = () => {
       )}
       {victoryCoords ? (
         <p role="alert" aria-live="assertive">
-          <span className={styles.board_sign}>{X.description}</span> won!
+          <span className={styles.board_sign}>{sign.description}</span> won!
         </p>
       ) : (
         !movesPossible && (

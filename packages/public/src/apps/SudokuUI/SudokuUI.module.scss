@@ -27,6 +27,7 @@
     $side: calc(100vw - #{2 * 20px});
     width: $side;
     height: $side;
+    aspect-ratio: 1;
     > tr {
       &:nth-child(3n):not(:last-child) > td {
         border-bottom-width: 2px;

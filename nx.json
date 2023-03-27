@@ -7,9 +7,7 @@
       "options": {
         "cacheableOperations": [
           "build",
-          "lint",
-          "test",
-          "e2e"
+          "export"
         ]
       }
     }
