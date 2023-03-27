@@ -8,6 +8,7 @@ import {
 } from 'react';
 import styles from './TicTacToe.module.scss';
 import TicTacToeMD from './README.md';
+import classNames from 'classnames';
 
 const TICTACTOE_SIDE = 3;
 
@@ -496,10 +497,11 @@ const TicTacToe: FunctionComponent = () => {
             {row.map((col, colIndex) => (
               <div
                 key={`col-${colIndex}`}
-                className={`${styles.board_col} ${getStrikeClassName(
-                  rowIndex,
-                  colIndex
-                )}`}
+                className={classNames({
+                  [styles.board_col]: true,
+                  [getStrikeClassName(rowIndex, colIndex) as string]:
+                    getStrikeClassName(rowIndex, colIndex),
+                })}
               >
                 {col == null && (
                   <button
@@ -519,21 +521,23 @@ const TicTacToe: FunctionComponent = () => {
                     </span>
                   </button>
                 )}
-                <span
-                  className={styles.board_sign}
-                  aria-label={`${getOrdinalLabel(
-                    rowIndex,
-                    'top',
-                    'bottom'
-                  )}-${getOrdinalLabel(
-                    colIndex,
-                    'left',
-                    'right'
-                  )} cell marked with  ${col ? '❌' : '⭕'}`}
-                >
-                  {col === X && '❌'}
-                  {col === O && '⭕'}
-                </span>
+                {col != null && (
+                  <span
+                    className={styles.board_sign}
+                    aria-label={`${getOrdinalLabel(
+                      rowIndex,
+                      'top',
+                      'bottom'
+                    )}-${getOrdinalLabel(
+                      colIndex,
+                      'left',
+                      'right'
+                    )} cell marked with  ${col ? '❌' : '⭕'}`}
+                  >
+                    {col === X && '❌'}
+                    {col === O && '⭕'}
+                  </span>
+                )}
               </div>
             ))}
           </div>
