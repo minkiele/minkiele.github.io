@@ -100,6 +100,17 @@ const TicTacToe: FunctionComponent = () => {
     }
   }, [announce, dispatch]);
 
+  const placeholder = useMemo(
+    () => (
+      <span className={styles.board_sign}>
+        <span className={styles.board_empty} aria-hidden>
+          ♻️
+        </span>
+      </span>
+    ),
+    []
+  );
+
   return (
     <div>
       <TicTacToeMD />
@@ -115,22 +126,21 @@ const TicTacToe: FunctionComponent = () => {
                     getStrikeClassName(rowIndex, colIndex),
                 })}
               >
-                {col == null && (
-                  <button
-                    type="button"
-                    className={styles.board_button}
-                    onClick={handleMark(rowIndex, colIndex)}
-                    aria-label={`Mark with ${
-                      sign.description
-                    } the ${getAriaLabel(rowIndex, colIndex, side)} space`}
-                  >
-                    <span className={styles.board_sign}>
-                      <span className={styles.board_empty} aria-hidden>
-                        ♻️
-                      </span>
-                    </span>
-                  </button>
-                )}
+                {col == null &&
+                  (victoryCoords != null ? (
+                    placeholder
+                  ) : (
+                    <button
+                      type="button"
+                      className={styles.board_button}
+                      onClick={handleMark(rowIndex, colIndex)}
+                      aria-label={`Mark with ${
+                        sign.description
+                      } the ${getAriaLabel(rowIndex, colIndex, side)} space`}
+                    >
+                      {placeholder}
+                    </button>
+                  ))}
                 {col != null && (
                   <span
                     className={styles.board_sign}
