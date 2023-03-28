@@ -7,30 +7,40 @@ import {
   TicTacToeVictoryCoords,
 } from './TicTacToe.models';
 
+/**
+ * Default side
+ */
 export const TICTACTOE_SIDE = 3;
 
 export const X = Symbol('❌');
 export const O = Symbol('⭕️');
 
-const getInitialState = (sign = X): TicTacToeReducerState => ({
-  matrix: times(() => repeat(null, TICTACTOE_SIDE), TICTACTOE_SIDE),
-  sign,
-  victoryCoords: undefined,
+const getInitialState = ({
+  sign = X,
+  side = TICTACTOE_SIDE,
+  ...state
+}: Partial<TicTacToeReducerState> = {}): TicTacToeReducerState => ({
   vsPc: false,
   movePc: false,
+  ...state,
+  matrix: times(() => repeat(null, side), side),
+  sign,
+  side,
+  victoryCoords: undefined,
   announce: undefined,
 });
 
-const victoryTests = [
-  ...times((row) => times((col) => [row, col], TICTACTOE_SIDE), TICTACTOE_SIDE),
-  ...times((col) => times((row) => [row, col], TICTACTOE_SIDE), TICTACTOE_SIDE),
-  times((diag) => [diag, diag], TICTACTOE_SIDE),
-  times((diag) => [TICTACTOE_SIDE - diag - 1, diag], TICTACTOE_SIDE),
+const getVictoryTests = (side: number) => [
+  ...times((row) => times((col) => [row, col], side), side),
+  ...times((col) => times((row) => [row, col], side), side),
+  times((diag) => [diag, diag], side),
+  times((diag) => [side - diag - 1, diag], side),
 ];
 
 const getVictoryCoords = (
   matrix: Array<Array<null | symbol>>
 ): TicTacToeVictoryCoords | undefined => {
+  const victoryTests = getVictoryTests(matrix.length);
   external: for (let i = 0; i < victoryTests.length; i += 1) {
     const [[row, col]] = victoryTests[i];
     if (matrix[row][col] == null) {
@@ -49,7 +59,7 @@ const getVictoryCoords = (
 };
 
 const getStrikeDirection = (coords: TicTacToeVictoryCoords): 0 | 1 | 2 | 3 => {
-  if (TICTACTOE_SIDE < 2) {
+  if (coords.length < 2) {
     return 2;
   } else {
     const [[row0, col0], [row1, col1]] = coords;
@@ -84,7 +94,7 @@ const getChanceCoords = (
   matrix: Array<Array<symbol | null>>,
   testChance: (signCount: number, emptyCount: number) => boolean
 ): Array<Array<Array<number>>> =>
-  victoryTests.filter((victoryTest) => {
+  getVictoryTests(matrix.length).filter((victoryTest) => {
     const [signCount, emptyCount] = victoryTest.reduce(
       (acc, [row, col]) => {
         if (matrix[row][col] === sign) {
@@ -111,7 +121,7 @@ const getAboutToWinCoord = (
     sign,
     matrix,
     (signCount, emptyCount) =>
-      signCount === TICTACTOE_SIDE - 1 && emptyCount === 1
+      signCount === matrix.length - 1 && emptyCount === 1
   );
   if (chanceCoordsList.length > 0) {
     const chanceCoords = pickOne(chanceCoordsList);
@@ -120,10 +130,8 @@ const getAboutToWinCoord = (
   return undefined;
 };
 
-const isDiagonalCell = (row: number, col: number) =>
-  row === col ||
-  TICTACTOE_SIDE - 1 - col === row ||
-  row - TICTACTOE_SIDE - 1 === col;
+const isDiagonalCell = (row: number, col: number, side: number) =>
+  row === col || side - 1 - col === row || row - side - 1 === col;
 
 // For each empty coord rank them by number of tic-tac-toes
 // they would cause by marking it, then choose randomly
@@ -138,7 +146,7 @@ const getPossibilityCoord = (
     sign,
     matrix,
     (signCount, emptyCount) =>
-      signCount === 1 && emptyCount === TICTACTOE_SIDE - 1
+      signCount === 1 && emptyCount === matrix.length - 1
   );
   const rankings: Array<TicTacToePossibility> = [];
   for (let i = 0; i < matrix.length; i += 1) {
@@ -158,7 +166,7 @@ const getPossibilityCoord = (
         rankings.push({
           coords: [i, j],
           ranking,
-          diagonal: isDiagonalCell(i, j),
+          diagonal: isDiagonalCell(i, j, matrix.length),
         });
       }
     }
@@ -220,13 +228,13 @@ const inDiagonalParadox = (matrix: Array<Array<symbol | null>>) => {
       }, 0),
     0
   );
-  if (count === TICTACTOE_SIDE) {
+  if (count === matrix.length) {
     return (
       matrix[1][1] === O &&
       ((matrix[0][0] != null &&
-        matrix[0][0] === matrix[TICTACTOE_SIDE - 1][TICTACTOE_SIDE - 1]) ||
-        (matrix[TICTACTOE_SIDE - 1][0] != null &&
-          matrix[TICTACTOE_SIDE - 1][0] === matrix[0][TICTACTOE_SIDE - 1]))
+        matrix[0][0] === matrix[matrix.length - 1][matrix.length - 1]) ||
+        (matrix[matrix.length - 1][0] != null &&
+          matrix[matrix.length - 1][0] === matrix[0][matrix.length - 1]))
     );
   }
   return false;
@@ -239,7 +247,7 @@ export const pickEmptyCoordinate = (
 
   // First move, why not have funm pick one random item
   // And give the players the illusion they can beat me.
-  if (emptyCoords.length === TICTACTOE_SIDE ** 2) {
+  if (emptyCoords.length === matrix.length ** 2) {
     return pickOne(emptyCoords);
   }
 
@@ -251,20 +259,24 @@ export const pickEmptyCoordinate = (
     // I win.
     return aboutToWinCoords as [number, number];
   }
-  // Find if I am about to lose
+  // Second: find if I am about to lose
   const aboutToLoseCoords = getAboutToWinCoord(X, matrix);
   if (aboutToLoseCoords != null) {
     // I don't lose.
     return aboutToLoseCoords as [number, number];
   }
 
+  // Third: if center cell is still free I occupy it
+  if (
+    matrix.length % 2 === 1 &&
+    emptyCoords.find(([row, col]) => row === 1 && col === 1)
+  ) {
+    return [1, 1];
+  }
+
   // Following strategies apply only if Tic Tac Toe is 3x3
-  // In any other case play random.
-  if (TICTACTOE_SIDE === 3) {
-    // If center cell is free I occupy it
-    if (emptyCoords.find(([row, col]) => row === 1 && col === 1)) {
-      return [1, 1];
-    }
+  // In any other case I don't care and play random.
+  if (matrix.length === 3) {
     // Diagonal paradox is a move where normally I would
     // wrongly choose a diagonal to defend myself and giving
     // an automatic win to the opponent. In this case I force myself
@@ -311,15 +323,16 @@ const getOrdinalLabel = (
   n: number,
   firstLabel: string,
   centerLabel: string,
-  lastLabel: string
+  lastLabel: string,
+  side: number
 ): string => {
   if (n === 0) {
     return firstLabel;
   }
-  if (n === TICTACTOE_SIDE - 1) {
+  if (n === side - 1) {
     return lastLabel;
   }
-  if (n === (TICTACTOE_SIDE - 1) / 2) {
+  if (n === (side - 1) / 2) {
     return centerLabel;
   }
   const nmod = (n + 1) % 10;
@@ -337,21 +350,16 @@ const getOrdinalLabel = (
   }`;
 };
 
-
-export const getAriaLabel = (rowIndex: number, colIndex: number): string => {
-  const rowLabel = getOrdinalLabel(
-    rowIndex,
-    'top',
-    'center',
-    'bottom'
-  );
-  const colLabel = getOrdinalLabel(
-    colIndex,
-    'left',
-    'center',
-    'right'
-  );
-  return rowLabel === 'center' && rowLabel === colLabel ? 'central' : `${rowLabel}-${colLabel}`;
+export const getAriaLabel = (
+  rowIndex: number,
+  colIndex: number,
+  side: number
+): string => {
+  const rowLabel = getOrdinalLabel(rowIndex, 'top', 'center', 'bottom', side);
+  const colLabel = getOrdinalLabel(colIndex, 'left', 'center', 'right', side);
+  return rowLabel === 'center' && rowLabel === colLabel
+    ? 'central'
+    : `${rowLabel}-${colLabel}`;
 };
 
 export const useTicTacToe = () =>
@@ -388,6 +396,7 @@ export const useTicTacToe = () =>
         }
         return state;
       }
+      // Starts and stops Vs. PC without recreating the state
       case 'vspc': {
         return {
           ...state,
@@ -398,12 +407,13 @@ export const useTicTacToe = () =>
         };
       }
       case 'reset': {
-        return {
-          ...getInitialState(action.sign),
+        return getInitialState({
+          sign: action.sign,
+          side: action.side,
           // A reset must not reset the type of play
           vsPc: state.vsPc,
           movePc: state.vsPc && action.sign === O,
-        };
+        });
       }
       case 'unannounce': {
         return { ...state, announce: undefined };

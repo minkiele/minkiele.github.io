@@ -1,4 +1,10 @@
-import { FunctionComponent, useCallback, useEffect, useMemo } from 'react';
+import {
+  ChangeEventHandler,
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 import styles from './TicTacToe.module.scss';
 import TicTacToeMD from './README.md';
 import classNames from 'classnames';
@@ -7,13 +13,16 @@ import {
   getStrikeData,
   O,
   pickEmptyCoordinate,
+  TICTACTOE_SIDE,
   useTicTacToe,
   X,
 } from './TicTacToe.utils';
 
 const TicTacToe: FunctionComponent = () => {
-  const [{ matrix, victoryCoords, sign, vsPc, movePc, announce }, dispatch] =
-    useTicTacToe();
+  const [
+    { matrix, victoryCoords, sign, vsPc, movePc, announce, side },
+    dispatch,
+  ] = useTicTacToe();
 
   const handleMark = (row: number, col: number) => () => {
     if (!movePc) {
@@ -25,12 +34,25 @@ const TicTacToe: FunctionComponent = () => {
     }
   };
 
-  const handleReset = (sign?: symbol) => () => {
-    dispatch({ type: 'reset', sign });
+  const handleResetSign = (sign: symbol) => () => {
+    dispatch({
+      type: 'reset',
+      side,
+      sign,
+    });
   };
 
   const handleVsPc = (value: boolean) => () => {
     dispatch({ type: 'vspc', enabled: value });
+  };
+
+  const handleSide: ChangeEventHandler<HTMLInputElement> = (evt) => {
+    const side = parseInt(evt.target.value);
+    dispatch({
+      type: 'reset',
+      side: isNaN(side) || side < 1 ? TICTACTOE_SIDE : side,
+      sign,
+    });
   };
 
   const getStrikeClassName = useCallback(
@@ -100,10 +122,12 @@ const TicTacToe: FunctionComponent = () => {
                     onClick={handleMark(rowIndex, colIndex)}
                     aria-label={`Mark with ${
                       sign.description
-                    } the ${getAriaLabel(rowIndex, colIndex)} space`}
+                    } the ${getAriaLabel(rowIndex, colIndex, side)} space`}
                   >
                     <span className={styles.board_sign}>
-                      <span className={styles.board_empty} aria-hidden>♻️</span>
+                      <span className={styles.board_empty} aria-hidden>
+                        ♻️
+                      </span>
                     </span>
                   </button>
                 )}
@@ -112,7 +136,8 @@ const TicTacToe: FunctionComponent = () => {
                     className={styles.board_sign}
                     aria-label={`${getAriaLabel(
                       rowIndex,
-                      colIndex
+                      colIndex,
+                      side
                     )} space marked with  ${col.description}`}
                   >
                     {col.description}
@@ -125,7 +150,7 @@ const TicTacToe: FunctionComponent = () => {
       </div>
       {announce != null && (
         <p role="alert" aria-live="assertive" className="sr-only">
-          PC marked with ⭕ the {getAriaLabel(...announce)} space
+          PC marked with ⭕ the {getAriaLabel(...announce, side)} space
         </p>
       )}
       {victoryCoords ? (
@@ -162,10 +187,20 @@ const TicTacToe: FunctionComponent = () => {
         <label htmlFor="vspcTrue">PC </label> (
         <span className={styles.board_sign}>⭕</span>)
         <br />
-        <button type="button" onClick={handleReset()}>
+        <label htmlFor="side">Size of the grid: </label>
+        <input
+          type="number"
+          name="side"
+          id="side"
+          onChange={handleSide}
+          value={side}
+        />
+        x{side}
+        <br />
+        <button type="button" onClick={handleResetSign(X)}>
           New match
         </button>{' '}
-        <button type="button" onClick={handleReset(O)}>
+        <button type="button" onClick={handleResetSign(O)}>
           New match, but starts <span className={styles.board_sign}>⭕</span>
         </button>
       </fieldset>

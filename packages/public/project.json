@@ -1,0 +1,9 @@
+{
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*",
+      "!{projectRoot}/.next",
+      "!{projectRoot}/node_module/.cache"
+    ]
+  }
+}

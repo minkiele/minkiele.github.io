@@ -7,6 +7,7 @@ export interface TicTacToeReducerState {
   vsPc: boolean;
   movePc: boolean;
   announce: [number, number] | undefined;
+  side: number;
 }
 
 export type TicTacToeReducerAction =
@@ -19,10 +20,9 @@ export type TicTacToeReducerAction =
       type: 'vspc';
       enabled: boolean;
     }
-  | {
+  | ({
       type: 'reset';
-      sign?: symbol;
-    }
+    } & Partial<Pick<TicTacToeReducerState, 'side' | 'sign'>>)
   | { type: 'unannounce' };
 
 export interface TicTacToePossibility {
