@@ -1,0 +1,64 @@
+@use 'sass:math';
+@use '../../styles/colors';
+@use '../../styles/mixins';
+
+.vietnam {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 30px;
+  &_column {
+    min-height: 300px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    border: 1px dashed colors.$fg;
+    &__touchSelected {
+      background-color: rgba(colors.$fg, 20%);
+    }
+  }
+  &_stone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    background-color: colors.$fg;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    color: colors.$bg;
+    font-size: .8em;
+    &[draggable='true'] {
+      cursor: pointer;
+    }
+    &:not(:last-child) {
+      border-bottom: 1px colors.$bg solid;
+    }
+    &:hover {
+      background-color: rgba(colors.$fg, 80%);
+    }
+  }
+}
+
+@include mixins.when-dark() {
+  .vietnam {
+    &_column {
+      border-color: colors.$dark-fg;
+      &__touchSelected {
+        background-color: rgba(colors.$dark-fg, 20%);
+      }
+    }
+    &_stone {
+      color: colors.$dark-bg;
+      background-color: colors.$dark-fg;
+      &:not(:last-child) {
+        border-bottom-color: colors.$dark-bg;
+      }
+      &:hover {
+        background-color: rgba(colors.$dark-fg, 80%);
+      }
+    }
+  }
+}

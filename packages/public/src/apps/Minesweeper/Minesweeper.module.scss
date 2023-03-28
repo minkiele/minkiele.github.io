@@ -1,0 +1,111 @@
+@use 'sass:list';
+@use '../../styles/colors';
+@use '../../styles/mixins';
+
+.scrollable {
+  overflow: auto;
+  max-width: 100%;
+}
+
+.table {
+
+  --minesweeper-tile-width: 30px;
+  --minesweeper-tile-height: 30px;
+
+  @media (min-width: 900px) {
+    --minesweeper-tile-width: 20px;
+    --minesweeper-tile-height: 20px;
+  }
+  
+  border-collapse: collapse;
+  border: 2px solid colors.$fg;
+  user-select: none;
+  margin: 0 auto;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.tile {
+  width: var(--minesweeper-tile-width);
+  height: var(--minesweeper-tile-height);
+  border: 1px solid colors.$fg;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: bold;
+  background-color: rgba(colors.$fg, 0.3);
+
+  @at-root %emoji {
+    font-family: 'Noto Emoji';
+    font-size: 0.8rem;
+  }
+
+  &__stepped {
+    background-color: rgba(colors.$fg, 0.15);
+  }
+
+  &__mine {
+    @extend %emoji;
+  }
+
+  &__flagMode {
+    @extend %emoji;
+    color: rgb(160, 160, 160);
+  }
+
+  &__flag,
+  &__falseFlag {
+    @extend %emoji;
+    color: #f00;
+  }
+
+  &__steppedOnMine {
+    @extend %emoji;
+    background-color: #f00;
+  }
+
+  &__number {
+    $colors: rgb(51, 121, 212), rgb(28, 210, 28), rgb(234, 20, 20), rgb(11, 11, 82), rgb(116, 19, 19), rgb(79, 226, 204), #000, #aaa;
+
+    @for $i from 1 through 8 {
+      &#{$i} {
+        color: list.nth($colors, $i);
+      }
+    }
+  }
+}
+
+@include mixins.when-dark() {
+  .table {
+    border-color: colors.$dark-fg;
+  }
+
+  .tile {
+    border-color: colors.$dark-fg;
+    background-color: rgba(colors.$dark-fg, 0.3);
+
+    &__stepped {
+      background-color: rgba(colors.$dark-fg, 0.15);
+    }
+
+    &__steppedOnMine {
+      color: #f00;
+      background-color: rgb(112, 20, 20);
+    }
+
+    // Some numbers weren't readable in dark mode
+    // Adding light variants
+    &__number4 {
+      color: rgb(166, 200, 255);
+    }
+
+    &__number5 {
+      color: rgb(164, 83, 83);
+    }
+
+    &__number7 {
+      color: #fff;
+    }
+  }
+}
