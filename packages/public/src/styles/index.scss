@@ -69,7 +69,7 @@ fieldset {
     }
     &[type='checkbox'],
     &[type='radio'] {
-      display: none;
+      @extend .sr-only;
       + label {
         &::before {
           content: ' ';
@@ -80,6 +80,9 @@ fieldset {
           vertical-align: middle;
           margin-right: 0.5rem;
         }
+      }
+      &:focus + label {
+        outline: dotted colors.$fg;
       }
     }
 
@@ -148,7 +151,6 @@ a {
       }
       &[type='checkbox'],
       &[type='radio'] {
-        display: none;
         + label {
           &::before {
             border: 1px solid colors.$dark-fg;
@@ -186,4 +188,8 @@ a {
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;
   border: 0 !important;
+}
+
+.sr-only-focusable:not(:focus):not(:focus-within) {
+  @extend .sr-only;
 }

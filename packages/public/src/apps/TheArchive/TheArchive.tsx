@@ -12,7 +12,7 @@ const TheArchive: FunctionComponent<TheArchiveProps> = ({ components }) => (
   <div>
     <TheArchiveMd />
     <div>
-      <Nav menu={components} className={styles.nav} />
+      <Nav menu={components} className={styles.nav} skipToContent={false} />
     </div>
   </div>
 );

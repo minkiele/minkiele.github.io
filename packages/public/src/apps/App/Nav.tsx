@@ -5,11 +5,15 @@ import { LazyRouteComponent } from './App.models';
 interface NavProps {
   menu: Array<LazyRouteComponent>;
   className?: string;
+  skipToContent?: boolean;
 }
 
-const Nav: FunctionComponent<NavProps> = ({ menu, className }) => (
+const Nav: FunctionComponent<NavProps> = ({ menu, className, skipToContent = true }) => (
   <nav className={className}>
     <ul>
+      {skipToContent && <li>
+        <Link href="#main-title" className="sr-only-focusable">Skip to content</Link>
+      </li>}
       {menu.map(({ name, route, prefetch, archived }) => (
         <li key={route}>
           {/* Do not prefetch archived apps or apps where prefetch was explicitly disabled */}

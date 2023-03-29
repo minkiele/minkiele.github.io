@@ -3,14 +3,12 @@
 @use '../../styles/mixins';
 
 .vietnam {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 30px;
   &_column {
+    max-width: 300px;
     min-height: 300px;
-    width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;

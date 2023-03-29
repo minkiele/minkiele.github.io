@@ -37,7 +37,7 @@ export default function App({ Component, pageProps }: AppProps<LazyRouteComponen
           <Nav menu={lazyRouteComponents} />
         </aside>
         <article>
-          <h1>{pageProps.name}</h1>
+          <h1 id="main-title">{pageProps.name}</h1>
           <Component {...pageProps} />
         </article>
       </div>
