@@ -8,20 +8,32 @@ interface NavProps {
   skipToContent?: boolean;
 }
 
-const Nav: FunctionComponent<NavProps> = ({ menu, className, skipToContent = true }) => (
-  <nav className={className}>
-    <ul>
-      {skipToContent && <li>
-        <Link href="#main-title" className="sr-only-focusable">Skip to content</Link>
-      </li>}
-      {menu.map(({ name, route, prefetch, archived }) => (
-        <li key={route}>
-          {/* Do not prefetch archived apps or apps where prefetch was explicitly disabled */}
-          <Link href={route} prefetch={prefetch === false ? false : (archived === true ? false : undefined)}>{name}</Link>
-        </li>
-      ))}
-    </ul>
-  </nav>
-);
+const MAIN_ARTICLE = '#main-article';
+
+const Nav: FunctionComponent<NavProps> = ({ menu, className, skipToContent = true }) => {
+  const handleSkipNavigation = () => {
+    (document
+      .querySelector(MAIN_ARTICLE)
+      ?.querySelector(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      ) as null | HTMLElement)
+      ?.focus();
+  };
+  return(
+    <nav className={className}>
+      <ul>
+        {skipToContent && <li>
+          <Link href={MAIN_ARTICLE} className="sr-only-focusable" onClick={handleSkipNavigation}>Skip to content</Link>
+        </li>}
+        {menu.map(({ name, route, prefetch, archived }) => (
+          <li key={route}>
+            {/* Do not prefetch archived apps or apps where prefetch was explicitly disabled */}
+            <Link href={route} prefetch={prefetch === false ? false : (archived === true ? false : undefined)}>{name}</Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
 
 export default Nav;
