@@ -429,13 +429,22 @@ function Cruciverba() {
             .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > col && current != null ? current : acc), null)
             ?.focus();
         }
-        if (evt.key === 'Backspace' && (inputsRef.current[row][col]?.value as string).length === 0 && col > 0) {
-          inputsRef.current[row]
+        if (evt.key === 'Backspace' && (inputsRef.current[row][col]?.value as string).length === 0) {
+          if (direction === 'H' && col > 0) {
+            inputsRef.current[row]
+              .reduceRight<HTMLInputElement | null>(
+                (acc, current, index) => (acc == null && index < col && current != null ? current : acc),
+                null
+              )
+              ?.focus();
+          } else if (direction === 'V' && row > 0) {
+            inputsRef.current
             .reduceRight<HTMLInputElement | null>(
-              (acc, current, index) => (acc == null && index < col && current != null ? current : acc),
+              (acc, current, index) => (acc == null && index < row && current[col] != null ? current[col] : acc),
               null
             )
             ?.focus();
+          }
         }
       };
 
