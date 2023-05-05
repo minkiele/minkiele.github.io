@@ -1,5 +1,26 @@
-@mixin when-dark() {
+@mixin when-dark($is-module: true) {
   @media (prefers-color-scheme: dark) {
+    @content;
+  }
+
+  @if $is-module {
+    :global(html.dark) {
+      @content;
+    }
+  } @else {
+    html.dark {
+      @content;
+    }
+  }
+}
+@mixin when-dark-module() {
+  @include when-dark(true) {
+    @content;
+  }
+}
+
+@mixin when-dark-global() {
+  @include when-dark(false) {
     @content;
   }
 }

@@ -8,8 +8,11 @@ import Head from "next/head";
 import { LazyRouteComponent } from "@/apps/App/App.models";
 import Script from 'next/script';
 import { isNullOrEmpty, useGoogleAnalyticsPageviews } from "@/apps/App/App.utils";
+import useTheme from "@/hooks/useTheme";
+import ThemeSelector from "@/apps/ThemeSelector/ThemeSelector";
 
 export default function App({ Component, pageProps }: AppProps<LazyRouteComponent>) {
+  const { theme, setTheme } = useTheme();
   useGoogleAnalyticsPageviews();
   return (
     <>
@@ -36,6 +39,7 @@ export default function App({ Component, pageProps }: AppProps<LazyRouteComponen
       <div className="App">
         <aside>
           <Nav menu={lazyRouteComponents} />
+          <ThemeSelector onChange={setTheme} theme={theme} />
         </aside>
         <article id="main-article">
           <h1>{pageProps.name}</h1>

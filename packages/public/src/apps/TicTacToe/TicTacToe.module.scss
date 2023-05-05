@@ -92,4 +92,8 @@
   .board_strike::after {
     border-color: colors.$dark-fg;
   }
+  .board_button {
+    border: 0;
+    box-shadow: none;
+  }
 }

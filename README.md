@@ -31,3 +31,8 @@ the build, trying to learn new things, mostly on Webpack.
 Yes, I have another little project published in Github:
 [EnigmaUI](https://minkiele.github.io/EnigmaUI). This is a
 javascript implementation of the Enigma Machine.
+
+## Memento homo
+
+To start a development server you shall run `npx nx run public:dev` command;
+to build the latest version upon publication you shall run `npx nx run public:export` command.

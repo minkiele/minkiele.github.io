@@ -34,6 +34,14 @@ I first used to make this portfolio. Also, I wrote this paragraph just to break
 Github Pages cache (and I'm realizing now that Next.js uses a unique path to files
 which would break cache anyways).
 
+### About dark mode
+
+Now _dark_ mode is the default when you visit for the first time the website.
+Since it uses Next.js Static Site Generation and the default theme is _light_
+every time you reload the website light theme will flash briefly before setting
+to dark mode. Unfortunately that's something I cannot remove without causing the
+reverse problem. Trying to waste a little bit less energy.
+
 ## About other little projects
 
 Yes, I have another little project published in Github:
