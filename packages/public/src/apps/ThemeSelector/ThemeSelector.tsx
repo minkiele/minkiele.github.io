@@ -17,7 +17,7 @@ const ThemeSelector: FunctionComponent<ThemeSelectorProps> = ({
       onChange(theme);
     };
   return (
-    <div>
+    <div className={styles.themeSelector}>
       <p className="sr-only">Current theme: {theme === 'dark' ? 'dark' : 'light'}</p>
       <button
         aria-label={`Change theme to ${theme === 'dark' ? 'light' : 'dark'}`}

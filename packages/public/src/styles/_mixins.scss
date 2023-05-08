@@ -1,18 +1,37 @@
-@mixin when-dark($is-module: true) {
+@mixin when-theme-dark() {
   @media (prefers-color-scheme: dark) {
+    @content;
+  }
+}
+
+@mixin when-set-theme-dark-module() {
+  :global(html.dark) {
+    @content;
+  }
+}
+
+@mixin when-set-theme-dark-global() {
+  @at-root html.dark {
+    @content;
+  }
+}
+
+@mixin when-dark($is-module: true) {
+  @include when-theme-dark() {
     @content;
   }
 
   @if $is-module {
-    :global(html.dark) {
+    @include when-set-theme-dark-module() {
       @content;
     }
   } @else {
-    html.dark {
+    @include when-set-theme-dark-global() {
       @content;
     }
   }
 }
+
 @mixin when-dark-module() {
   @include when-dark(true) {
     @content;

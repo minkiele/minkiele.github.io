@@ -1,6 +1,16 @@
 @use '../../styles/colors';
 @use '../../styles/mixins';
 
+// Hide theme selector when browser is dark and theme is set as dark
+// As it cannot be toggled.
+@include mixins.when-theme-dark() {
+  @include mixins.when-set-theme-dark-module() {
+    .themeSelector {
+      display: none;
+    }
+  }
+}
+
 .themeSelector_switch {
   font-family: 'Noto Emoji';
   color: colors.$dark-fg;
