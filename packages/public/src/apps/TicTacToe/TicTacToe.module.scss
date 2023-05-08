@@ -94,6 +94,9 @@
   }
   .board_button {
     border: 0;
-    box-shadow: none;
+    &,
+    &:active {
+      box-shadow: none;
+    }
   }
 }

@@ -12,10 +12,14 @@ $cols: 24;
 $rows: 17;
 
 $boardWidth: calc(
-  (var(--snake-game-cell-width) * #{$cols}) + (var(--snake-game-gutter) * #{($cols - 1)}) + (2 * var(--snake-game-spacing))
+  (var(--snake-game-cell-width) * #{$cols}) +
+    (var(--snake-game-gutter) * #{($cols - 1)}) +
+    (2 * var(--snake-game-spacing))
 );
 $boardHeight: calc(
-  (var(--snake-game-cell-height) * #{$rows}) + (var(--snake-game-gutter) * #{($rows - 1)}) + (2 * var(--snake-game-spacing))
+  (var(--snake-game-cell-height) * #{$rows}) +
+    (var(--snake-game-gutter) * #{($rows - 1)}) +
+    (2 * var(--snake-game-spacing))
 );
 
 .board {
@@ -29,8 +33,6 @@ $boardHeight: calc(
     --snake-game-cell-width: 20px;
     --snake-game-cell-height: 20px;
   }
-  
-
 
   width: $boardWidth;
   height: $boardHeight;
@@ -48,7 +50,6 @@ $boardHeight: calc(
   width: var(--snake-game-cell-width);
   height: var(--snake-game-cell-height);
   position: absolute;
-  background-color: colors.$bg;
   &#{&}__snake {
     background-color: colors.$fg;
   }
@@ -107,11 +108,15 @@ $boardHeight: calc(
   .board {
     border: 1px solid colors.$dark-fg;
   }
-
   .cell {
-    background-color: colors.$dark-bg;
-    &#{&}__snake {
+    &__snake {
       background-color: colors.$dark-fg;
+    }
+  }
+  .gamepad_button {
+    border: 0;
+    &, &:active {
+      box-shadow: none;
     }
   }
 }
