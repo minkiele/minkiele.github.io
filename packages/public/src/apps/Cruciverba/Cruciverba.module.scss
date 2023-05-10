@@ -15,7 +15,8 @@
     height: 0;
     position: relative;
     &__grey {
-      &, .app_input {
+      &,
+      .app_input {
         background-color: #ddd;
       }
     }
@@ -85,6 +86,12 @@
   .app {
     &_td {
       border: 1px solid colors.$dark-fg;
+      &__grey {
+        &,
+        .app_input {
+          background-color: #666;
+        }
+      }
     }
     &_input,
     &_definitionInput,
