@@ -1,0 +1,69 @@
+@use '../../styles/colors';
+
+.digit {
+    position: relative;
+    width: 80px;
+    height: 160px;
+    &_bar {
+        position: absolute;
+        background-color: #292517;
+        &#{&}__active {
+            background-color: #f4bb00;
+        }
+        &#{&}__h {
+            width: 80px;
+            height: 10px;
+        }
+        &#{&}__v {
+            width: 10px;
+            height: 80px;
+        }
+        &#{&}__0 {
+            top: #{80px - 10px};
+        }
+        &#{&}__1 {
+            left: #{80px - 10px};
+        }
+        &#{&}__4 {
+            top: #{80px - 10px};
+        }
+        &#{&}__5 {
+            top: #{2 * (80px - 10px)};
+        }
+        &#{&}__6 {
+            top: #{80px - 10px};
+            left: #{80px - 10px};
+        }
+    }
+}
+
+.clock {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+
+    padding: 20px;
+
+    background-color: colors.$dark-bg;
+}
+
+.blinker {
+    position: relative;
+    width: 10px;
+    height: 80px;
+    &_dot {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #292517;
+        &__1 {
+            top: #{80px - 10px};
+        }
+    }
+    &__blink {
+        .blinker_dot {
+            background-color: #f4bb00;
+        }
+    }
+}

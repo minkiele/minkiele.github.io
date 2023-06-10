@@ -23,6 +23,11 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     name: 'Vietnam',
   },
   {
+    route: '/24',
+    name: '24 Clock',
+    archived: true,
+  },
+  {
     route: '/sudoku',
     name: 'Sudoku',
     archived: true,
