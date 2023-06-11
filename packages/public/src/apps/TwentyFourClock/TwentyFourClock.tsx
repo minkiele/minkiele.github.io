@@ -1,5 +1,12 @@
 import classNames from 'classnames';
-import { FunctionComponent, useEffect, useState } from 'react';
+import {
+  ChangeEventHandler,
+  FunctionComponent,
+  ReactEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import styles from './TwentyFourClock.module.scss';
 import TwentyFourClockMD from './README.md';
 
@@ -113,8 +120,25 @@ const TwentyFourClock: FunctionComponent = () => {
     S0: 0,
   });
   const [blink, setBlink] = useState(true);
+  const [{ autoplay, syncAutoplay, audioLoaded }, setAutoplay] = useState({
+    autoplay: false,
+    syncAutoplay: false,
+    audioLoaded: false,
+  });
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
-    const timerId = setInterval(() => {
+    const handleAudioLoad = () => {
+      setAutoplay((current) => ({
+        ...current,
+        audioLoaded: true,
+      }));
+    };
+    const audio = audioRef.current;
+    audio?.addEventListener('canplay', handleAudioLoad);
+
+    const callback = () => {
       const now = new Date();
       const H = now.getHours();
       const M = now.getMinutes();
@@ -128,11 +152,42 @@ const TwentyFourClock: FunctionComponent = () => {
         S0: S % 10,
       });
       setBlink(S % 2 === 0);
-    }, 1000);
+      const audioReady = audioRef?.current?.readyState === 4 ?? false;
+      setAutoplay((current) => ({
+        ...current,
+        audioLoaded: audioReady,
+        syncAutoplay: current.autoplay && audioReady,
+      }));
+    };
+
+    callback();
+    const timerId = setInterval(callback, 1000);
+
     return () => {
       clearInterval(timerId);
+      audio?.removeEventListener('canplay', handleAudioLoad);
     };
   }, []);
+
+  useEffect(() => {
+    if (audioLoaded && audioRef.current) {
+      if (syncAutoplay) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [syncAutoplay, audioLoaded]);
+
+  const handleAutoplay =
+    (state: boolean): ChangeEventHandler<HTMLInputElement> =>
+    () => {
+      setAutoplay((current) => ({
+        ...current,
+        autoplay: state,
+      }));
+    };
+
   return (
     <div>
       <TwentyFourClockMD />
@@ -146,6 +201,35 @@ const TwentyFourClock: FunctionComponent = () => {
         <Digit digit={S1} />
         <Digit digit={S0} />
       </div>
+      <audio
+        loop
+        src="/assets/24clock64kbpsVar.mp3"
+        ref={audioRef}
+        preload="auto"
+      />
+      <fieldset>
+        <legend>Settings</legend>
+        <input
+          type="radio"
+          name="autoplay"
+          id="autoplayOn"
+          value="on"
+          onChange={handleAutoplay(true)}
+          checked={autoplay}
+        />
+        <label htmlFor="autoplayOn">I love the sound of inevitability</label>{' '}
+        <input
+          type="radio"
+          name="autoplay"
+          id="autoplayOff"
+          value="off"
+          onChange={handleAutoplay(false)}
+          checked={!autoplay}
+        />
+        <label htmlFor="autoplayOff">
+          I can&#39;t take it anymore, turn it off please.
+        </label>
+      </fieldset>
     </div>
   );
 };
