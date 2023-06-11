@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import {
   ChangeEventHandler,
   FunctionComponent,
-  ReactEventHandler,
   useEffect,
   useRef,
   useState,
@@ -126,7 +125,7 @@ const TwentyFourClock: FunctionComponent = () => {
     audioLoaded: false,
   });
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement>();
 
   useEffect(() => {
     const handleAudioLoad = () => {
@@ -135,8 +134,12 @@ const TwentyFourClock: FunctionComponent = () => {
         audioLoaded: true,
       }));
     };
-    const audio = audioRef.current;
-    audio?.addEventListener('canplay', handleAudioLoad);
+
+    const audio = (audioRef.current = new Audio(
+      '/assets/24clock64kbpsVar.mp3'
+    ));
+    audio.loop = true;
+    audio.addEventListener('canplay', handleAudioLoad);
 
     const callback = () => {
       const now = new Date();
@@ -165,26 +168,29 @@ const TwentyFourClock: FunctionComponent = () => {
 
     return () => {
       clearInterval(timerId);
-      audio?.removeEventListener('canplay', handleAudioLoad);
+      audio.removeEventListener('canplay', handleAudioLoad);
     };
   }, []);
 
   useEffect(() => {
-    if (audioLoaded && audioRef.current) {
+    if (audioLoaded && audioRef.current != null) {
       if (syncAutoplay) {
         audioRef.current.play();
       } else {
         audioRef.current.pause();
+        audioRef.current.currentTime = 0;
       }
     }
   }, [syncAutoplay, audioLoaded]);
 
   const handleAutoplay =
-    (state: boolean): ChangeEventHandler<HTMLInputElement> =>
+    (play: boolean): ChangeEventHandler<HTMLInputElement> =>
     () => {
       setAutoplay((current) => ({
         ...current,
-        autoplay: state,
+        autoplay: play,
+        // If play is true then wait for the autoplay otherwise stop immediately
+        syncAutoplay: play && current.syncAutoplay,
       }));
     };
 
@@ -201,12 +207,6 @@ const TwentyFourClock: FunctionComponent = () => {
         <Digit digit={S1} />
         <Digit digit={S0} />
       </div>
-      <audio
-        loop
-        src="/assets/24clock64kbpsVar.mp3"
-        ref={audioRef}
-        preload="auto"
-      />
       <fieldset>
         <legend>Settings</legend>
         <input
@@ -226,9 +226,7 @@ const TwentyFourClock: FunctionComponent = () => {
           onChange={handleAutoplay(false)}
           checked={!autoplay}
         />
-        <label htmlFor="autoplayOff">
-          I can&#39;t take it anymore, turn it off please.
-        </label>
+        <label htmlFor="autoplayOff">It kinda upsets me.</label>
       </fieldset>
     </div>
   );
