@@ -14,14 +14,22 @@ const Digit: FunctionComponent<{ digit: number }> = ({ digit }) => {
   const B2 = (digit >> 2) & 1;
   const B1 = (digit >> 1) & 1;
   const B0 = digit & 1;
-  const L0 = B3 || (B2 && !B1) || (B1 && !B0) || (!B2 && B1);
-  const L1 = B3 || !B2 || (!B1 && !B0) || (B1 && B0);
-  const L2 = B3 || B1 || (B2 && B0) || (!B2 && !B0);
-  const L3 = B3 || (!B1 && !B0) || (B2 && !B1) || (B2 && !B0);
-  const L4 = (!B2 && !B0) || (B1 && !B0);
-  const L5 =
-    B3 || (!B2 && B1) || (!B2 && !B0) || (B1 && !B0) || (B2 && !B1 && B0);
-  const L6 = !B1 || B3 || B2 || B0;
+  const A1 = B2 && !B1;
+  const A2 = B1 && !B0;
+  const A3 = !B2 && B1;
+  const A4 = !B1 && !B0;
+  const A5 = B1 && B0;
+  const A6 = !B2 && !B0;
+  const A7 = B2 && B0;
+  const A8 = B2 && !B0;
+  const A9 = A1 && B0;
+  const L0 = B3 || A1 || A2 || A3;
+  const L1 = !B2 || A4 || A5;
+  const L2 = B3 || B1 || A6 || A7;
+  const L3 = B3 || A4 || A1 || A8;
+  const L4 = A6 || A2;
+  const L5 = B3 || A3 || A6 || A2 || A9;
+  const L6 = !B1 || B2 || B0;
   return (
     <div className={styles.digit}>
       <div
