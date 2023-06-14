@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import {
   ChangeEventHandler,
   FunctionComponent,
+  createElement,
   useEffect,
   useRef,
   useState,
@@ -9,11 +10,21 @@ import {
 import styles from './TwentyFourClock.module.scss';
 import TwentyFourClockMD from './README.md';
 
-const Digit: FunctionComponent<{ digit: number }> = ({ digit }) => {
-  const B3 = digit >> 3;
-  const B2 = (digit >> 2) & 1;
-  const B1 = (digit >> 1) & 1;
-  const B0 = digit & 1;
+const getBit = (digit: number, bit: number = 0): boolean =>
+  ((digit >> bit) & 1) === 1;
+
+interface DigitController {
+  (digit: number): Record<
+    'L0' | 'L1' | 'L2' | 'L3' | 'L4' | 'L5' | 'L6',
+    boolean
+  >;
+}
+
+const fullController: DigitController = (digit) => {
+  const B3 = getBit(digit, 3);
+  const B2 = getBit(digit, 2);
+  const B1 = getBit(digit, 1);
+  const B0 = getBit(digit, 0);
   const A1 = B2 && !B1;
   const A2 = B1 && !B0;
   const A3 = !B2 && B1;
@@ -30,6 +41,54 @@ const Digit: FunctionComponent<{ digit: number }> = ({ digit }) => {
   const L4 = A6 || A2;
   const L5 = B3 || A3 || A6 || A2 || A9;
   const L6 = !B1 || B2 || B0;
+  return { L0, L1, L2, L3, L4, L5, L6 };
+};
+
+// This controller works only for digits from 0 to 5
+const simpleController: DigitController = (digit) => {
+  const B2 = getBit(digit, 2);
+  const B1 = getBit(digit, 1);
+  const B0 = getBit(digit, 0);
+  const A1 = !B2 && !B0;
+  const A2 = B2 && B0;
+  const A3 = !B1 && !B0;
+  const L0 = B2 || B1 || B0;
+  const L1 = !B2 || !B0;
+  const L2 = B1 || A1 || A2;
+  const L3 = B2 || A3;
+  const L4 = A1;
+  const L5 = L2;
+  const L6 = !B1 || B0;
+  return { L0, L1, L2, L3, L4, L5, L6 };
+};
+
+// This controller works from digits from 0 to 2
+const hourController: DigitController = (digit) => {
+  const B1 = getBit(digit, 1);
+  const B0 = getBit(digit, 0);
+  const L0 = B1;
+  const L1 = true;
+  const L2 = !B0;
+  const L3 = !B1 && !B0;
+  const L4 = L2;
+  const L5 = L2;
+  const L6 = !B1;
+  return { L0, L1, L2, L3, L4, L5, L6 };
+};
+
+interface DigitProps {
+  digit: number;
+}
+
+interface LogiclessDigitProps extends DigitProps {
+  controller: DigitController;
+}
+
+const LogiclessDigit: FunctionComponent<LogiclessDigitProps> = ({
+  digit,
+  controller,
+}) => {
+  const { L0, L1, L2, L3, L4, L5, L6 } = controller(digit);
   return (
     <div className={styles.digit}>
       <div
@@ -105,6 +164,15 @@ const Digit: FunctionComponent<{ digit: number }> = ({ digit }) => {
     </div>
   );
 };
+
+const Digit: FunctionComponent<DigitProps> = (props) =>
+  createElement(LogiclessDigit, { ...props, controller: fullController });
+
+const SimpleDigit: FunctionComponent<DigitProps> = (props) =>
+  createElement(LogiclessDigit, { ...props, controller: simpleController });
+
+const HourDigit: FunctionComponent<DigitProps> = (props) =>
+  createElement(LogiclessDigit, { ...props, controller: hourController });
 
 const Blinker: FunctionComponent<{ blink: boolean }> = ({ blink }) => (
   <div
@@ -206,13 +274,13 @@ const TwentyFourClock: FunctionComponent = () => {
     <div>
       <TwentyFourClockMD />
       <div className={styles.clock}>
-        <Digit digit={H1} />
+        <HourDigit digit={H1} />
         <Digit digit={H0} />
         <Blinker blink={blink} />
-        <Digit digit={M1} />
+        <SimpleDigit digit={M1} />
         <Digit digit={M0} />
         <Blinker blink={blink} />
-        <Digit digit={S1} />
+        <SimpleDigit digit={S1} />
         <Digit digit={S0} />
       </div>
       <fieldset>
