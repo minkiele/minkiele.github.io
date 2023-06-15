@@ -20,6 +20,8 @@ interface DigitController {
   >;
 }
 
+// This controller works for all base 10 digits
+// Behavior from 3 upwards is undefined
 const fullController: DigitController = (digit) => {
   const B3 = getBit(digit, 3);
   const B2 = getBit(digit, 2);
@@ -45,6 +47,7 @@ const fullController: DigitController = (digit) => {
 };
 
 // This controller works only for digits from 0 to 5
+// Behavior from 6 upwards is undefined
 const simpleController: DigitController = (digit) => {
   const B2 = getBit(digit, 2);
   const B1 = getBit(digit, 1);
@@ -52,7 +55,7 @@ const simpleController: DigitController = (digit) => {
   const A1 = !B2 && !B0;
   const A2 = B2 && B0;
   const A3 = !B1 && !B0;
-  const L0 = B2 || B1 || B0;
+  const L0 = B2 || B1;
   const L1 = !B2 || !B0;
   const L2 = B1 || A1 || A2;
   const L3 = B2 || A3;
@@ -63,6 +66,7 @@ const simpleController: DigitController = (digit) => {
 };
 
 // This controller works from digits from 0 to 2
+// Behavior from 3 upwards is undefined
 const hourController: DigitController = (digit) => {
   const B1 = getBit(digit, 1);
   const B0 = getBit(digit, 0);
