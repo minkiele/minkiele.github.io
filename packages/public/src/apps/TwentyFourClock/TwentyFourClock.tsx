@@ -99,6 +99,7 @@ const LogiclessDigit: FunctionComponent<LogiclessDigitProps> = ({
         className={classNames(
           styles.digit_bar,
           styles.digit_bar__h,
+          styles.digit_bar__c,
           styles.digit_bar__0,
           {
             [styles.digit_bar__active]: L0,
@@ -109,6 +110,7 @@ const LogiclessDigit: FunctionComponent<LogiclessDigitProps> = ({
         className={classNames(
           styles.digit_bar,
           styles.digit_bar__v,
+          styles.digit_bar__vcl,
           styles.digit_bar__1,
           {
             [styles.digit_bar__active]: L1,
@@ -119,6 +121,7 @@ const LogiclessDigit: FunctionComponent<LogiclessDigitProps> = ({
         className={classNames(
           styles.digit_bar,
           styles.digit_bar__h,
+          styles.digit_bar__hcb,
           styles.digit_bar__2,
           {
             [styles.digit_bar__active]: L2,
@@ -129,6 +132,7 @@ const LogiclessDigit: FunctionComponent<LogiclessDigitProps> = ({
         className={classNames(
           styles.digit_bar,
           styles.digit_bar__v,
+          styles.digit_bar__vcr,
           styles.digit_bar__3,
           {
             [styles.digit_bar__active]: L3,
@@ -139,6 +143,7 @@ const LogiclessDigit: FunctionComponent<LogiclessDigitProps> = ({
         className={classNames(
           styles.digit_bar,
           styles.digit_bar__v,
+          styles.digit_bar__vcr,
           styles.digit_bar__4,
           {
             [styles.digit_bar__active]: L4,
@@ -149,6 +154,7 @@ const LogiclessDigit: FunctionComponent<LogiclessDigitProps> = ({
         className={classNames(
           styles.digit_bar,
           styles.digit_bar__h,
+          styles.digit_bar__hct,
           styles.digit_bar__5,
           {
             [styles.digit_bar__active]: L5,
@@ -159,6 +165,7 @@ const LogiclessDigit: FunctionComponent<LogiclessDigitProps> = ({
         className={classNames(
           styles.digit_bar,
           styles.digit_bar__v,
+          styles.digit_bar__vcl,
           styles.digit_bar__6,
           {
             [styles.digit_bar__active]: L6,
