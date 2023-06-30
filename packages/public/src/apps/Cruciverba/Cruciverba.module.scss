@@ -9,7 +9,7 @@
     border-collapse: collapse;
   }
   &_td {
-    border: 1px solid colors.$fg;
+    border: 1px solid colors.$dark-fg;
     border-collapse: collapse;
     width: 0;
     height: 0;
@@ -26,8 +26,8 @@
     top: 0;
     left: 0;
     font-size: 8px;
-    background-color: colors.$bg;
-    color: colors.$fg;
+    background-color: colors.$dark-bg;
+    color: colors.$dark-fg;
   }
   &_input {
     border: 0;
@@ -39,8 +39,8 @@
     display: block;
     width: 100%;
     height: 100%;
-    border: 1px solid colors.$bg;
-    background-color: colors.$fg;
+    border: 1px solid colors.$dark-bg;
+    background-color: colors.$dark-fg;
   }
   &_caption {
     font-size: 32px;
@@ -82,10 +82,10 @@
   }
 }
 
-@include mixins.when-dark() {
+@include mixins.when-light() {
   .app {
     &_td {
-      border: 1px solid colors.$dark-fg;
+      border: 1px solid colors.$fg;
       &__grey {
         &,
         .app_input {
@@ -100,8 +100,8 @@
       background-color: inherit;
     }
     &_black {
-      border: 1px solid colors.$dark-bg;
-      background-color: colors.$dark-fg;
+      border: 1px solid colors.$bg;
+      background-color: colors.$fg;
     }
   }
 }

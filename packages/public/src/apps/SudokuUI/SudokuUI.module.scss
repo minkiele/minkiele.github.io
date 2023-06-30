@@ -6,7 +6,7 @@
   $side: math.div(100%, 9);
   width: $side;
   height: $side;
-  border: 1px colors.$fg solid;
+  border: 1px colors.$dark-fg solid;
 }
 
 .input {
@@ -22,7 +22,7 @@
 
 .table {
   border-collapse: collapse;
-  border: 2px colors.$fg solid;
+  border: 2px colors.$dark-fg solid;
   > tbody {
     $side: calc(100vw - #{2 * 20px});
     width: $side;
@@ -55,9 +55,9 @@
   }
 }
 
-@include mixins.when-dark() {
+@include mixins.when-light() {
   .cell {
-    border-color: colors.$dark-fg;
+    border-color: colors.$fg;
   }
 
   .input {
@@ -66,6 +66,6 @@
   }
 
   .table {
-    border-color: colors.$dark-fg;
+    border-color: colors.$fg;
   }
 }

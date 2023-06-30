@@ -3,7 +3,7 @@
 @use '../../styles/mixins';
 
 .cell {
-  border: 1px colors.$fg solid;
+  border: 1px colors.$dark-fg solid;
   border-collapse: collapse;
   text-align: center;
   vertical-align: middle;
@@ -19,8 +19,8 @@
   }
 }
 
-@include mixins.when-dark() {
+@include mixins.when-light() {
   .cell {
-    border-color: colors.$dark-fg;
+    border-color: colors.$fg;
   }
 }

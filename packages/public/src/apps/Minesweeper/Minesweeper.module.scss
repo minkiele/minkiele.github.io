@@ -16,9 +16,9 @@
     --minesweeper-tile-width: 20px;
     --minesweeper-tile-height: 20px;
   }
-  
+
   border-collapse: collapse;
-  border: 2px solid colors.$fg;
+  border: 2px solid colors.$dark-fg;
   user-select: none;
   margin: 0 auto;
 
@@ -30,11 +30,11 @@
 .tile {
   width: var(--minesweeper-tile-width);
   height: var(--minesweeper-tile-height);
-  border: 1px solid colors.$fg;
+  border: 1px solid colors.$dark-fg;
   text-align: center;
   vertical-align: middle;
   font-weight: bold;
-  background-color: rgba(colors.$fg, 0.3);
+  background-color: rgba(colors.$dark-fg, 0.3);
 
   @at-root %emoji {
     font-family: 'Noto Emoji';
@@ -42,7 +42,7 @@
   }
 
   &__stepped {
-    background-color: rgba(colors.$fg, 0.15);
+    background-color: rgba(colors.$dark-fg, 0.15);
   }
 
   &__mine {
@@ -76,17 +76,17 @@
   }
 }
 
-@include mixins.when-dark() {
+@include mixins.when-light() {
   .table {
-    border-color: colors.$dark-fg;
+    border-color: colors.$fg;
   }
 
   .tile {
-    border-color: colors.$dark-fg;
-    background-color: rgba(colors.$dark-fg, 0.3);
+    border-color: colors.$fg;
+    background-color: rgba(colors.$fg, 0.3);
 
     &__stepped {
-      background-color: rgba(colors.$dark-fg, 0.15);
+      background-color: rgba(colors.$fg, 0.15);
     }
 
     &__steppedOnMine {

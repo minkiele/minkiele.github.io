@@ -20,7 +20,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    border: 1px colors.$fg solid;
+    border: 1px colors.$dark-fg solid;
   }
   &_circle {
     width: 100%;
@@ -63,10 +63,10 @@
   }
 }
 
-@include mixins.when-dark() {
+@include mixins.when-light() {
   .circles {
     &_circleContainer {
-      border-color: colors.$dark-fg;
+      border-color: colors.$fg;
     }
   }
 }

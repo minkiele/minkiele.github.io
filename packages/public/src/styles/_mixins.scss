@@ -1,5 +1,12 @@
+@mixin when-theme($color-scheme) {
+  @media (prefers-color-scheme: $color-scheme) {
+    @content;
+  }
+}
+
+//Mixins for dark theme
 @mixin when-theme-dark() {
-  @media (prefers-color-scheme: dark) {
+  @include when-theme(dark) {
     @content;
   }
 }
@@ -40,6 +47,53 @@
 
 @mixin when-dark-global() {
   @include when-dark(false) {
+    @content;
+  }
+}
+
+//Mixins for light theme
+@mixin when-theme-light() {
+  @include when-theme(light) {
+    @content;
+  }
+}
+
+@mixin when-set-theme-light-module() {
+  :global(html.light) {
+    @content;
+  }
+}
+
+@mixin when-set-theme-light-global() {
+  @at-root html.light {
+    @content;
+  }
+}
+
+@mixin when-light($is-module: true) {
+  @include when-theme-light() {
+    @content;
+  }
+
+  @if $is-module {
+    @include when-set-theme-light-module() {
+      @content;
+    }
+  } @else {
+    @include when-set-theme-light-global() {
+      @content;
+    }
+  }
+}
+
+@mixin when-light-module() {
+  @include when-light(true) {
+    @content;
+  }
+}
+
+@mixin when-light-global() {
+  @include when-light(false) {
     @content;
   }
 }

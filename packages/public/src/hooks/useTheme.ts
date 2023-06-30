@@ -38,6 +38,7 @@ const useTheme = (defaultTheme: UseThemeType | undefined = envTheme) => {
     }
   }, [theme, defaultTheme]);
   useEffect(() => {
+    document.querySelector('html')?.classList.toggle('light', theme === 'light');
     document.querySelector('html')?.classList.toggle('dark', theme === 'dark');
   }, [theme]);
   return { theme, setTheme };

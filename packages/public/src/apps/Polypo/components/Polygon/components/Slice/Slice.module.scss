@@ -3,12 +3,12 @@
 
 .slice {
   position: absolute;
-  border-bottom: 1px colors.$fg solid;
+  border-bottom: 1px colors.$dark-fg solid;
   bottom: 0;
   left: 50%;
-  box-shadow: 0 0 4px 1px colors.$fg;
+  box-shadow: 0 0 4px 1px colors.$dark-fg;
   &__even {
-    border-top: 1px colors.$fg solid;
+    border-top: 1px colors.$dark-fg solid;
     transform-origin: center;
   }
   &__odd {
@@ -16,12 +16,12 @@
   }
 }
 
-@include mixins.when-dark() {
+@include mixins.when-light() {
   .slice {
-    border-bottom-color: colors.$dark-fg;
-    box-shadow: 0 0 4px 1px colors.$dark-fg;
+    border-bottom-color: colors.$fg;
+    box-shadow: 0 0 4px 1px colors.$fg;
     &__even {
-      border-top-color: colors.$dark-fg;
+      border-top-color: colors.$fg;
     }
   }
 }

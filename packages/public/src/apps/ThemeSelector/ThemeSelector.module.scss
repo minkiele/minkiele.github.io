@@ -11,16 +11,16 @@
 
 .themeSelector_switch {
   font-family: 'Noto Emoji';
-  color: colors.$dark-fg;
-  background-color: colors.$dark-bg;
-  border-bottom-color: colors.$dark-fg;
-  border-right-color: colors.$dark-fg;
+  color: colors.$fg;
+  background-color: colors.$bg;
+  border-bottom-color: colors.$fg;
+  border-right-color: colors.$fg;
 }
-@include mixins.when-dark() {
+@include mixins.when-light() {
   .themeSelector_switch {
-    color: colors.$fg;
-    background-color: colors.$bg;
-    border-bottom-color: colors.$fg;
-    border-right-color: colors.$fg;
+    color: colors.$dark-fg;
+    background-color: colors.$dark-bg;
+    border-bottom-color: colors.$dark-fg;
+    border-right-color: colors.$dark-fg;
   }
 }

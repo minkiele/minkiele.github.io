@@ -37,7 +37,7 @@ $boardHeight: calc(
   width: $boardWidth;
   height: $boardHeight;
   position: relative;
-  border: 1px solid colors.$fg;
+  border: 1px solid colors.$dark-fg;
   pointer-events: none;
   user-select: none;
   &#{&}__noWalls {
@@ -51,7 +51,7 @@ $boardHeight: calc(
   height: var(--snake-game-cell-height);
   position: absolute;
   &#{&}__snake {
-    background-color: colors.$fg;
+    background-color: colors.$dark-fg;
   }
   &#{&}__apple {
     background-color: #f00;
@@ -104,13 +104,13 @@ $boardHeight: calc(
   }
 }
 
-@include mixins.when-dark() {
+@include mixins.when-light() {
   .board {
-    border: 1px solid colors.$dark-fg;
+    border: 1px solid colors.$fg;
   }
   .cell {
     &__snake {
-      background-color: colors.$dark-fg;
+      background-color: colors.$fg;
     }
   }
   .gamepad_button {

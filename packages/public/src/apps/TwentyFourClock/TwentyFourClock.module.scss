@@ -1,8 +1,11 @@
 @use '../../styles/colors';
 
+$bar-width: 10px;
+$bar-height: 60px;
+
 .digit {
-  --bar-width: 10px;
-  --bar-height: 60px;
+  --bar-width: #{$bar-width};
+  --bar-height: #{$bar-height};
 
   position: relative;
   width: calc(var(--bar-width) + var(--bar-height));

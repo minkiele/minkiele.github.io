@@ -13,6 +13,7 @@ import ThemeSelector from "@/apps/ThemeSelector/ThemeSelector";
 
 export default function App({ Component, pageProps }: AppProps<LazyRouteComponent>) {
   const { theme, setTheme } = useTheme();
+
   useGoogleAnalyticsPageviews();
   return (
     <>
