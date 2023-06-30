@@ -51,7 +51,7 @@ $boardHeight: calc(
   height: var(--snake-game-cell-height);
   position: absolute;
   &#{&}__snake {
-    background-color: colors.$dark-fg;
+    background-color: colors.$fg;
   }
   &#{&}__apple {
     background-color: #f00;
@@ -110,7 +110,7 @@ $boardHeight: calc(
   }
   .cell {
     &__snake {
-      background-color: colors.$fg;
+      background-color: colors.$dark-fg;
     }
   }
   .gamepad_button {
