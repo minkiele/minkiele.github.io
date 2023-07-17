@@ -89,6 +89,12 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     archived: true,
   },
   {
+    route: '/soundpad',
+    name: 'SoundPad',
+    prefetch: false,
+    archived: true,
+  },
+  {
     route: '/archive',
     name: 'The Archive',
     prefetch: false,
