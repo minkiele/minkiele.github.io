@@ -4,6 +4,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import styles from './Md2Html.module.scss';
+import Md2HtmlMd from './README.md';
 
 const Md2Html = () => {
   const processor = useRef(
@@ -30,12 +31,25 @@ const Md2Html = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.column}>
-        <textarea name="input" value={md} onChange={handleChange} className={styles.textarea} />
-      </div>
-      <div className={styles.column}>
-        <textarea readOnly name="output" value={html} className={styles.textarea} />
+    <div>
+      <Md2HtmlMd />
+      <div className={styles.container}>
+        <div className={styles.column}>
+          <textarea
+            name="input"
+            value={md}
+            onChange={handleChange}
+            className={styles.textarea}
+          />
+        </div>
+        <div className={styles.column}>
+          <textarea
+            readOnly
+            name="output"
+            value={html}
+            className={styles.textarea}
+          />
+        </div>
       </div>
     </div>
   );
