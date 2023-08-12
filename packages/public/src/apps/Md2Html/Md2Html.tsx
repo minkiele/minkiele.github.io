@@ -6,6 +6,8 @@ import { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import styles from './Md2Html.module.scss';
 import Md2HtmlMd from './README.md';
 
+const serializer = (output: string) => JSON.stringify(output.trim().split(/\r?\n/).map((line) => line.trim()).join(''))
+
 const Md2Html = () => {
   const processor = useRef(
     unified().use(remarkParse).use(remarkRehype).use(rehypeStringify)
@@ -18,10 +20,10 @@ const Md2Html = () => {
   useEffect(() => {
     processor.current.process(md).then(
       (output) => {
-        setState((current) => ({ ...current, html: String(output) }));
+        setState((current) => ({ ...current, html: serializer(String(output)) }));
       },
       (error) => {
-        setState((current) => ({ ...current, html: String(error) }));
+        setState((current) => ({ ...current, html: serializer(String(error)) }));
       }
     );
   }, [md]);
