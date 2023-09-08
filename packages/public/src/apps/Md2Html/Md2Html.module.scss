@@ -25,6 +25,10 @@
     resize: none;
 }
 
+.kebab {
+    margin-top: 2rem;
+}
+
 @include mixins.when-dark() {
     .textarea {
         color: colors.$dark-fg;
