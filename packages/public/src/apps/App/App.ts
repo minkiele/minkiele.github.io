@@ -101,6 +101,12 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     archived: true,
   },
   {
+    route: '/html2jsx',
+    name: 'HTML2JSX',
+    prefetch: false,
+    archived: true,
+  },
+  {
     route: '/archive',
     name: 'The Archive',
     prefetch: false,
