@@ -12,11 +12,12 @@ import {
 } from 'react';
 import styles from '../Md2Html/Md2Html.module.scss';
 import Md2HtmlMd from './README.md';
+// This is used in rehype-parse, but it has been re-imported to show the HAST
 import { fromHtml } from 'hast-util-from-html';
 import runtime from 'react/jsx-runtime';
 
 const Now: FunctionComponent = () => {
-  const [now, setNow] = useState('<p>Current time in your browser: <Now /></p>');
+  const [now, setNow] = useState('');
   useEffect(() => {
     const timerId = setInterval(() => {
       setNow(new Date().toString());
@@ -52,7 +53,7 @@ const Html2Jsx = () => {
     html: string;
   }>({
     nodes: undefined,
-    html: '',
+    html: '<p>Current time in your browser: <Now /></p>',
   });
 
   useEffect(() => {
