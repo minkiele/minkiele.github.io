@@ -1,6 +1,7 @@
 import { unified } from 'unified';
 import rehypeParse from 'rehype-parse';
 import rehypeReact, { Options } from 'rehype-react';
+import { pronunciaDataOra } from '../../lib/EnunciateNumbers';
 import {
   ChangeEventHandler,
   FunctionComponent,
@@ -15,17 +16,18 @@ import Md2HtmlMd from './README.md';
 // This is used in rehype-parse, but it has been re-imported to show the HAST
 import { fromHtml } from 'hast-util-from-html';
 import runtime from 'react/jsx-runtime';
+import dayjs from 'dayjs';
 
-const Now: FunctionComponent = () => {
+const Now: FunctionComponent<{format?: 'string'}> = ({format}) => {
   const [now, setNow] = useState('');
   useEffect(() => {
     const timerId = setInterval(() => {
-      setNow(new Date().toString());
+      setNow(format == null || format.length === 0 ? pronunciaDataOra(new Date()) : dayjs().format(format));
     }, 1000);
     return () => {
       clearInterval(timerId);
     };
-  }, []);
+  }, [format]);
   return <span>{now}</span>;
 };
 
