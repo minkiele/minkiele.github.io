@@ -4,8 +4,7 @@
       "{projectRoot}/**/*",
       "!{projectRoot}/node_modules/**/*",
       "!{projectRoot}/.next/**/*"
-    ],
-    "export": ["{projectRoot}/.next/**/*"]
+    ]
   },
   "targets": {
     "build": {
@@ -14,17 +13,8 @@
         "script": "build"
       },
       "inputs": ["build"],
-      "outputs": ["{projectRoot}/.next"],
+      "outputs": ["{projectRoot}/.next", "{workspaceRoot}/docs"],
       "dependsOn": ["^build"]
-    },
-    "export": {
-      "executor": "nx:run-script",
-      "options": {
-        "script": "export"
-      },
-      "outputs": ["{workspaceRoot}/docs"],
-      "inputs": ["export"],
-      "dependsOn": ["build"]
     },
     "dev": {
       "executor": "nx:run-script",

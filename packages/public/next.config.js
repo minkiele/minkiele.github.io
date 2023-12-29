@@ -2,6 +2,8 @@
 const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   reactStrictMode: true,
+  output: 'export',
+  distDir: '../../docs'
 }
 
 const withMdx = require('@next/mdx')({

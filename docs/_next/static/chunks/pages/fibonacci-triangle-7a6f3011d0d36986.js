@@ -1,0 +1,1 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[224],{831:function(n,t,i){(window.__NEXT_P=window.__NEXT_P||[]).push(["/fibonacci-triangle",function(){return i(8007)}])},8007:function(n,t,i){"use strict";i.r(t);var u=i(4067);let _=(0,u.sX)("/tartaglia-triangle");t.default=_}},function(n){n.O(0,[774,888,179],function(){return n(n.s=831)}),_N_E=n.O()}]);
