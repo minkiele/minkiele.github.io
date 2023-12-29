@@ -1,5 +1,4 @@
-import Triangles from '@/apps/Triangles/Triangles';
-import { getGetStaticProps } from '@/apps/App/App.utils';
-export default Triangles;
+import { getRedirect } from '@/apps/App/App.utils';
 
-export const getStaticProps = getGetStaticProps('/fibonacci-triangle');
+const FibonacciTriangle = getRedirect('/tartaglia-triangle');
+export default FibonacciTriangle;

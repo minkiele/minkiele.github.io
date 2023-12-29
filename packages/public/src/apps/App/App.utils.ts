@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { GetStaticProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { either, isEmpty, isNil } from "ramda";
 import { useEffect } from "react";
@@ -45,3 +45,13 @@ export const useGoogleAnalyticsPageviews = () => {
 }
 
 export const isNullOrEmpty = either(isNil, isEmpty);
+
+export const EMPTY_PAGE: NextPage = () => null;
+
+export const getRedirect = (to: string | URL): NextPage => () => {
+  const { replace } = useRouter();
+  useEffect(() => {
+    replace(to);
+  }, [replace]);
+  return null;
+}

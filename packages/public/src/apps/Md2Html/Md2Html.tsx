@@ -26,17 +26,32 @@ const Md2Html = () => {
   });
 
   useEffect(() => {
-    processor.current.process(md).then(
-      (output) => {
+    new Promise<string>((res, rej) => {
+      if (md.length > 0) {
+        res(md);
+      } else {
+        rej();
+      }
+    }).then(
+      (md) =>
+        processor.current.process(md).then(
+          (output) => {
+            setState((current) => ({
+              ...current,
+              html: serializer(String(output)),
+            }));
+          },
+          (error) => {
+            setState((current) => ({
+              ...current,
+              html: serializer(String(error)),
+            }));
+          }
+        ),
+      () => {
         setState((current) => ({
           ...current,
-          html: serializer(String(output)),
-        }));
-      },
-      (error) => {
-        setState((current) => ({
-          ...current,
-          html: serializer(String(error)),
+          html: '',
         }));
       }
     );
@@ -85,8 +100,7 @@ const Md2Html = () => {
         <fieldset>
           <legend>Kebab Case</legend>
           <label htmlFor="text">Text</label>{' '}
-          <input id="text" type="text" onChange={handleKebab} value={text} />
-          {' '}
+          <input id="text" type="text" onChange={handleKebab} value={text} />{' '}
           <label htmlFor="kebab">Kebab</label>{' '}
           <input id="kebab" type="text" value={kebab} />
         </fieldset>

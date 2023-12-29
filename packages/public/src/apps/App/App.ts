@@ -60,8 +60,8 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     archived: true,
   },
   {
-    route: '/fibonacci-triangle',
-    name: "Fibonacci's triangle",
+    route: '/tartaglia-triangle',
+    name: "Tartaglia's triangle",
     archived: true,
   },
   {
@@ -97,12 +97,6 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
   {
     route: '/md2html',
     name: 'MD2HTML',
-    prefetch: false,
-    archived: true,
-  },
-  {
-    route: '/html2jsx',
-    name: 'HTML2JSX',
     prefetch: false,
     archived: true,
   },
