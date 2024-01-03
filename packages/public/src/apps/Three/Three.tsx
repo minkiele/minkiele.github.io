@@ -1,3 +1,5 @@
+"use client"
+
 import { FunctionComponent, useCallback } from 'react';
 import ThreeMD from './README.md';
 import { LightingThreeAnimation } from './Three.utils';

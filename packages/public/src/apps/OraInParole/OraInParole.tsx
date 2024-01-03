@@ -1,3 +1,5 @@
+"use client"
+
 import { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { pronunciaDataOra } from '../../lib/EnunciateNumbers';
 import OraInParoleMd from './README.md';

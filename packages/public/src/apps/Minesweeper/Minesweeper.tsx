@@ -1,3 +1,5 @@
+"use client"
+
 import classNames from 'classnames';
 import { thunkify, times } from 'ramda';
 import {

@@ -1,3 +1,5 @@
+"use client"
+
 import { assocPath, repeat, times } from 'ramda';
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import generateClassName from '../../lib/generateClassName';

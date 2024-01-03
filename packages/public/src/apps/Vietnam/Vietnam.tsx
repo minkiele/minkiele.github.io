@@ -1,3 +1,5 @@
+"use client"
+
 import { ChangeEventHandler, Children, DragEventHandler, FunctionComponent, useEffect, useRef, useState } from 'react';
 import { Column, Move } from './Vietnam.models';
 import styles from './Vietnam.module.scss';

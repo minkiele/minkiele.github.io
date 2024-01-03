@@ -1,3 +1,5 @@
+"use client"
+
 import { FunctionComponent, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import SoundPadMD from './README.md';
 import styles from './SoundPad.module.scss';

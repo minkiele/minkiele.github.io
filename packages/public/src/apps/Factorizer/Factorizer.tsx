@@ -1,3 +1,5 @@
+"use client"
+
 import { ChangeEventHandler, Fragment, FunctionComponent, useMemo, useState } from 'react';
 import { getGroupedFactors } from './Factorizer.utils';
 import FactorizerMd from './README.md';

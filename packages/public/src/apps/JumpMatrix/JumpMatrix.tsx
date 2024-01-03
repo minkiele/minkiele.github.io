@@ -1,3 +1,5 @@
+"use client"
+
 import classNames from 'classnames';
 import { FunctionComponent, useEffect, useState } from 'react';
 import { JumpMatrix as JumpMatrixLogic } from '../../lib/JumpMatrix';

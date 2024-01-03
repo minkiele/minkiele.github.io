@@ -1,3 +1,5 @@
+"use client"
+
 import classNames from 'classnames';
 import { ChangeEventHandler, FunctionComponent, useState } from 'react';
 import { getDragonFractal, L, R } from '../../lib/triangles-dragons/dragons';

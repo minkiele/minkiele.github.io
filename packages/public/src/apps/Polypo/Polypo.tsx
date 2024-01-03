@@ -1,3 +1,5 @@
+"use client"
+
 import { ChangeEventHandler, FunctionComponent, useState } from 'react';
 import Polygon from './components/Polygon/Polygon';
 import styles from './Polypo.module.scss';

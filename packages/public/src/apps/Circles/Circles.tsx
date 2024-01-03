@@ -1,3 +1,5 @@
+"use client"
+
 import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import styles from './Circles.module.scss';
 import { CIRCLES, ClockData, ClockRelativeSize, getClockSizes, getGetCircleSize } from './Circles.utils';

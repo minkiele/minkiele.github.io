@@ -1,3 +1,5 @@
+"use client"
+
 import { FunctionComponent, useEffect, useState } from 'react';
 import { pronunciaNumero } from '../../lib/EnunciateNumbers';
 import NumeriCasualiMd from './README.md';

@@ -1,3 +1,5 @@
+"use client"
+
 import { clone, repeat, times, xor } from 'ramda';
 import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, MouseEventHandler, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
 import CruciverbaMd from './README.md';

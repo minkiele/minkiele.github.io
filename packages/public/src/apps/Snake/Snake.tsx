@@ -1,3 +1,5 @@
+"use client"
+
 import classNames from 'classnames';
 import { thunkify } from 'ramda';
 import { ChangeEventHandler, FunctionComponent, memo, useCallback, useEffect, useRef, useState } from 'react';

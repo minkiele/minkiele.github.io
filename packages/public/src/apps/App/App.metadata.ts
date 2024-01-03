@@ -12,7 +12,7 @@ export const getMetadata = (
       throw new Error("Route not found");
     }
     return {
-      ...(props.setTitle && { title: props.name }),
+      ...(props.setTitle !== false && { title: props.name }),
       ...meta,
     }
   };

@@ -1,3 +1,5 @@
+"use client"
+
 import { ChangeEventHandler, FunctionComponent, useMemo, useState } from 'react';
 import { getTriangle, triangleToString } from '../../lib/triangles-dragons/triangles';
 import styles from './Triangles.module.scss';
