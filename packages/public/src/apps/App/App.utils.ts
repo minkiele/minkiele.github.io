@@ -1,9 +1,9 @@
 import { GetStaticProps, NextPage } from "next";
 import { useRouter } from "next/router";
-import { either, isEmpty, isNil } from "ramda";
 import { useEffect } from "react";
 import { allLazyRouteComponents } from "./App";
 import { LazyRouteComponent } from "./App.models";
+import { pageview } from "./App.common-analytics";
 
 export const getGetStaticProps = <L extends LazyRouteComponent>(
   route: string,
@@ -20,19 +20,7 @@ export const getGetStaticProps = <L extends LazyRouteComponent>(
   });
 };
 
-export const pageview = (url: string) => {
-  (window as any).gtag?.('config', process.env.NEXT_PUBLIC_ANALYTICS_ID, {
-    page_path: url
-  });
-}
-
-export const event = ({ action, category, label, value }: { action: string, category?: string, label?: string, value?: number }) => {
-  (window as any)?.gtag?.('event', action, {
-    event_category: category,
-    event_label: label,
-    value: value,
-  })
-}
+export { pageview, event } from "./App.common-analytics";
 
 export const useGoogleAnalyticsPageviews = () => {
   const router = useRouter();
@@ -44,7 +32,7 @@ export const useGoogleAnalyticsPageviews = () => {
   }, [router.events]);
 }
 
-export const isNullOrEmpty = either(isNil, isEmpty);
+export { isNullOrEmpty } from "@/lib/utils";
 
 export const EMPTY_PAGE: NextPage = () => null;
 

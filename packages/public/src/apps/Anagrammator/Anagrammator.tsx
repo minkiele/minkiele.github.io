@@ -1,3 +1,5 @@
+"use client"
+
 import { ChangeEvent, Children, useCallback, useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
 import anagrammator, { countAnagrams, getCountAnagramFactors } from 'anagrammator';
