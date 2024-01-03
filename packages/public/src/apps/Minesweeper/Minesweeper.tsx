@@ -15,11 +15,14 @@ import {
   useState,
 } from 'react';
 import useClock from '../../hooks/useClock';
-import { event } from '../App/App.utils';
 import { Minefield, MinefieldTile, Minesweeper as MinesweeperGame, MinesweeperOptions } from './Minesweeper.lib';
 import styles from './Minesweeper.module.scss';
 import { getMinefieldStyle, isCoastingTile, isEmptyTile } from './Minesweeper.utils';
 import MinesweeperMd from './README.md';
+import { event } from '../App/App.common-analytics';
+import { getEmojiStyles } from '../App/App.emoji';
+
+const emojiStyles = getEmojiStyles(['tile__mine', 'tile__flagMode', 'tile__flag', 'tile__falseFlag', 'tile__steppedOnMine'], styles);
 
 const Minesweeper: FunctionComponent = () => {
   const [options, setOptions] = useState<MinesweeperOptions>(MinesweeperGame.DIFFICULTY[MinesweeperGame.DEFAULT_DIFFICULTY]);
@@ -110,7 +113,7 @@ const Minesweeper: FunctionComponent = () => {
         const baseClassNames = {
           [styles.tile]: true,
           [styles.tile__stepped]: tile.isSteppedOn,
-          [styles.tile__flag]: tile.isFlag,
+          [emojiStyles.tile__flag]: tile.isFlag,
           [styles[`tile__number${tile.surroundingMines}`]]: !tile.isFlag && tile.isSteppedOn && tile.surroundingMines > 0,
         };
 
@@ -132,7 +135,7 @@ const Minesweeper: FunctionComponent = () => {
               {
                 className: classNames({
                   ...baseClassNames,
-                  [styles.tile__flagMode]: !stepMode && !tile.isSteppedOn && !tile.isFlag,
+                  [emojiStyles.tile__flagMode]: !stepMode && !tile.isSteppedOn && !tile.isFlag,
                 }),
               },
               content
@@ -161,10 +164,10 @@ const Minesweeper: FunctionComponent = () => {
               {
                 className: classNames({
                   ...baseClassNames,
-                  [styles.tile__mine]: !tile.isSteppedOn && !tile.isFlag && tile.isMine,
-                  [styles.tile__steppedOnMine]: tile.isSteppedOn && !tile.isFlag && tile.isMine,
-                  [styles.tile__flag]: !tile.isSteppedOn && tile.isFlag && tile.isMine,
-                  [styles.tile__falseFlag]: tile.isFlag && !tile.isMine,
+                  [emojiStyles.tile__mine]: !tile.isSteppedOn && !tile.isFlag && tile.isMine,
+                  [emojiStyles.tile__steppedOnMine]: tile.isSteppedOn && !tile.isFlag && tile.isMine,
+                  [emojiStyles.tile__flag]: !tile.isSteppedOn && tile.isFlag && tile.isMine,
+                  [emojiStyles.tile__falseFlag]: tile.isFlag && !tile.isMine,
                 }),
                 onMouseUp: undefined,
               },

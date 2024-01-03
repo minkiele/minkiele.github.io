@@ -19,6 +19,9 @@ import {
   useTicTacToe,
   X,
 } from './TicTacToe.utils';
+import { getEmojiStyles } from '../App/App.emoji';
+
+const emojiStyles = getEmojiStyles(['board_sign'], styles);
 
 const TicTacToe: FunctionComponent = () => {
   const [
@@ -104,7 +107,7 @@ const TicTacToe: FunctionComponent = () => {
 
   const placeholder = useMemo(
     () => (
-      <span className={styles.board_sign}>
+      <span className={emojiStyles.board_sign}>
         <span className={styles.board_empty} aria-hidden>
           ♻️
         </span>
@@ -145,7 +148,7 @@ const TicTacToe: FunctionComponent = () => {
                   ))}
                 {col != null && (
                   <span
-                    className={styles.board_sign}
+                    className={emojiStyles.board_sign}
                     aria-label={`${getAriaLabel(
                       rowIndex,
                       colIndex,
@@ -167,7 +170,7 @@ const TicTacToe: FunctionComponent = () => {
       )}
       {victoryCoords ? (
         <p role="alert" aria-live="assertive">
-          <span className={styles.board_sign}>{sign.description}</span> won!
+          <span className={emojiStyles.board_sign}>{sign.description}</span> won!
         </p>
       ) : (
         !movesPossible && (
@@ -178,7 +181,7 @@ const TicTacToe: FunctionComponent = () => {
       )}
       <fieldset>
         <legend>Settings</legend>
-        Player 1 (<span className={styles.board_sign}>❌</span>) Vs.{' '}
+        Player 1 (<span className={emojiStyles.board_sign}>❌</span>) Vs.{' '}
         <input
           type="radio"
           name="vspc"
@@ -197,7 +200,7 @@ const TicTacToe: FunctionComponent = () => {
           checked={vsPc}
         />
         <label htmlFor="vspcTrue">PC </label> (
-        <span className={styles.board_sign}>⭕</span>)
+        <span className={emojiStyles.board_sign}>⭕</span>)
         <br />
         <label htmlFor="side">Size of the grid: </label>
         <input
@@ -213,7 +216,7 @@ const TicTacToe: FunctionComponent = () => {
           New match
         </button>{' '}
         <button type="button" onClick={handleResetSign(O)}>
-          New match, but starts <span className={styles.board_sign}>⭕</span>
+          New match, but starts <span className={emojiStyles.board_sign}>⭕</span>
         </button>
       </fieldset>
     </div>

@@ -5,6 +5,7 @@ import { isNullOrEmpty } from '@/lib/utils';
 import { ReactNode } from 'react';
 import { Metadata } from "next";
 import Script from "next/script";
+import { Inconsolata as InconsolataFont } from "next/font/google";
 
 export const metadata: Metadata = {
   title: {
@@ -12,6 +13,11 @@ export const metadata: Metadata = {
     default: 'Minkiele - The wrong website, by definition',
   }
 };
+
+const inconsolata = InconsolataFont({
+  weight: ['400', '700'],
+  subsets: ['latin']
+});
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -27,9 +33,6 @@ export default function Layout({ children }: { children: ReactNode }) {
           user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
         */}
         <link rel="manifest" href="/manifest.json" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Noto+Emoji&display=swap" rel="stylesheet" />
         {!isNullOrEmpty(process.env.NEXT_PUBLIC_ANALYTICS_ID) &&
           <>
             <Script dangerouslySetInnerHTML={{
@@ -54,7 +57,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           <Script src={`https://www.googleoptimize.com/optimize.js?id=${process.env.NEXT_PUBLIC_OPTIMIZE_ID}`} />
         }
       </head>
-      <body>
+      <body className={inconsolata.className}>
       {!isNullOrEmpty(process.env.NEXT_PUBLIC_GTM_ID) &&
         <noscript>
           <iframe src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID}`}

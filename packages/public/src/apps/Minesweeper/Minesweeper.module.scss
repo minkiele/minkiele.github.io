@@ -16,7 +16,7 @@
     --minesweeper-tile-width: 20px;
     --minesweeper-tile-height: 20px;
   }
-  
+
   border-collapse: collapse;
   border: 2px solid colors.$fg;
   user-select: none;
@@ -37,7 +37,6 @@
   background-color: rgba(colors.$fg, 0.3);
 
   @at-root %emoji {
-    font-family: 'Noto Emoji';
     font-size: 0.8rem;
   }
 
