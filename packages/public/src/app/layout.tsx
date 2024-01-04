@@ -2,16 +2,29 @@ import "@/styles/index.scss";
 import "@/apps/App/App.scss";
 
 import { isNullOrEmpty } from '@/lib/utils';
-import { ReactNode } from 'react';
-import { Metadata } from "next";
+import { ReactNode, Suspense } from 'react';
+import { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Inconsolata as InconsolataFont } from "next/font/google";
+import Nav from "@/apps/App/Nav";
+import { lazyRouteComponents } from "@/apps/App/App";
+import AppThemeSelector from "@/apps/App/AppThemeSelector";
+import { UseGoogleAnalyticsPageviews } from "@/apps/App/App.analytics";
 
 export const metadata: Metadata = {
   title: {
     template: 'Minkiele - The wrong website, by definition - #%s',
     default: 'Minkiele - The wrong website, by definition',
   }
+};
+
+/** {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag#the_effect_of_interactive_ui_widgets} */
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  interactiveWidget: 'overlays-content',
+  colorScheme: 'dark light',
+  themeColor: '#000000',
 };
 
 const inconsolata = InconsolataFont({
@@ -24,9 +37,6 @@ export default function Layout({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" />
-        <meta name="theme-color" content="#000000" />
-        {/** {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag#the_effect_of_interactive_ui_widgets} */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=overlays-content" />
         <link rel="apple-touch-icon" href="/logo192.png" />
         {/*
           manifest.json provides metadata used when your web app is installed on a
@@ -63,7 +73,16 @@ export default function Layout({ children }: { children: ReactNode }) {
           <iframe src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID}`}
             height="0" width="0" style={{display:'none',visibility:'hidden'}}></iframe>
         </noscript>}
-        {children}
+        <div className="App">
+          <aside>
+            <Nav menu={lazyRouteComponents} />
+            <AppThemeSelector />
+          </aside>
+          <article id="main-article">{children}</article>
+        </div>
+        <Suspense fallback={null}>
+          <UseGoogleAnalyticsPageviews />
+        </Suspense>
       </body>
     </html>
   )

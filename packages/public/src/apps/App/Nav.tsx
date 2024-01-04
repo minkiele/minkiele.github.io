@@ -1,3 +1,5 @@
+"use client"
+
 import Link from 'next/link';
 import { FunctionComponent } from 'react';
 import { LazyRouteComponent } from './App.models';
