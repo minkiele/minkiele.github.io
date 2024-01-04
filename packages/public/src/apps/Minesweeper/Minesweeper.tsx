@@ -19,8 +19,8 @@ import { Minefield, MinefieldTile, Minesweeper as MinesweeperGame, MinesweeperOp
 import styles from './Minesweeper.module.scss';
 import { getMinefieldStyle, isCoastingTile, isEmptyTile } from './Minesweeper.utils';
 import MinesweeperMd from './README.md';
-import { event } from '../App/App.common-analytics';
 import { getEmojiStyles } from '../App/App.emoji';
+import { event } from '../App/App.analytics';
 
 const emojiStyles = getEmojiStyles(['tile__mine', 'tile__flagMode', 'tile__flag', 'tile__falseFlag', 'tile__steppedOnMine'], styles);
 
