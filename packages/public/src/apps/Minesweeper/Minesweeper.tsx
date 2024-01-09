@@ -19,10 +19,8 @@ import { Minefield, MinefieldTile, Minesweeper as MinesweeperGame, MinesweeperOp
 import styles from './Minesweeper.module.scss';
 import { getMinefieldStyle, isCoastingTile, isEmptyTile } from './Minesweeper.utils';
 import MinesweeperMd from './README.md';
-import { getEmojiStyles } from '../App/App.emoji';
 import { event } from '../App/App.analytics';
-
-const emojiStyles = getEmojiStyles(['tile__mine', 'tile__flagMode', 'tile__flag', 'tile__falseFlag', 'tile__steppedOnMine'], styles);
+import Emoji from '../App/components/Emoji/Emoji';
 
 const Minesweeper: FunctionComponent = () => {
   const [options, setOptions] = useState<MinesweeperOptions>(MinesweeperGame.DIFFICULTY[MinesweeperGame.DEFAULT_DIFFICULTY]);
@@ -113,7 +111,7 @@ const Minesweeper: FunctionComponent = () => {
         const baseClassNames = {
           [styles.tile]: true,
           [styles.tile__stepped]: tile.isSteppedOn,
-          [emojiStyles.tile__flag]: tile.isFlag,
+          [styles.tile__flag]: tile.isFlag,
           [styles[`tile__number${tile.surroundingMines}`]]: !tile.isFlag && tile.isSteppedOn && tile.surroundingMines > 0,
         };
 
@@ -122,7 +120,7 @@ const Minesweeper: FunctionComponent = () => {
           tile.isFlag ||
           (!(stepMode || tile.isSteppedOn) && !(status === MinesweeperGame.STATUS.COMPLETE || status === MinesweeperGame.STATUS.GAME_OVER))
         ) {
-          content = '🏴';
+          content = <Emoji>🏴</Emoji>;
         } else if (tile.isSteppedOn && tile.surroundingMines > 0) {
           content = `${tile.surroundingMines}`;
         }
@@ -135,7 +133,7 @@ const Minesweeper: FunctionComponent = () => {
               {
                 className: classNames({
                   ...baseClassNames,
-                  [emojiStyles.tile__flagMode]: !stepMode && !tile.isSteppedOn && !tile.isFlag,
+                  [styles.tile__flagMode]: !stepMode && !tile.isSteppedOn && !tile.isFlag,
                 }),
               },
               content
@@ -153,21 +151,21 @@ const Minesweeper: FunctionComponent = () => {
           }
           case MinesweeperGame.STATUS.GAME_OVER: {
             if (!tile.isFlag && tile.isMine) {
-              content = '💣';
+              content = <Emoji>💣</Emoji>;
             } else if (!tile.isSteppedOn && tile.isFlag && tile.isMine) {
-              content = '🏴';
+              content = <Emoji>🏴</Emoji>;
             } else if (tile.isFlag && !tile.isMine) {
-              content = '❌';
+              content = <Emoji>❌</Emoji>;
             }
             return cloneElement(
               element,
               {
                 className: classNames({
                   ...baseClassNames,
-                  [emojiStyles.tile__mine]: !tile.isSteppedOn && !tile.isFlag && tile.isMine,
-                  [emojiStyles.tile__steppedOnMine]: tile.isSteppedOn && !tile.isFlag && tile.isMine,
-                  [emojiStyles.tile__flag]: !tile.isSteppedOn && tile.isFlag && tile.isMine,
-                  [emojiStyles.tile__falseFlag]: tile.isFlag && !tile.isMine,
+                  [styles.tile__mine]: !tile.isSteppedOn && !tile.isFlag && tile.isMine,
+                  [styles.tile__steppedOnMine]: tile.isSteppedOn && !tile.isFlag && tile.isMine,
+                  [styles.tile__flag]: !tile.isSteppedOn && tile.isFlag && tile.isMine,
+                  [styles.tile__falseFlag]: tile.isFlag && !tile.isMine,
                 }),
                 onMouseUp: undefined,
               },

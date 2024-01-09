@@ -2,7 +2,7 @@
 
 import useTheme from "@/hooks/useTheme";
 import { createElement } from "react";
-import ThemeSelector from "../ThemeSelector/ThemeSelector";
+import ThemeSelector from "./components/ThemeSelector/ThemeSelector";
 
 const AppThemeSelector = () => {
   const { theme, setTheme } = useTheme();

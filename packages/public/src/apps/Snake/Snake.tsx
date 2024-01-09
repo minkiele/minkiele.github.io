@@ -7,9 +7,7 @@ import { SnakeGame, SnakeGameCoords } from './Snake.lib';
 import styles from './Snake.module.scss';
 import SnakeMd from './README.md';
 import { getCellStyle, getSortedSnake } from './Snake.utils';
-import { getEmojiStyles } from '../App/App.emoji';
-
-const emojiStyles = getEmojiStyles(['gamepad_button'], styles);
+import Emoji from '../App/components/Emoji/Emoji';
 
 interface SnakeTileProps {
   tile: SnakeGameCoords;
@@ -202,25 +200,25 @@ const Snake: FunctionComponent = () => {
       <div className={styles.gamepad}>
         <div className={styles.gamepad_row}>
           <div className={styles.gamepad_col}>
-            <button className={emojiStyles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.U)} aria-label="Up">
-              ⬆️
+            <button className={styles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.U)} aria-label="Up">
+              <Emoji>⬆️</Emoji>
             </button>
           </div>
           <div className={styles.gamepad_col}>
-            <button className={emojiStyles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.R)} aria-label="Right">
-              ➡️
+            <button className={styles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.R)} aria-label="Right">
+              <Emoji>➡️</Emoji>
             </button>
           </div>
         </div>
         <div className={styles.gamepad_row}>
           <div className={styles.gamepad_col}>
-            <button className={emojiStyles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.L)} aria-label="Left">
-              ⬅️
+            <button className={styles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.L)} aria-label="Left">
+              <Emoji>⬅️</Emoji>
             </button>
           </div>
           <div className={styles.gamepad_col}>
-            <button className={emojiStyles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.D)} aria-label="Down">
-              ⬇️
+            <button className={styles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.D)} aria-label="Down">
+              <Emoji>⬇️</Emoji>
             </button>
           </div>
         </div>

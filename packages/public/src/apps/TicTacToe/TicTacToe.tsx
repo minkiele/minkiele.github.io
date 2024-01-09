@@ -19,9 +19,7 @@ import {
   useTicTacToe,
   X,
 } from './TicTacToe.utils';
-import { getEmojiStyles } from '../App/App.emoji';
-
-const emojiStyles = getEmojiStyles(['board_sign'], styles);
+import Emoji from '../App/components/Emoji/Emoji';
 
 const TicTacToe: FunctionComponent = () => {
   const [
@@ -107,9 +105,9 @@ const TicTacToe: FunctionComponent = () => {
 
   const placeholder = useMemo(
     () => (
-      <span className={emojiStyles.board_sign}>
+      <span className={styles.board_sign}>
         <span className={styles.board_empty} aria-hidden>
-          ♻️
+          <Emoji>♻️</Emoji>
         </span>
       </span>
     ),
@@ -148,7 +146,7 @@ const TicTacToe: FunctionComponent = () => {
                   ))}
                 {col != null && (
                   <span
-                    className={emojiStyles.board_sign}
+                    className={styles.board_sign}
                     aria-label={`${getAriaLabel(
                       rowIndex,
                       colIndex,
@@ -165,12 +163,12 @@ const TicTacToe: FunctionComponent = () => {
       </div>
       {announce != null && (
         <p role="alert" aria-live="assertive" className="sr-only">
-          PC marked with ⭕ the {getAriaLabel(...announce, side)} space
+          PC marked with <Emoji>⭕</Emoji> the {getAriaLabel(...announce, side)} space
         </p>
       )}
       {victoryCoords ? (
         <p role="alert" aria-live="assertive">
-          <span className={emojiStyles.board_sign}>{sign.description}</span> won!
+          <span className={styles.board_sign}>{sign.description}</span> won!
         </p>
       ) : (
         !movesPossible && (
@@ -181,7 +179,7 @@ const TicTacToe: FunctionComponent = () => {
       )}
       <fieldset>
         <legend>Settings</legend>
-        Player 1 (<span className={emojiStyles.board_sign}>❌</span>) Vs.{' '}
+        Player 1 (<span className={styles.board_sign}><Emoji>❌</Emoji></span>) Vs.{' '}
         <input
           type="radio"
           name="vspc"
@@ -200,7 +198,7 @@ const TicTacToe: FunctionComponent = () => {
           checked={vsPc}
         />
         <label htmlFor="vspcTrue">PC </label> (
-        <span className={emojiStyles.board_sign}>⭕</span>)
+        <span className={styles.board_sign}><Emoji>⭕</Emoji></span>)
         <br />
         <label htmlFor="side">Size of the grid: </label>
         <input
@@ -216,7 +214,7 @@ const TicTacToe: FunctionComponent = () => {
           New match
         </button>{' '}
         <button type="button" onClick={handleResetSign(O)}>
-          New match, but starts <span className={emojiStyles.board_sign}>⭕</span>
+          New match, but starts <span className={styles.board_sign}><Emoji>⭕</Emoji></span>
         </button>
       </fieldset>
     </div>
