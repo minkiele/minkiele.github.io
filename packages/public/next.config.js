@@ -3,8 +3,7 @@ const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   reactStrictMode: true,
   output: 'export',
-  distDir: '../../docs'
-}
+};
 
 const withMdx = require('@next/mdx')({
   extension: /\.mdx?$/,
@@ -12,6 +11,18 @@ const withMdx = require('@next/mdx')({
     remarkPlugins: [require('./remark/remarkPluginRemoveH1')],
     rehypePlugins: [],
   },
-})
+});
 
-module.exports = withMdx(nextConfig);
+const nextConfigWidthMdx = withMdx(nextConfig);
+
+const { PHASE_PRODUCTION_BUILD } = require('next/constants');
+
+module.exports = async (phase) => {
+  if (phase === PHASE_PRODUCTION_BUILD) {
+    return {
+      ...nextConfigWidthMdx,
+      distDir: '../../docs',
+    };
+  }
+  return nextConfigWidthMdx;
+};
