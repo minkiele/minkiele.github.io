@@ -4,7 +4,7 @@
 
 Hi there, my name is Michele, I was born and raised in Italy,
 in a small town nearby Venice lagoon and I still live there;
-this is my last year before the big Four-Ohs (kinda scared though).
+I'm scared shitless of becoming forty.
 
 ## About this little project
 
@@ -14,7 +14,7 @@ along the years, some of those already had a UI, to some others I built one
 just for this purpose.
 Then I started styling the website, to give it a cool nerdy retro look. After
 that I added support for dark theme. After that I started to optimize and tweak
-the build, trying to learn new things, mostly on Webpack. You will find sources
+the build to learn something new every time, and I still am. You will find sources
 for the applications in [GitHub](https://github.com/minkiele/minkiele.github.io).
 
 ### About dark mode
