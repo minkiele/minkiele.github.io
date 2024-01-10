@@ -1,0 +1,24 @@
+.list {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+
+    // Remove list properties
+    list-style-type: none;
+    padding-left: 0;
+
+    &_item {
+        display: flex;
+        gap: 1rem;
+    }
+}
+
+@media(min-width: 992px) {
+    .list {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        &_item {
+            flex-direction: column;
+        }
+    }
+}
