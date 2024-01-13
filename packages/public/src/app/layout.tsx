@@ -63,9 +63,6 @@ export default function Layout({ children }: { children: ReactNode }) {
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','${process.env.NEXT_PUBLIC_GTM_ID}');`
           }} id="googleTagManagerSetup" />}
-        {!isNullOrEmpty(process.env.NEXT_PUBLIC_ANALYTICS_ID) &&
-          <Script src={`https://www.googleoptimize.com/optimize.js?id=${process.env.NEXT_PUBLIC_OPTIMIZE_ID}`} />
-        }
       </head>
       <body className={inconsolata.className}>
       {!isNullOrEmpty(process.env.NEXT_PUBLIC_GTM_ID) &&
