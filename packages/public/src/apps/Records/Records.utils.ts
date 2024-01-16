@@ -10,7 +10,7 @@ const getMedium = pipe(map(prop('name')), join(', '));
 
 export const getDiscography = async () => {
   const myDiscogsRequest = await fetch(
-    `https://api.discogs.com/users/minkiele/collection/folders/0/releases?token=${process.env.DISCOGS_TOKEN}&page=1&per_page=${process.env.DISCOGS_ITEMS}&sort=added&sort_order=desc`
+    `https://api.discogs.com/users/minkiele/collection/folders/0/releases?token=${process.env.DISCOGS_TOKEN}&page=1&per_page=${process.env.DISCOGS_ITEMS}&sort=added&sort_order=desc#${process.env.DISCOGS_VERSION}`
   );
   if (!myDiscogsRequest.ok) {
     throw new Error('Cannot download Discogs releases');
