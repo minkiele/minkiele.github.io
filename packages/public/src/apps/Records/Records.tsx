@@ -12,13 +12,15 @@ export default async function Records() {
       <ol className={styles.list}>
         {myDiscography.map((release, index) => (
           <li key={release.id} className={styles.list_item}>
-            <Image
-              src={release.thumb}
-              alt="Cover image"
-              width={150}
-              height={150}
-              priority={index < 4}
-            />
+            <span className={styles.imageWrapper}>
+              <Image
+                src={release.thumb}
+                alt="Cover image"
+                fill
+                className={styles.image}
+                priority={index < 4}
+              />
+            </span>
             <span>
               <strong>{release.artist}</strong>: {release.title} (
               {release.medium})
