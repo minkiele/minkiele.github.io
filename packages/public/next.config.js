@@ -25,6 +25,10 @@ module.exports = async (phase) => {
     return {
       ...nextConfigWidthMdx,
       distDir: '../../docs',
+      env: {
+        // Every time we build the app invalidate the request for Discogs API
+        DISCOGS_TIMESTAMP: new Date().toISOString()
+      }
     };
   }
   return nextConfigWidthMdx;
