@@ -38,8 +38,21 @@
   box-shadow: 4px 4px 0 0 lib.$fg;
 }
 
+.cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  box-shadow: 4px 4px 0 0 lib.$fg;
+  font-size: 3rem;
+  user-select: none;
+  cursor: pointer;
+}
+
+
 @include mx.when-dark() {
-  .image {
+  .image, .cover {
     box-shadow: 4px 4px 0 0 lib.$dark-fg;
   }
 }
