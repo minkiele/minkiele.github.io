@@ -17,7 +17,7 @@ export default function Memory({ source }: MemoryProps) {
       <ol className={styles.list}>
         {cards.map((release, index) => {
           const isCardFlipped = isFlipped(index);
-          const isCardMatched = matched.includes(release.id);
+          const isCardMatched = status === G || matched.includes(release.id);
           const handleFlip = (index: number) => () => {
             flip(index);
           };
@@ -33,9 +33,9 @@ export default function Memory({ source }: MemoryProps) {
                     priority={index < 4}
                   />
                 ) : (
-                  <span className={styles.cover} onClick={handleFlip(index)}>
+                  <button type="button" className={styles.cover} onClick={handleFlip(index)}>
                     <Emoji>😅</Emoji>
-                  </span>
+                  </button>
                 )}
               </span>
               {isCardMatched && (

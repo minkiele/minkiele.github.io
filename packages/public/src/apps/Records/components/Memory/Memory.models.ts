@@ -14,13 +14,18 @@ export interface MemoryReducerState {
   flipped: Array<number>;
   status: symbol; // Hehe
   left: number;
+  wait: number;
 }
 
+export type MemoryResetAction = Pick<
+  MemoryReducerState,
+  'cards' | 'left' | 'wait'
+>;
+
 export type MemoryReducerAction =
-  | {
+  | ({
       type: 'reset';
-      cards: MemoryDataSources;
-    }
+    } & MemoryResetAction)
   | {
       type: 'flip';
       index: number;

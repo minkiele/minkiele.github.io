@@ -4,9 +4,12 @@ import {
   MemoryDataSources,
   MemoryReducerAction,
   MemoryReducerState,
+  MemoryResetAction,
 } from './Memory.models';
 
 export const DEFAUlT_SIZE = 12;
+export const DEFAULT_WAIT = 1500;
+export const DEFAULT_TRIES = 3;
 
 const I = Symbol('IDLE');
 const P = Symbol('PLAY');
@@ -45,7 +48,7 @@ function drawCards(
 }
 
 export function useMemory(source: MemoryDataSources) {
-  const [{ cards, matched, flipped, status, left }, dispatch] = useReducer(
+  const [{ cards, matched, flipped, status, left, wait }, dispatch] = useReducer(
     (state: MemoryReducerState, action: MemoryReducerAction) => {
       switch (action.type) {
         case 'reset': {
@@ -53,9 +56,10 @@ export function useMemory(source: MemoryDataSources) {
             ...state,
             cards: action.cards,
             flipped: [],
-            left: 3,
+            left: action.left,
             matched: [],
             status: P,
+            wait: action.wait,
           };
         }
         case 'flip': {
@@ -83,24 +87,20 @@ export function useMemory(source: MemoryDataSources) {
                 }
                 //Didn't match the card
               } else {
+                const newState = {
+                  ...state,
+                  flipped: [...state.flipped, action.index],
+                };
                 // I still have some retries
                 if (state.left > 0) {
                   // Turn back both cards
-                  return {
-                    ...state,
-                    flipped: [...state.flipped, action.index],
-                  };
+                  return newState;
                   // No more retries
                 } else {
                   // Game over
                   return {
-                    ...state,
-                    matched: state.cards.reduce<Array<number>>(
-                      (acc, card) =>
-                        acc.includes(card.id) ? acc : [...acc, card.id],
-                      []
-                    ),
-                    flipped: [],
+                    ...newState,
+                    flipped: [...state.flipped, action.index],
                     left: 0,
                     status: G,
                   };
@@ -125,13 +125,20 @@ export function useMemory(source: MemoryDataSources) {
       matched: [],
       flipped: [],
       status: I,
-      left: 0,
+      left: -1,
+      wait: -1,
     }
   );
 
   const reset = useCallback(
-    (size = DEFAUlT_SIZE) => {
-      dispatch({ type: 'reset', cards: drawCards(size, source) });
+    (
+      {
+        size = DEFAUlT_SIZE,
+        left = DEFAULT_TRIES,
+        wait = DEFAULT_WAIT,
+      }: { size?: number } & Partial<Omit<MemoryResetAction, 'cards'>> = {}
+    ) => {
+      dispatch({ type: 'reset', cards: drawCards(size, source), left, wait });
     },
     [source]
   );
@@ -141,17 +148,17 @@ export function useMemory(source: MemoryDataSources) {
   }, [reset]);
 
   useEffect(() => {
-    if (flipped.length > 1) {
+    if (flipped.length > 1 && left > 0) {
       const timerId = setTimeout(() => {
         dispatch({
           type: 'cover',
         });
-      }, 2000);
+      }, wait);
       return () => {
         clearTimeout(timerId);
       };
     }
-  }, [flipped]);
+  }, [flipped, left, wait]);
 
   const flip = useCallback(
     (index: number) => {
@@ -164,8 +171,8 @@ export function useMemory(source: MemoryDataSources) {
 
   const isFlipped = useCallback(
     (index: number) =>
-      flipped.includes(index) || matched.includes(cards[index].id),
-    [flipped, cards, matched]
+      status === G || flipped.includes(index) || matched.includes(cards[index].id),
+    [status, flipped, cards, matched]
   );
 
   return useMemo(
