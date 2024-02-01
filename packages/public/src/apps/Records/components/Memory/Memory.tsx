@@ -1,16 +1,48 @@
 'use client';
 
 import { MemoryProps } from './Memory.models';
-import { G, P, W, useMemory } from './Memory.utils';
+import {
+  DEFAULT_TRIES,
+  DEFAULT_WAIT,
+  DEFAUlT_SIZE,
+  G,
+  P,
+  W,
+  useMemory,
+} from './Memory.utils';
 import styles from '../../Records.module.scss';
 import Image from 'next/image';
 import Emoji from '@/apps/App/components/Emoji/Emoji';
+import { FormEventHandler } from 'react';
 
-export default function Memory({ source }: MemoryProps) {
+export default function Memory({ deck }: MemoryProps) {
   const { status, left, cards, matched, flip, isFlipped, reset } =
-    useMemory(source);
+    useMemory(deck);
   const handleReset = () => {
     reset();
+  };
+  const handleCustomOptions: FormEventHandler<HTMLFormElement> = (evt) => {
+    evt.preventDefault();
+    const target = evt.target as HTMLFormElement;
+    const parsedTries = Math.abs(parseInt(target.tries.value));
+    const parsedSize = Math.abs(parseInt(target.size.value));
+    const parsedWait = Math.abs(parseInt(target.wait.value));
+    const customTries = target.infiniteTries.checked
+      ? Infinity
+      : isNaN(parsedTries)
+      ? DEFAULT_TRIES
+      : parsedTries;
+    const customSize = isNaN(parsedSize)
+      ? DEFAUlT_SIZE
+      : parsedSize % 2 === 0
+      ? parsedSize
+      : parsedSize + 1;
+    const customWait = isNaN(parsedWait) ? DEFAULT_WAIT : parsedWait;
+    reset({
+      left: customTries,
+      size: customSize,
+      wait: customWait,
+    });
   };
   return (
     <div>
@@ -33,7 +65,11 @@ export default function Memory({ source }: MemoryProps) {
                     priority={index < 4}
                   />
                 ) : (
-                  <button type="button" className={styles.cover} onClick={handleFlip(index)}>
+                  <button
+                    type="button"
+                    className={styles.cover}
+                    onClick={handleFlip(index)}
+                  >
                     <Emoji>😅</Emoji>
                   </button>
                 )}
@@ -57,6 +93,42 @@ export default function Memory({ source }: MemoryProps) {
           <button type="button" onClick={handleReset}>
             New game
           </button>
+          <form onSubmit={handleCustomOptions}>
+            <label htmlFor="tries">Tries</label>{' '}
+            <input
+              id="tries"
+              name="tries"
+              type="number"
+              defaultValue={DEFAULT_TRIES}
+              min={1}
+            />{' '}
+            <input
+              id="infiniteTries"
+              name="infiniteTries"
+              type="checkbox"
+              value="infiniteTries"
+            />{' '}
+            <label htmlFor="infiniteTries">Infinite tries</label>{' '}
+            <label htmlFor="size">Size</label>{' '}
+            <input
+              id="size"
+              name="size"
+              type="number"
+              defaultValue={DEFAUlT_SIZE}
+              min={4}
+              max={deck.length}
+              step={2}
+            />{' '}
+            <label htmlFor="wait">Waiting time before</label>{' '}
+            <input
+              id="wait"
+              name="wait"
+              type="number"
+              defaultValue={DEFAULT_WAIT}
+              min={0}
+            />{' '}
+            <button type="submit">New game with custom options</button>
+          </form>
         </fieldset>
       </div>
     </div>

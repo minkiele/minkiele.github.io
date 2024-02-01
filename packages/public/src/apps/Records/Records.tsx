@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { getDiscography } from './Records.utils';
 import Readme from './components/Readme/Readme';
 import Memory from './components/Memory/Memory';
@@ -9,7 +8,7 @@ export default async function Records() {
   return (
     <div>
       <Readme />
-      <Memory source={myDiscography} />
+      <Memory deck={myDiscography} />
     </div>
   );
 }

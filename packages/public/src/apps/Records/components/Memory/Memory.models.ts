@@ -17,7 +17,7 @@ export interface MemoryReducerState {
   wait: number;
 }
 
-export type MemoryResetAction = Pick<
+type MemoryResetAction = Pick<
   MemoryReducerState,
   'cards' | 'left' | 'wait'
 >;
@@ -35,5 +35,11 @@ export type MemoryReducerAction =
     };
 
 export interface MemoryProps {
-  source: MemoryDataSources;
+  deck: MemoryDataSources;
+}
+
+export interface MemoryConfig {
+  size?: number;
+  left?: number;
+  wait?: number;
 }
