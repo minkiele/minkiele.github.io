@@ -19,8 +19,8 @@ import FlipCard from '../FlipCard/FlipCard';
 export default function Memory({ deck }: MemoryProps) {
   const { status, left, cards, matched, flip, isFlipped, flipped, reset } =
     useMemory(deck);
-  const handleReset = () => {
-    reset();
+  const handleReset = (...args: Parameters<typeof reset>) => () => {
+    reset(...args);
   };
   const handleCustomOptions: FormEventHandler<HTMLFormElement> = (evt) => {
     evt.preventDefault();
@@ -93,8 +93,20 @@ export default function Memory({ deck }: MemoryProps) {
       <div>
         <fieldset>
           <legend>Commands</legend>
-          <button type="button" onClick={handleReset}>
+          <button type="button" onClick={handleReset()}>
             New game
+          </button>{' '}
+          <button type="button" onClick={handleReset({
+            size: 16,
+            left: 5
+          })}>
+            New game slightly bigger
+          </button>{' '}
+          <button type="button" onClick={handleReset({
+            size: 24,
+            left: 8
+          })}>
+            New game double
           </button>
           <form onSubmit={handleCustomOptions}>
             <label htmlFor="tries">Tries</label>{' '}
