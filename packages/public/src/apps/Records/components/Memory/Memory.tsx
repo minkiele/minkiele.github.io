@@ -14,9 +14,10 @@ import styles from '../../Records.module.scss';
 import Image from 'next/image';
 import Emoji from '@/apps/App/components/Emoji/Emoji';
 import { FormEventHandler } from 'react';
+import FlipCard from '../FlipCard/FlipCard';
 
 export default function Memory({ deck }: MemoryProps) {
-  const { status, left, cards, matched, flip, isFlipped, reset } =
+  const { status, left, cards, matched, flip, isFlipped, flipped, reset } =
     useMemory(deck);
   const handleReset = () => {
     reset();
@@ -55,25 +56,27 @@ export default function Memory({ deck }: MemoryProps) {
           };
           return (
             <li key={`${release.id}-${index}`} className={styles.list_item}>
-              <span className={styles.imageWrapper}>
-                {isCardFlipped ? (
-                  <Image
-                    src={release.thumb}
-                    alt="Cover image"
-                    fill
-                    className={styles.image}
-                    priority={index < 4}
-                  />
-                ) : (
-                  <button
-                    type="button"
-                    className={styles.cover}
-                    onClick={handleFlip(index)}
-                  >
-                    <Emoji>😅</Emoji>
-                  </button>
-                )}
-              </span>
+              <FlipCard isFlipped={isCardFlipped} className={styles.imageWrapper}>
+                {({ isFront }) =>
+                  isFront ? (
+                    <Image
+                      src={release.thumb}
+                      alt="Cover image"
+                      fill
+                      className={styles.image}
+                      priority={index < 4}
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      className={styles.cover}
+                      onClick={handleFlip(index)}
+                    >
+                      <Emoji>😅</Emoji>
+                    </button>
+                  )
+                }
+              </FlipCard>
               {isCardMatched && (
                 <span>
                   <strong>{release.artist}</strong>: {release.title} (

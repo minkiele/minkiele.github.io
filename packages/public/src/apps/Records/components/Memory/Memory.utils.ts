@@ -86,6 +86,9 @@ export function useMemory(source: MemoryDataSources) {
               } else {
                 // I matched the turned card?
                 if (
+                  // Check also the index because with animations
+                  // you can try to turn the same card twice and it would count as a correct match
+                  state.flipped[0] !== action.index &&
                   state.cards[state.flipped[0]] === state.cards[action.index]
                 ) {
                   const newState = {

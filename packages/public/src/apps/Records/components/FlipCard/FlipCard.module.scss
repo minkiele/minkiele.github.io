@@ -1,0 +1,41 @@
+.startFlip {
+    transform: perspective(200px) rotateY(0);
+}
+.startFlipActive {
+    transition: transform 150ms ease-in;
+    transform: perspective(200px) rotateY(-90deg);
+}
+.startFlipDone {
+    transform: perspective(200px) rotateY(-90deg);
+}
+.finishFlip {
+    transform: perspective(200px) rotateY(90deg);
+}
+.finishFlipActive {
+    transition: transform 150ms ease-out;
+    transform: perspective(200px) rotateY(0);
+}
+.finishFlipDone {
+    transform: perspective(200px) rotateY(0);
+}
+
+.startFlipBack {
+    transform: perspective(200px) rotateY(0);
+}
+.startFlipBackActive {
+    transition: transform 150ms ease-in;
+    transform: perspective(200px) rotateY(90deg);
+}
+.startFlipBackDone {
+    transform: perspective(200px) rotateY(90deg);
+}
+.finishFlipBack {
+    transform: perspective(200px) rotateY(-90deg);
+}
+.finishFlipBackActive {
+    transition: transform 150ms ease-out;
+    transform: perspective(200px) rotateY(0);
+}
+.finishFlipBackDone {
+    transform: perspective(200px) rotateY(0);
+}
