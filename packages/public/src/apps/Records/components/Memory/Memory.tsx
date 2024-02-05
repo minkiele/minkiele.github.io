@@ -19,9 +19,12 @@ import FlipCard from '../FlipCard/FlipCard';
 export default function Memory({ deck }: MemoryProps) {
   const { status, left, cards, matched, flip, isFlipped, flipped, reset } =
     useMemory(deck);
-  const handleReset = (...args: Parameters<typeof reset>) => () => {
-    reset(...args);
-  };
+  const handleReset =
+    (...args: Parameters<typeof reset>) =>
+    () => {
+      reset(...args);
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    };
   const handleCustomOptions: FormEventHandler<HTMLFormElement> = (evt) => {
     evt.preventDefault();
     const target = evt.target as HTMLFormElement;
@@ -56,7 +59,10 @@ export default function Memory({ deck }: MemoryProps) {
           };
           return (
             <li key={`${release.id}-${index}`} className={styles.list_item}>
-              <FlipCard isFlipped={isCardFlipped} className={styles.imageWrapper}>
+              <FlipCard
+                isFlipped={isCardFlipped}
+                className={styles.imageWrapper}
+              >
                 {({ isFront }) =>
                   isFront ? (
                     <Image
@@ -96,16 +102,22 @@ export default function Memory({ deck }: MemoryProps) {
           <button type="button" onClick={handleReset()}>
             New game
           </button>{' '}
-          <button type="button" onClick={handleReset({
-            size: 16,
-            left: 5
-          })}>
+          <button
+            type="button"
+            onClick={handleReset({
+              size: 16,
+              left: 5,
+            })}
+          >
             New game slightly bigger
           </button>{' '}
-          <button type="button" onClick={handleReset({
-            size: 24,
-            left: 8
-          })}>
+          <button
+            type="button"
+            onClick={handleReset({
+              size: 24,
+              left: 8,
+            })}
+          >
             New game double
           </button>
           <form onSubmit={handleCustomOptions}>
