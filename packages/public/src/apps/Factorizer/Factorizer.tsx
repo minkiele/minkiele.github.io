@@ -1,34 +1,90 @@
-"use client"
+'use client';
 
-import { ChangeEventHandler, Fragment, FunctionComponent, useMemo, useState } from 'react';
-import { getGroupedFactors } from './Factorizer.utils';
+import {
+  ChangeEventHandler,
+  Fragment,
+  FunctionComponent,
+  MouseEventHandler,
+} from 'react';
+import { getNumber, useFactorizer } from './Factorizer.utils';
 import FactorizerMd from './README.md';
 
 const Factorizer: FunctionComponent = () => {
-  const [input, setInput] = useState<number>(2);
-  const groupedFactors = useMemo(() => getGroupedFactors(input) as Array<[string, number]>, [input]);
-  const handleInput: ChangeEventHandler<HTMLInputElement> = (evt) => {
-    const parsedInput = parseInt(evt.target.value);
-    setInput(isNaN(parsedInput) || parsedInput < 2 ? 2 : parsedInput);
+  const { inputs, factorized, mcm, mcd, add, update, del } = useFactorizer();
+  const handleInput =
+    (index: number): ChangeEventHandler<HTMLInputElement> =>
+    (evt) => {
+      update(index, evt.target.value);
+    };
+  const handleDelete =
+    (index: number): MouseEventHandler<HTMLButtonElement> =>
+    () => {
+      del(index);
+    };
+  const handleAdd: MouseEventHandler<HTMLButtonElement> = () => {
+    add('2');
   };
   return (
     <div>
       <FactorizerMd />
-      <fieldset>
-        <legend>Factorize</legend>
-        <label htmlFor="input">Input number: </label>
-        <input id="input" name="input" type="number" value={input} onChange={handleInput} />
-      </fieldset>
-      <p>
-        {input} ={' '}
-        {groupedFactors.map(([factor, exp], index) => (
-          <Fragment key={`${factor}-${exp}`}>
-            {index > 0 && <>&times;</>}
-            {factor}
-            {exp > 1 && <sup>{exp}</sup>}
-          </Fragment>
-        ))}
-      </p>
+      {inputs.map((input, index) => (
+        <Fragment key={`input-${index}`}>
+          <fieldset>
+            <legend>Factorize</legend>
+            <label htmlFor={`input-${index}`}>Input number: </label>
+            <input
+              id={`input-${index}`}
+              name={`input-${index}`}
+              type="number"
+              value={input}
+              onChange={handleInput(index)}
+            />{' '}
+            {index > 0 && (
+              <button type="button" onClick={handleDelete(index)}>
+                Delete
+              </button>
+            )}
+          </fieldset>
+          <p>
+            {inputs[index]} ={' '}
+            {factorized[index].map(([factor, exp], index) => (
+              <Fragment key={`${factor}-${exp}`}>
+                {index > 0 && <>&times;</>}
+                {factor}
+                {exp > 1 && <sup>{exp}</sup>}
+              </Fragment>
+            ))}
+          </p>
+        </Fragment>
+      ))}
+      {inputs.length > 1 && (
+        <>
+          <p>
+            mcm = {getNumber(mcm)} ={' '}
+            {mcm.map(([factor, exp], index) => (
+              <Fragment key={`${factor}-${exp}`}>
+                {index > 0 && <>&times;</>}
+                {factor}
+                {exp > 1 && <sup>{exp}</sup>}
+              </Fragment>
+            ))}
+          </p>
+          {/* TODO Fix broken MCD */}
+          {/* <p>
+            MCD = {getNumber(mcd)} ={' '}
+            {mcd.map(([factor, exp], index) => (
+              <Fragment key={`${factor}-${exp}`}>
+                {index > 0 && <>&times;</>}
+                {factor}
+                {exp > 1 && <sup>{exp}</sup>}
+              </Fragment>
+            ))}
+          </p> */}
+        </>
+      )}
+      <button type="button" onClick={handleAdd}>
+        Add
+      </button>
     </div>
   );
 };
