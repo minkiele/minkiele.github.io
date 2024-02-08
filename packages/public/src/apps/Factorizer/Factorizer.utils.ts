@@ -1,4 +1,16 @@
-import { adjust, countBy, identity, map, pipe, toPairs } from 'ramda';
+import {
+  adjust,
+  countBy,
+  head,
+  identity,
+  map,
+  pipe,
+  toPairs,
+  repeat,
+  useWith as rUseWith,
+  subtract,
+  sortBy,
+} from 'ramda';
 import { UberMath } from '../../lib/ubermath';
 import { useReducer, useCallback, useMemo } from 'react';
 
@@ -71,7 +83,7 @@ const getMcd = (inputs: FactorizedList) => {
     if (index === 0) {
       return factors.slice();
       // Se in un'iterazione successiva trovo tutto vuoto so già che è 1, cortocircuito
-    } else if(acc.length === 0) {
+    } else if (acc.length === 0) {
       return acc;
     }
     // Tengo solo i fattori comuni con il numero che sto per controllare
@@ -99,8 +111,14 @@ const getMcd = (inputs: FactorizedList) => {
   return mcd;
 };
 
+const sorter = sortBy(
+  (rUseWith as any)(subtract, repeat(head, 2))
+) as typeof identity;
+const getSortedMcm = pipe(getMcm, sorter);
+const getSortedMcd = pipe(getMcd, sorter);
+
 export const getNumber = (input: FactorizedNumber) =>
-  input.reduce<number>((acc, [factor, pow]) => acc * (factor ** pow), 1);
+  input.reduce<number>((acc, [factor, pow]) => acc * factor ** pow, 1);
 
 export const useFactorizer = () => {
   const [output, dispatch] = useReducer(
@@ -116,8 +134,8 @@ export const useFactorizer = () => {
             ...state,
             inputs: [...state.inputs, normalizedInput],
             factorized: newFactorized,
-            mcm: getMcm(newFactorized),
-            mcd: getMcd(newFactorized),
+            mcm: getSortedMcm(newFactorized),
+            mcd: getSortedMcd(newFactorized),
           };
         }
         case 'update': {
@@ -136,8 +154,8 @@ export const useFactorizer = () => {
             ...state,
             inputs: newInputs,
             factorized: newFactorized,
-            mcm: getMcm(newFactorized),
-            mcd: getMcd(newFactorized),
+            mcm: getSortedMcm(newFactorized),
+            mcd: getSortedMcd(newFactorized),
           };
         }
         case 'delete': {
@@ -156,8 +174,8 @@ export const useFactorizer = () => {
             ...state,
             inputs: newInputs,
             factorized: newFactorized,
-            mcm: getMcm(newFactorized),
-            mcd: getMcd(newFactorized),
+            mcm: getSortedMcm(newFactorized),
+            mcd: getSortedMcd(newFactorized),
           };
         }
         case 'reset': {
