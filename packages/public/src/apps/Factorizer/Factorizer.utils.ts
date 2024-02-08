@@ -1,11 +1,16 @@
-import { countBy, identity, pipe, toPairs } from 'ramda';
+import { adjust, countBy, identity, map, pipe, toPairs } from 'ramda';
 import { UberMath } from '../../lib/ubermath';
 import { useReducer, useCallback, useMemo } from 'react';
 
 export const getGroupedFactors = pipe(
   UberMath.factorize,
   countBy(identity),
-  toPairs
+  toPairs,
+  // Since we're grouping numbers
+  // the keys (index 0 in the pair) is string
+  // and must be parsed to number
+  // Also TypeScript does not agree with parseInt
+  map(adjust(0, parseInt as typeof identity))
 );
 
 type FactorizedNumber = Array<[number, number]>;
@@ -61,10 +66,13 @@ const getMcm = (inputs: FactorizedList) =>
     [] as FactorizedNumber
   );
 const getMcd = (inputs: FactorizedList) => {
-  const mcd = inputs.reduce<FactorizedNumber>((acc, factors) => {
+  const mcd = inputs.reduce<FactorizedNumber>((acc, factors, index) => {
     // Array vuoto, inserisco tutta la riga
-    if (acc.length === 0) {
+    if (index === 0) {
       return factors.slice();
+      // Se in un'iterazione successiva trovo tutto vuoto so già che è 1, cortocircuito
+    } else if(acc.length === 0) {
+      return acc;
     }
     // Tengo solo i fattori comuni con il numero che sto per controllare
     const fAcc = acc.filter(([factor]) =>
@@ -84,7 +92,7 @@ const getMcd = (inputs: FactorizedList) => {
       return tAcc;
     }, fAcc);
   }, [] as FactorizedNumber);
-  // Se alla fine della cura il fattor comune è vuoto allora aggiungo 1 come MCD.
+  // Se alla fine della cura il fattore comune è vuoto ritorno 1.
   if (mcd.length === 0) {
     return [[1, 1]] as FactorizedNumber;
   }
@@ -92,7 +100,7 @@ const getMcd = (inputs: FactorizedList) => {
 };
 
 export const getNumber = (input: FactorizedNumber) =>
-  input.reduce<number>((acc, [factor, pow]) => acc * factor ** pow, 1);
+  input.reduce<number>((acc, [factor, pow]) => acc * (factor ** pow), 1);
 
 export const useFactorizer = () => {
   const [output, dispatch] = useReducer(

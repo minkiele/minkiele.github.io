@@ -48,7 +48,7 @@ const Factorizer: FunctionComponent = () => {
           <p>
             {inputs[index]} ={' '}
             {factorized[index].map(([factor, exp], index) => (
-              <Fragment key={`${factor}-${exp}`}>
+              <Fragment key={`f-${factor}-${exp}`}>
                 {index > 0 && <>&times;</>}
                 {factor}
                 {exp > 1 && <sup>{exp}</sup>}
@@ -62,7 +62,7 @@ const Factorizer: FunctionComponent = () => {
           <p>
             mcm = {getNumber(mcm)} ={' '}
             {mcm.map(([factor, exp], index) => (
-              <Fragment key={`${factor}-${exp}`}>
+              <Fragment key={`mcm-${factor}-${exp}`}>
                 {index > 0 && <>&times;</>}
                 {factor}
                 {exp > 1 && <sup>{exp}</sup>}
@@ -70,16 +70,16 @@ const Factorizer: FunctionComponent = () => {
             ))}
           </p>
           {/* TODO Fix broken MCD */}
-          {/* <p>
+          <p>
             MCD = {getNumber(mcd)} ={' '}
             {mcd.map(([factor, exp], index) => (
-              <Fragment key={`${factor}-${exp}`}>
+              <Fragment key={`mcd-${factor}-${exp}`}>
                 {index > 0 && <>&times;</>}
                 {factor}
                 {exp > 1 && <sup>{exp}</sup>}
               </Fragment>
             ))}
-          </p> */}
+          </p>
         </>
       )}
       <button type="button" onClick={handleAdd}>
