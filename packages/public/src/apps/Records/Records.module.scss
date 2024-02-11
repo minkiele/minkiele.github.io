@@ -37,6 +37,9 @@
 .image {
   object-fit: contain;
   box-shadow: 4px 4px 0 0 lib.$fg;
+  &#{&}__hidden {
+    display: none;
+  }
 }
 
 .cover {
@@ -52,9 +55,9 @@
   border: 0;
 }
 
-
 @include mx.when-dark() {
-  .image, .cover {
+  .image,
+  .cover {
     box-shadow: 4px 4px 0 0 lib.$dark-fg;
   }
   .cover {

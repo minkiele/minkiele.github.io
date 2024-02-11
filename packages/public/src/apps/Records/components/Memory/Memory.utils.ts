@@ -7,7 +7,7 @@ import {
   MemoryReducerState,
 } from './Memory.models';
 
-const DEFAUlT_SIZE = 12;
+const DEFAULT_SIZE = 12;
 const DEFAULT_WAIT = 1500;
 const DEFAULT_TRIES = 3;
 
@@ -16,7 +16,7 @@ const P = Symbol('PLAY');
 const G = Symbol('GAMEOVER');
 const W = Symbol('WINNER');
 
-export { DEFAUlT_SIZE, DEFAULT_WAIT, DEFAULT_TRIES, I, P, G, W };
+export { DEFAULT_SIZE, DEFAULT_WAIT, DEFAULT_TRIES, I, P, G, W };
 
 /**
  * Get the deck size
@@ -154,7 +154,7 @@ export function useMemory(source: MemoryDataSources) {
 
   const reset = useCallback(
     ({
-      size = DEFAUlT_SIZE,
+      size = DEFAULT_SIZE,
       left = DEFAULT_TRIES,
       wait = DEFAULT_WAIT,
     }: MemoryConfig = {}) => {

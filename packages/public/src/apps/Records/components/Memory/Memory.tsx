@@ -4,7 +4,7 @@ import { MemoryProps } from './Memory.models';
 import {
   DEFAULT_TRIES,
   DEFAULT_WAIT,
-  DEFAUlT_SIZE,
+  DEFAULT_SIZE,
   G,
   P,
   W,
@@ -15,6 +15,7 @@ import Image from 'next/image';
 import Emoji from '@/apps/App/components/Emoji/Emoji';
 import { FormEventHandler } from 'react';
 import FlipCard from '../FlipCard/FlipCard';
+import classNames from 'classnames';
 
 export default function Memory({ deck }: MemoryProps) {
   const { status, left, cards, matched, flip, isFlipped, flipped, reset } =
@@ -37,7 +38,7 @@ export default function Memory({ deck }: MemoryProps) {
       ? DEFAULT_TRIES
       : parsedTries;
     const customSize = isNaN(parsedSize)
-      ? DEFAUlT_SIZE
+      ? DEFAULT_SIZE
       : parsedSize % 2 === 0
       ? parsedSize
       : parsedSize + 1;
@@ -63,25 +64,30 @@ export default function Memory({ deck }: MemoryProps) {
                 isFlipped={isCardFlipped}
                 className={styles.imageWrapper}
               >
-                {({ isFront }) =>
-                  isFront ? (
+                {({ isBack }) => (
+                  <>
+                  {/* I always render the image so I can use the prefetch
+                  and I show it when the card is flipped */}
                     <Image
                       src={release.thumb}
                       alt="Cover image"
                       fill
-                      className={styles.image}
-                      priority={index < 4}
+                      className={classNames(styles.image, {
+                        [styles.image__hidden]: isBack,
+                      })}
+                      priority={index < DEFAULT_SIZE}
                     />
-                  ) : (
-                    <button
-                      type="button"
-                      className={styles.cover}
-                      onClick={handleFlip(index)}
-                    >
-                      <Emoji>😅</Emoji>
-                    </button>
-                  )
-                }
+                    {isBack && (
+                      <button
+                        type="button"
+                        className={styles.cover}
+                        onClick={handleFlip(index)}
+                      >
+                        <Emoji>😅</Emoji>
+                      </button>
+                    )}
+                  </>
+                )}
               </FlipCard>
               {isCardMatched && (
                 <span>
@@ -141,7 +147,7 @@ export default function Memory({ deck }: MemoryProps) {
               id="size"
               name="size"
               type="number"
-              defaultValue={DEFAUlT_SIZE}
+              defaultValue={DEFAULT_SIZE}
               min={4}
               max={deck.length}
               step={2}

@@ -153,7 +153,7 @@ const TicTacToe: FunctionComponent = () => {
                       side
                     )} space marked with  ${col.description}`}
                   >
-                    {col.description}
+                    <Emoji>{col.description}</Emoji>
                   </span>
                 )}
               </div>
