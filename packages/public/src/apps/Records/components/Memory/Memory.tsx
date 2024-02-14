@@ -16,6 +16,7 @@ import Emoji from '@/apps/App/components/Emoji/Emoji';
 import { FormEventHandler } from 'react';
 import FlipCard from '../FlipCard/FlipCard';
 import classNames from 'classnames';
+import Toggler from '../Toggler/Toggler';
 
 export default function Memory({ deck }: MemoryProps) {
   const { status, left, cards, matched, flip, isFlipped, reset } =
@@ -39,9 +40,7 @@ export default function Memory({ deck }: MemoryProps) {
       : parsedTries;
     const customSize = isNaN(parsedSize)
       ? undefined
-      : parsedSize % 2 === 0
-      ? parsedSize
-      : parsedSize + 1;
+      : Math.max(4, parsedSize - (parsedSize % 4));
     const customWait = isNaN(parsedWait) ? undefined : parsedWait;
     const customRedeem = target.redeem.checked;
     reset({
@@ -92,10 +91,10 @@ export default function Memory({ deck }: MemoryProps) {
                 )}
               </FlipCard>
               {isCardMatched && (
-                <span>
+                <Toggler show={status === W ? true : undefined}>
                   <strong>{release.artist}</strong>: {release.title} (
                   {release.medium})
-                </span>
+                </Toggler>
               )}
             </li>
           );
@@ -151,8 +150,8 @@ export default function Memory({ deck }: MemoryProps) {
               type="number"
               defaultValue={DEFAULT_SIZE}
               min={4}
-              max={deck.length}
-              step={2}
+              max={2 * deck.length}
+              step={4}
             />{' '}
             <label htmlFor="wait">Waiting time before</label>{' '}
             <input
