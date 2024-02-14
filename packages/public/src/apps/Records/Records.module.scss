@@ -11,14 +11,13 @@
   padding-left: 0;
 
   &_item {
-    display: flex;
-    gap: 1rem;
-    flex-direction: column;
+    display: block;
   }
 }
 
 .imageWrapper {
   position: relative;
+  display: block;
   width: 100%;
   max-width: 150px;
   height: auto;
@@ -48,22 +47,34 @@
 }
 
 .toggler {
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
+  position: relative;
   &_control {
-    flex-grow: 0;
-    flex-shrink: 0;
+    position: absolute;
+    top: -2rem;
+    left: 0.5rem;
   }
   &_controlButton {
+    display: flex;
+    width: 1.5rem;
+    height: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: lib.$fg;
+    background-color: lib.$bg;
     cursor: pointer;
   }
   &_content {
     display: none;
-    flex-grow: 1;
-    flex-shrink: 1;
-    &__show {
+  }
+
+  &#{&}__show {
+    .toggler_control {
+      top: -3rem;
+    }
+    .toggler_content {
       display: block;
+      margin-top: 1rem;
     }
   }
 }
@@ -71,25 +82,11 @@
 @include mx.when-dark() {
   .image,
   .cover {
+    border: 0;
     box-shadow: 4px 4px 0 0 lib.$dark-fg;
   }
-  .cover {
-    border: 0;
-  }
-}
-
-@media (min-width: 992px) {
-  .list {
-    display: grid;
-  }
-
-  .toggler {
-    display: block;
-    &_control {
-      display: none;
-    }
-    &_content {
-      display: block;
-    }
+  .toggler_controlButton {
+    color: lib.$dark-fg;
+    background-color: lib.$dark-bg;
   }
 }

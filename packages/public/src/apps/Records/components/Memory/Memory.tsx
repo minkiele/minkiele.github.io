@@ -17,6 +17,7 @@ import { FormEventHandler } from 'react';
 import FlipCard from '../FlipCard/FlipCard';
 import classNames from 'classnames';
 import Toggler from '../Toggler/Toggler';
+import { T } from 'ramda';
 
 export default function Memory({ deck }: MemoryProps) {
   const { status, left, cards, matched, flip, isFlipped, reset } =
@@ -91,7 +92,10 @@ export default function Memory({ deck }: MemoryProps) {
                 )}
               </FlipCard>
               {isCardMatched && (
-                <Toggler show={status === W ? true : undefined}>
+                <Toggler
+                  show={status === W || status === G ? true : undefined}
+                  onToggle={status === W || status === G ? T : undefined}
+                >
                   <strong>{release.artist}</strong>: {release.title} (
                   {release.medium})
                 </Toggler>
