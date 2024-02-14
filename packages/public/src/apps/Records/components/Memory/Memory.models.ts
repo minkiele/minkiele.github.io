@@ -15,11 +15,12 @@ export interface MemoryReducerState {
   status: symbol; // Hehe
   left: number;
   wait: number;
+  redeem: boolean;
 }
 
 type MemoryResetAction = Pick<
   MemoryReducerState,
-  'cards' | 'left' | 'wait'
+  'cards' | 'left' | 'wait' | 'redeem'
 >;
 
 export type MemoryReducerAction =
@@ -42,4 +43,5 @@ export interface MemoryConfig {
   size?: number;
   left?: number;
   wait?: number;
+  redeem?: boolean;
 }

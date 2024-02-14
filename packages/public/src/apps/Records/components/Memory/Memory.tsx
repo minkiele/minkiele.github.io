@@ -18,7 +18,7 @@ import FlipCard from '../FlipCard/FlipCard';
 import classNames from 'classnames';
 
 export default function Memory({ deck }: MemoryProps) {
-  const { status, left, cards, matched, flip, isFlipped, flipped, reset } =
+  const { status, left, cards, matched, flip, isFlipped, reset } =
     useMemory(deck);
   const handleReset =
     (...args: Parameters<typeof reset>) =>
@@ -35,18 +35,20 @@ export default function Memory({ deck }: MemoryProps) {
     const customTries = target.infiniteTries.checked
       ? Infinity
       : isNaN(parsedTries)
-      ? DEFAULT_TRIES
+      ? undefined
       : parsedTries;
     const customSize = isNaN(parsedSize)
-      ? DEFAULT_SIZE
+      ? undefined
       : parsedSize % 2 === 0
       ? parsedSize
       : parsedSize + 1;
-    const customWait = isNaN(parsedWait) ? DEFAULT_WAIT : parsedWait;
+    const customWait = isNaN(parsedWait) ? undefined : parsedWait;
+    const customRedeem = target.redeem.checked;
     reset({
       left: customTries,
       size: customSize,
       wait: customWait,
+      redeem: customRedeem,
     });
   };
   return (
@@ -66,7 +68,7 @@ export default function Memory({ deck }: MemoryProps) {
               >
                 {({ isBack }) => (
                   <>
-                  {/* I always render the image so I can use the prefetch
+                    {/* I always render the image so I can use the prefetch
                   and I show it when the card is flipped */}
                     <Image
                       src={release.thumb}
@@ -160,6 +162,8 @@ export default function Memory({ deck }: MemoryProps) {
               defaultValue={DEFAULT_WAIT}
               min={0}
             />{' '}
+            <input id="redeem" name="redeem" type="checkbox" value="redeem" />{' '}
+            <label htmlFor="redeem">Get one more try for every match</label>{' '}
             <button type="submit">New game with custom options</button>
           </form>
         </fieldset>

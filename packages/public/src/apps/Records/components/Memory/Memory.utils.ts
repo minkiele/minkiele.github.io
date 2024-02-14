@@ -10,6 +10,7 @@ import {
 const DEFAULT_SIZE = 12;
 const DEFAULT_WAIT = 1500;
 const DEFAULT_TRIES = 3;
+const DEFAULT_REDEEM = false;
 
 const I = Symbol('IDLE');
 const P = Symbol('PLAY');
@@ -30,10 +31,7 @@ function getDeckSize(candidate: number, deckSize: number) {
   }
 }
 
-function drawCards(
-  size: number,
-  deck: MemoryDataSources
-): MemoryDataSources {
+function drawCards(size: number, deck: MemoryDataSources): MemoryDataSources {
   const length = getDeckSize(size, deck.length);
   const drawed: MemoryDataSources = [];
   const cards: Array<MemoryDataSource | undefined> = Array.from<
@@ -74,6 +72,7 @@ export function useMemory(source: MemoryDataSources) {
               matched: [],
               status: P,
               wait: action.wait,
+              redeem: action.redeem,
             };
           }
           case 'flip': {
@@ -104,6 +103,10 @@ export function useMemory(source: MemoryDataSources) {
                     // Add the cards to the matched list and win the game!
                     return { ...newState, status: W };
                   } else {
+                    // If redeem is on every time I match two cards I add a chance
+                    if (state.redeem) {
+                      newState.left += 1;
+                    }
                     // Add the cards to the matched list
                     return newState;
                   }
@@ -149,6 +152,7 @@ export function useMemory(source: MemoryDataSources) {
         status: I,
         left: -1,
         wait: -1,
+        redeem: false,
       }
     );
 
@@ -157,8 +161,15 @@ export function useMemory(source: MemoryDataSources) {
       size = DEFAULT_SIZE,
       left = DEFAULT_TRIES,
       wait = DEFAULT_WAIT,
+      redeem = DEFAULT_REDEEM,
     }: MemoryConfig = {}) => {
-      dispatch({ type: 'reset', cards: drawCards(size, source), left, wait });
+      dispatch({
+        type: 'reset',
+        cards: drawCards(size, source),
+        left,
+        wait,
+        redeem,
+      });
     },
     [source]
   );
