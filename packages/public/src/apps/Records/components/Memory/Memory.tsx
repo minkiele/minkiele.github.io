@@ -96,8 +96,10 @@ export default function Memory({ deck }: MemoryProps) {
                   show={status === W || status === G ? true : undefined}
                   onToggle={status === W || status === G ? T : undefined}
                 >
+                  <span className={styles.recordDescription}>
                   <strong>{release.artist}</strong>: {release.title} (
                   {release.medium})
+                  </span>
                 </Toggler>
               )}
             </li>
@@ -130,6 +132,16 @@ export default function Memory({ deck }: MemoryProps) {
             })}
           >
             New game double
+          </button>{' '}
+          <button
+            type="button"
+            onClick={handleReset({
+              size: 2 * deck.length,
+              left: Infinity,
+              wait: 750
+            })}
+          >
+            New game Avengers
           </button>
           <form onSubmit={handleCustomOptions}>
             <label htmlFor="tries">Tries</label>{' '}

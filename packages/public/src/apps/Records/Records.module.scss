@@ -79,6 +79,13 @@
   }
 }
 
+.recordDescription {
+  overflow-wrap: anywhere;
+  @media(min-width: 992px) {
+    overflow-wrap: normal;
+  }
+}
+
 @include mx.when-dark() {
   .image,
   .cover {
