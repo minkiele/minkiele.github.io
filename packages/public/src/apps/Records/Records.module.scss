@@ -61,7 +61,9 @@
     align-items: center;
     border-radius: 50%;
     color: lib.$fg;
+    font-weight: bold;
     background-color: lib.$bg;
+    box-shadow: 4px 4px 0 0 lib.$fg;
     cursor: pointer;
   }
   &_content {
@@ -95,5 +97,6 @@
   .toggler_controlButton {
     color: lib.$dark-fg;
     background-color: lib.$dark-bg;
+    box-shadow: 4px 4px 0 0 lib.$dark-fg;
   }
 }
