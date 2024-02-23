@@ -15,7 +15,7 @@
     align-items: center;
     border: 1px dashed colors.$fg;
     &__touchSelected {
-      background-color: rgba(colors.$fg, 20%);
+      background-color: rgba(colors.$fg-color, 20%);
     }
   }
   &_stone {
@@ -35,7 +35,7 @@
       border-bottom: 1px colors.$bg solid;
     }
     &:hover {
-      background-color: rgba(colors.$fg, 80%);
+      background-color: rgba(colors.$fg-color, 80%);
     }
   }
 }
@@ -45,7 +45,7 @@
     &_column {
       border-color: colors.$dark-fg;
       &__touchSelected {
-        background-color: rgba(colors.$dark-fg, 20%);
+        background-color: rgba(colors.$dark-fg-color, 20%);
       }
     }
     &_stone {
@@ -55,7 +55,7 @@
         border-bottom-color: colors.$dark-bg;
       }
       &:hover {
-        background-color: rgba(colors.$dark-fg, 80%);
+        background-color: rgba(colors.$dark-fg-color, 80%);
       }
     }
   }

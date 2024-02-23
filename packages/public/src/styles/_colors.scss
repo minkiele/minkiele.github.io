@@ -1,5 +1,18 @@
-$fg: #333;
-$bg: #fff;
+$fg-color: #333;
+$bg-color: #fff;
 
-$dark-fg: #eee;
-$dark-bg: #111;
+$fg: var(--fg-color);
+$bg: var(--bg-color);
+
+$dark-fg-color: #eee;
+$dark-bg-color: #111;
+
+$dark-fg: var(--dark-fg-color);
+$dark-bg: var(--dark-bg-color);
+
+$roots: (
+  'fg-color': $fg-color,
+  'bg-color': $bg-color,
+  'dark-fg-color': $dark-fg-color,
+  'dark-bg-color': $dark-bg-color,
+);

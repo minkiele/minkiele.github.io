@@ -34,14 +34,14 @@
   text-align: center;
   vertical-align: middle;
   font-weight: bold;
-  background-color: rgba(colors.$fg, 0.3);
+  background-color: rgba(colors.$fg-color, 0.3);
 
   @at-root %emoji {
     font-size: 0.8rem;
   }
 
   &__stepped {
-    background-color: rgba(colors.$fg, 0.15);
+    background-color: rgba(colors.$fg-color, 0.15);
   }
 
   &__mine {
@@ -82,10 +82,10 @@
 
   .tile {
     border-color: colors.$dark-fg;
-    background-color: rgba(colors.$dark-fg, 0.3);
+    background-color: rgba(colors.$dark-fg-color, 0.3);
 
     &__stepped {
-      background-color: rgba(colors.$dark-fg, 0.15);
+      background-color: rgba(colors.$dark-fg-color, 0.15);
     }
 
     &__steppedOnMine {
@@ -104,6 +104,7 @@
     }
 
     &__number7 {
+      // Hardcoded to white because it's Minesweeper's theme, not site's
       color: #fff;
     }
   }
