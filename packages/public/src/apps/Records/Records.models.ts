@@ -70,3 +70,13 @@ export interface DiscogsField {
   field_id: number;
   value: string;
 }
+
+export interface RecordDataSource {
+  id: number;
+  artist: string;
+  title: string;
+  thumb: string;
+  medium: string;
+}
+
+export type RecordDataSources = Array<RecordDataSource>;

@@ -1,16 +1,8 @@
-export interface MemoryDataSource {
-  id: number;
-  artist: string;
-  title: string;
-  thumb: string;
-  medium: string;
-}
-
-export type MemoryDataSources = Array<MemoryDataSource>;
+import { RecordDataSource, RecordDataSources } from "../../Records.models";
 
 export interface MemoryReducerState {
-  cards: MemoryDataSources;
-  matched: Array<MemoryDataSource['id']>;
+  cards: RecordDataSources;
+  matched: Array<RecordDataSource['id']>;
   flipped: Array<number>;
   status: symbol; // Hehe
   left: number;
@@ -36,7 +28,7 @@ export type MemoryReducerAction =
     };
 
 export interface MemoryProps {
-  deck: MemoryDataSources;
+  deck: RecordDataSources;
 }
 
 export interface MemoryConfig {

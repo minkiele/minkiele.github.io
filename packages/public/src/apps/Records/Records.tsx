@@ -1,6 +1,7 @@
 import { getDiscography } from './Records.utils';
 import Readme from './components/Readme/Readme';
 import Memory from './components/Memory/Memory';
+import Guess from './components/Guess/Guess';
 
 export default async function Records() {
   const myDiscography = await getDiscography();
@@ -9,6 +10,7 @@ export default async function Records() {
     <div>
       <Readme />
       <Memory deck={myDiscography} />
+      <Guess deck={myDiscography} />
     </div>
   );
 }

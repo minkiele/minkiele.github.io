@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import styles from '../../Records.module.scss';
+import styles from '../Memory/Memory.module.scss';
 import classNames from 'classnames';
 
 interface ToggleEventHandler {

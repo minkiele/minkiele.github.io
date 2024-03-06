@@ -10,7 +10,7 @@ import {
   W,
   useMemory,
 } from './Memory.utils';
-import styles from '../../Records.module.scss';
+import styles from './Memory.module.scss';
 import Image from 'next/image';
 import Emoji from '@/apps/App/components/Emoji/Emoji';
 import { FormEventHandler } from 'react';
