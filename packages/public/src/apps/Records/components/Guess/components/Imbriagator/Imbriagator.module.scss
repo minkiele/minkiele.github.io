@@ -1,0 +1,16 @@
+.enter {
+  filter: blur(20px);
+}
+
+%active {
+  filter: blur(0);
+}
+@for $duration from 1 through 40 {
+  .active_#{$duration} {
+    @extend %active;
+    transition: #{$duration * 500}ms linear;
+  }
+}
+.done {
+  @extend %active;
+}
