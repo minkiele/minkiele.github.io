@@ -106,6 +106,10 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     prefetch: false,
   },
   {
+    route: '/puzzle',
+    name: 'Puzzle',
+  },
+  {
     route: '/archive',
     name: 'The Archive',
     prefetch: false,
