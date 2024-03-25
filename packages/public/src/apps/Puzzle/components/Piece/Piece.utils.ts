@@ -11,11 +11,14 @@ export interface PieceEdges {
   S: symbol;
   W: symbol;
   E: symbol;
+  // e forse quel che cerco neanche c'è
 }
 
-export type PieceProps = PieceEdges & Omit<SVGAttributes<SVGPathElement>, 'd'>;
+export type PieceProps = PieceEdges &
+  Omit<SVGAttributes<SVGPathElement>, 'd' | 'x' | 'y'> &
+  Required<Pick<SVGAttributes<SVGPathElement>, 'x' | 'y'>>;
+
 interface UsePieceState extends PieceEdges {
-  // e forse quel che cerco neanche c'è
   isCorner: boolean;
   isFrame: boolean;
   isValid: boolean;
@@ -128,25 +131,18 @@ export const usePiece = (props: PieceEdges) => {
 
 interface SvgPathSegment {
   rotate: () => SvgPathSegment;
-  reflectX: () => SvgPathSegment;
-  reflectY: () => SvgPathSegment;
-  asAbsolute: () => SvgPathSegment;
-  asRelative: () => SvgPathSegment;
+  reflect: () => SvgPathSegment;
 }
 
-export class SvgPathDefinition {
+class SvgPathDefinition {
   constructor(private segments: Array<SvgPathSegment> = []) {}
 
   rotate() {
     return new SvgPathDefinition(this.segments.map((s) => s.rotate()));
   }
 
-  reflectX() {
-    return new SvgPathDefinition(this.segments.map((s) => s.reflectX()));
-  }
-
-  reflectY() {
-    return new SvgPathDefinition(this.segments.map((s) => s.reflectY()));
+  reflect() {
+    return new SvgPathDefinition(this.segments.map((s) => s.reflect()));
   }
 
   add(segment: SvgPathSegment) {
@@ -164,27 +160,19 @@ export class SvgPathDefinition {
   }
 }
 
-export class SvgMoveSegment implements SvgPathSegment {
-  constructor(private x: string | number, private y:  string | number, private relative = true) {}
+class SvgMoveSegment implements SvgPathSegment {
+  constructor(
+    private x: string | number,
+    private y: string | number,
+    private relative = true
+  ) {}
 
   rotate() {
     return new SvgMoveSegment(-this.y, this.x);
   }
 
-  reflectX() {
-    return new SvgMoveSegment(-this.x, this.y);
-  }
-
-  reflectY() {
+  reflect() {
     return new SvgMoveSegment(this.x, -this.y);
-  }
-
-  asAbsolute() {
-    return new SvgMoveSegment(this.x, this.y, false);
-  }
-
-  asRelative() {
-    return new SvgMoveSegment(this.x, this.y, true);
   }
 
   private getDirective(): string {
@@ -196,7 +184,7 @@ export class SvgMoveSegment implements SvgPathSegment {
   }
 }
 
-export class SvgCurveSegment implements SvgPathSegment {
+class SvgCurveSegment implements SvgPathSegment {
   constructor(
     private x1: number,
     private y1: number,
@@ -218,18 +206,7 @@ export class SvgCurveSegment implements SvgPathSegment {
     );
   }
 
-  reflectX() {
-    return new SvgCurveSegment(
-      -this.x1,
-      this.y1,
-      -this.x2,
-      this.y2,
-      -this.x,
-      this.y
-    );
-  }
-
-  reflectY() {
+  reflect() {
     return new SvgCurveSegment(
       this.x1,
       -this.y1,
@@ -237,30 +214,6 @@ export class SvgCurveSegment implements SvgPathSegment {
       -this.y2,
       this.x,
       -this.y
-    );
-  }
-
-  asAbsolute() {
-    return new SvgCurveSegment(
-      this.x1,
-      this.y1,
-      this.x2,
-      this.y2,
-      this.x,
-      this.y,
-      false
-    );
-  }
-
-  asRelative() {
-    return new SvgCurveSegment(
-      this.x1,
-      this.y1,
-      this.x2,
-      this.y2,
-      this.x,
-      this.y,
-      true
     );
   }
 
@@ -275,27 +228,15 @@ export class SvgCurveSegment implements SvgPathSegment {
   }
 }
 
-export class SvgLineSegment implements SvgPathSegment {
+class SvgLineSegment implements SvgPathSegment {
   constructor(private x: number, private y: number, private relative = true) {}
 
   rotate() {
     return new SvgLineSegment(-this.y, this.x);
   }
 
-  reflectX() {
-    return new SvgLineSegment(-this.x, this.y);
-  }
-
-  reflectY() {
+  reflect() {
     return new SvgLineSegment(this.x, -this.y);
-  }
-
-  asAbsolute() {
-    return new SvgLineSegment(this.x, this.y, false);
-  }
-
-  asRelative() {
-    return new SvgLineSegment(this.x, this.y, true);
   }
 
   private getDirective(): string {
@@ -314,42 +255,25 @@ const curveProto = new SvgPathDefinition([
   new SvgCurveSegment(0, -8, 16, -2, 40, -2),
 ]);
 
+const curveOut = curveProto.reflect();
+
 const lineProto = new SvgPathDefinition([new SvgLineSegment(100, 0)]);
 
-export const getPath = ({ N, E, S, W, x, y }: PieceEdges & Required<Pick<SVGAttributes<SVGPathElement>, 'x' | 'y'>>): string => {
+const getEdge = (edge: symbol): SvgPathDefinition =>
+  edge === FLAT ? lineProto : edge === IN ? curveProto : curveOut;
+
+export const getPath = ({ N, E, S, W, x, y }: PieceProps): string => {
   const path = new SvgPathDefinition([new SvgMoveSegment(x, y)]);
-  if (N === FLAT) {
-    path.join(lineProto);
-  } else if (N === IN) {
-    path.join(curveProto);
-  } else if (N === OUT) {
-    path.join(curveProto.reflectY());
-  }
-  if (E === FLAT) {
-    path.join(lineProto.rotate());
-  } else if (E === IN) {
-    path.join(curveProto.rotate());
-  } else if (E === OUT) {
-    path.join(curveProto.rotate().reflectX());
-  }
-  if (S === FLAT) {
-    path.join(lineProto.rotate().rotate());
-  } else if (S === IN) {
-    path.join(curveProto.rotate().rotate());
-  } else if (S === OUT) {
-    path.join(curveProto.rotate().rotate().reflectY());
-  }
-  if (W === FLAT) {
-    path.join(lineProto.rotate().rotate().rotate());
-  } else if (W === IN) {
-    path.join(curveProto.rotate().rotate().rotate());
-  } else if (W === OUT) {
-    path.join(curveProto.rotate().rotate().rotate().reflectX());
-  }
+  path.join(getEdge(N));
+  path.join(getEdge(E).rotate());
+  path.join(getEdge(S).rotate().rotate());
+  path.join(getEdge(W).rotate().rotate().rotate());
   return path.toString();
 };
 
-const getRandomCurvedEdge = () => [IN, OUT][Math.floor(Math.random() * 2)];
+const CURVED_SEGMENTS = [IN, OUT];
+const getRandomCurvedEdge = () =>
+  CURVED_SEGMENTS[Math.floor(Math.random() * 2)];
 
 /**
  * Less random than the name suggests, we add at most 2 random edges per piece

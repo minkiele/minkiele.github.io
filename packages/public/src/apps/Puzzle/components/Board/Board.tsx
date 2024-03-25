@@ -1,6 +1,5 @@
-import { FunctionComponentElement, SVGAttributes } from 'react';
+import { SVGAttributes } from 'react';
 import Piece from '../Piece/Piece';
-import { times } from 'ramda';
 import { PieceEdges } from '../Piece/Piece.utils';
 
 interface BoardProps
@@ -23,6 +22,7 @@ export default function Board({ grid, ...props }: BoardProps) {
             key={`${index}-${jndex}`}
             x={jndex * 100}
             y={index * 100}
+            data-checkered={((jndex + index) % 2) ? undefined : true}
           />
         ))
       )}
