@@ -1,14 +1,7 @@
 @use '../../styles/colors' as colors;
 @use '../../styles/mixins' as lib;
 
-.grid {
-  display: grid;
-  margin-left: 30px;
-  margin-top: 60px;
-}
-
-.piece {
-  margin: -60px 0 0 -60px;
+.board {
   :global {
     .outline {
       fill: colors.$bg;
@@ -18,7 +11,7 @@
 }
 
 @include lib.when-dark() {
-  .piece {
+  .board {
     :global {
       .outline {
         fill: colors.$dark-bg;

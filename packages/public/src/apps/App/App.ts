@@ -108,6 +108,7 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
   {
     route: '/puzzle',
     name: 'Puzzle',
+    archived: true,
   },
   {
     route: '/archive',

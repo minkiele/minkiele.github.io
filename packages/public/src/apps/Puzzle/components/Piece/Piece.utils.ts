@@ -13,9 +13,7 @@ export interface PieceEdges {
   E: symbol;
 }
 
-export type PieceProps = PieceEdges &
-  Omit<SVGAttributes<SVGSVGElement>, 'width' | 'height' | 'viewBox'>;
-
+export type PieceProps = PieceEdges & Omit<SVGAttributes<SVGPathElement>, 'd'>;
 interface UsePieceState extends PieceEdges {
   // e forse quel che cerco neanche c'è
   isCorner: boolean;
@@ -132,10 +130,12 @@ interface SvgPathSegment {
   rotate: () => SvgPathSegment;
   reflectX: () => SvgPathSegment;
   reflectY: () => SvgPathSegment;
+  asAbsolute: () => SvgPathSegment;
+  asRelative: () => SvgPathSegment;
 }
 
 export class SvgPathDefinition {
-  constructor(private segments: SvgPathSegment[]) {}
+  constructor(private segments: Array<SvgPathSegment> = []) {}
 
   rotate() {
     return new SvgPathDefinition(this.segments.map((s) => s.rotate()));
@@ -165,7 +165,7 @@ export class SvgPathDefinition {
 }
 
 export class SvgMoveSegment implements SvgPathSegment {
-  constructor(private x: number, private y: number) {}
+  constructor(private x: string | number, private y:  string | number, private relative = true) {}
 
   rotate() {
     return new SvgMoveSegment(-this.y, this.x);
@@ -179,8 +179,20 @@ export class SvgMoveSegment implements SvgPathSegment {
     return new SvgMoveSegment(this.x, -this.y);
   }
 
+  asAbsolute() {
+    return new SvgMoveSegment(this.x, this.y, false);
+  }
+
+  asRelative() {
+    return new SvgMoveSegment(this.x, this.y, true);
+  }
+
+  private getDirective(): string {
+    return this.relative ? 'm' : 'M';
+  }
+
   toString() {
-    return `m ${this.x} ${this.y}`;
+    return `${this.getDirective()} ${this.x} ${this.y}`;
   }
 }
 
@@ -191,7 +203,8 @@ export class SvgCurveSegment implements SvgPathSegment {
     private x2: number,
     private y2: number,
     private x: number,
-    private y: number
+    private y: number,
+    private relative = true
   ) {}
 
   rotate() {
@@ -227,13 +240,43 @@ export class SvgCurveSegment implements SvgPathSegment {
     );
   }
 
+  asAbsolute() {
+    return new SvgCurveSegment(
+      this.x1,
+      this.y1,
+      this.x2,
+      this.y2,
+      this.x,
+      this.y,
+      false
+    );
+  }
+
+  asRelative() {
+    return new SvgCurveSegment(
+      this.x1,
+      this.y1,
+      this.x2,
+      this.y2,
+      this.x,
+      this.y,
+      true
+    );
+  }
+
+  private getDirective(): string {
+    return this.relative ? 'c' : 'C';
+  }
+
   toString() {
-    return `c ${this.x1} ${this.y1} ${this.x2} ${this.y2} ${this.x} ${this.y}`;
+    return `${this.getDirective()} ${this.x1} ${this.y1} ${this.x2} ${
+      this.y2
+    } ${this.x} ${this.y}`;
   }
 }
 
 export class SvgLineSegment implements SvgPathSegment {
-  constructor(private x: number, private y: number) {}
+  constructor(private x: number, private y: number, private relative = true) {}
 
   rotate() {
     return new SvgLineSegment(-this.y, this.x);
@@ -247,8 +290,20 @@ export class SvgLineSegment implements SvgPathSegment {
     return new SvgLineSegment(this.x, -this.y);
   }
 
+  asAbsolute() {
+    return new SvgLineSegment(this.x, this.y, false);
+  }
+
+  asRelative() {
+    return new SvgLineSegment(this.x, this.y, true);
+  }
+
+  private getDirective(): string {
+    return this.relative ? 'l' : 'L';
+  }
+
   toString() {
-    return `l ${this.x} ${this.y}`;
+    return `${this.getDirective()} ${this.x} ${this.y}`;
   }
 }
 
@@ -261,8 +316,8 @@ const curveProto = new SvgPathDefinition([
 
 const lineProto = new SvgPathDefinition([new SvgLineSegment(100, 0)]);
 
-export const getPath = ({ N, E, S, W }: PieceEdges): string => {
-  const path = new SvgPathDefinition([new SvgMoveSegment(30, 30)]);
+export const getPath = ({ N, E, S, W, x, y }: PieceEdges & Required<Pick<SVGAttributes<SVGPathElement>, 'x' | 'y'>>): string => {
+  const path = new SvgPathDefinition([new SvgMoveSegment(x, y)]);
   if (N === FLAT) {
     path.join(lineProto);
   } else if (N === IN) {
@@ -296,6 +351,9 @@ export const getPath = ({ N, E, S, W }: PieceEdges): string => {
 
 const getRandomCurvedEdge = () => [IN, OUT][Math.floor(Math.random() * 2)];
 
+/**
+ * Less random than the name suggests, we add at most 2 random edges per piece
+ */
 const getRandomPiece = (edges: Partial<PieceEdges> = {}): PieceEdges => {
   do {
     const piece = {
