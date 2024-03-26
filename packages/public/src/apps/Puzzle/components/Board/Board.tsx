@@ -22,7 +22,6 @@ export default function Board({ grid, ...props }: BoardProps) {
             key={`${index}-${jndex}`}
             x={jndex * 100}
             y={index * 100}
-            data-checkered={((jndex + index) % 2) ? undefined : true}
           />
         ))
       )}

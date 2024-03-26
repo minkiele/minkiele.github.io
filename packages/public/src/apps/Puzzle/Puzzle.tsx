@@ -5,7 +5,6 @@ import { PieceEdges, getGrid } from './components/Piece/Piece.utils';
 import styles from './Puzzle.module.scss';
 import PuzzleMd from './README.md';
 import Board from './components/Board/Board';
-import classNames from 'classnames';
 
 const DEFAULT_WIDTH = 10;
 const DEFAULT_HEIGHT = 10;
@@ -16,7 +15,6 @@ const parseIntSafe = (value: string, defaultValue = 0): number => {
 };
 
 export default function Puzzle() {
-  const [checkered, setCheckered] = useState<boolean>(false);
   const [grid, setGrid] = useState<Array<Array<PieceEdges>>>();
 
   useEffect(() => {
@@ -32,22 +30,12 @@ export default function Puzzle() {
     const newCheckered =
       (evt.target as HTMLFormElement).checkered.checked ?? false;
     setGrid(getGrid(newWidth, newHeight));
-    setCheckered(newCheckered);
   };
 
   return (
     <div>
       <PuzzleMd />
-      <div>
-        {grid && (
-          <Board
-            grid={grid}
-            className={classNames(styles.board, {
-              [styles.board__checkered]: checkered,
-            })}
-          />
-        )}
-      </div>
+      <div>{grid && <Board grid={grid} className={styles.board} />}</div>
       <div>
         <fieldset>
           <legend>Parameters</legend>
@@ -70,13 +58,6 @@ export default function Puzzle() {
               min={2}
               required
             />{' '}
-            <input
-              id="checkered"
-              name="checkered"
-              type="checkbox"
-              value="checkered"
-            />{' '}
-            <label htmlFor="checkered">Checkered</label>{' '}
             <button type="submit">Update</button>
           </form>
         </fieldset>

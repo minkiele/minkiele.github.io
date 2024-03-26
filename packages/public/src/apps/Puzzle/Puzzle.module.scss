@@ -8,31 +8,14 @@
       stroke: colors.$fg;
     }
   }
-
-  &#{&}__checkered {
-    :global {
-      .outline[data-checkered] {
-        fill: colors.$dark-bg;
-        stroke: colors.$dark-fg;
-      }
-    }
-  }
 }
 
-@include lib.when-dark-global() {
+@include lib.when-dark() {
   .board {
     :global {
       .outline {
         fill: colors.$dark-bg;
         stroke: colors.$dark-fg;
-      }
-    }
-    &#{&}__checkered {
-      :global {
-        .outline[data-checkered] {
-          fill: colors.$bg;
-          stroke: colors.$fg;
-        }
       }
     }
   }
