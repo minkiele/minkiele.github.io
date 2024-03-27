@@ -27,8 +27,6 @@ export default function Puzzle() {
     const newHeight = parseIntSafe(
       (evt.target as HTMLFormElement).height.value
     );
-    const newCheckered =
-      (evt.target as HTMLFormElement).checkered.checked ?? false;
     setGrid(getGrid(newWidth, newHeight));
   };
 
