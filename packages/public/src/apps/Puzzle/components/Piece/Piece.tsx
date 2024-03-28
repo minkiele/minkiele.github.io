@@ -8,8 +8,6 @@ const Piece: FunctionComponent<PieceProps> = ({
   W: wProp,
   E: eProp,
   className,
-  x,
-  y,
   ...props
 }) => {
   const { N, S, W, E } = usePiece(
@@ -20,8 +18,8 @@ const Piece: FunctionComponent<PieceProps> = ({
     )
   );
   const d = useMemo(
-    () => getPath({ N, S, W, E, x: x ?? 0, y: y ?? 0 }),
-    [N, S, W, E, x, y]
+    () => getPath({ N, S, W, E }),
+    [N, S, W, E]
   );
   return <path {...props} d={d} className={classNames(className, 'outline')} />;
 };

@@ -1,7 +1,11 @@
 'use client';
 
 import { FormEventHandler, useEffect, useState } from 'react';
-import { PieceEdges, getGrid } from './components/Piece/Piece.utils';
+import {
+  PieceEdges,
+  getGrid,
+  mutateGrid,
+} from './components/Piece/Piece.utils';
 import styles from './Puzzle.module.scss';
 import PuzzleMd from './README.md';
 import Board from './components/Board/Board';
@@ -13,6 +17,13 @@ const parseIntSafe = (value: string, defaultValue = 0): number => {
   const parsed = parseInt(value, 10);
   return isNaN(parsed) ? defaultValue : parsed;
 };
+
+const timedCallback = (timeout: number) =>
+  new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, timeout);
+  });
 
 export default function Puzzle() {
   const [grid, setGrid] = useState<Array<Array<PieceEdges>>>();
@@ -30,10 +41,27 @@ export default function Puzzle() {
     setGrid(getGrid(newWidth, newHeight));
   };
 
+  const handlePieceClick = (row: number, col: number) => {
+    if (grid != null) {
+      mutateGrid({ row, col }, [...grid], async (grid) => {
+        await timedCallback(50);
+        setGrid([...grid]);
+      });
+    }
+  };
+
   return (
     <div>
       <PuzzleMd />
-      <div>{grid && <Board grid={grid} className={styles.board} />}</div>
+      <div>
+        {grid && (
+          <Board
+            grid={grid}
+            className={styles.board}
+            onPieceClick={handlePieceClick}
+          />
+        )}
+      </div>
       <div>
         <fieldset>
           <legend>Parameters</legend>

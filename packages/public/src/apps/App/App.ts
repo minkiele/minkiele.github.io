@@ -95,6 +95,11 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     archived: true,
   },
   {
+    route: '/puzzle',
+    name: 'Puzzle',
+    archived: true,
+  },
+  {
     route: '/md2html',
     name: 'MD2HTML',
     prefetch: false,
@@ -104,11 +109,6 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     route: '/records',
     name: 'My records',
     prefetch: false,
-  },
-  {
-    route: '/puzzle',
-    name: 'Puzzle',
-    archived: true,
   },
   {
     route: '/archive',
