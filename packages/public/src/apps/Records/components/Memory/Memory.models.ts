@@ -23,18 +23,6 @@ type MemoryResetAction = Pick<
   'cards' | 'left' | 'wait' | 'redeem'
 >;
 
-export type MemoryReducerAction =
-  | ({
-      type: 'reset';
-    } & MemoryResetAction)
-  | {
-      type: 'flip';
-      index: number;
-    }
-  | {
-      type: 'cover';
-    };
-
 export interface MemoryProps {
   deck: MemoryDataSources;
 }
@@ -45,3 +33,11 @@ export interface MemoryConfig {
   wait?: number;
   redeem?: boolean;
 }
+
+export interface MemoryStoreAction {
+  reset: (params: MemoryResetAction) => void;
+  flip: (params: { index: number }) => void;
+  cover: () => void;
+}
+
+export type MemoryStoreState = MemoryReducerState & MemoryStoreAction;

@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   MemoryConfig,
   MemoryDataSource,
   MemoryDataSources,
-  MemoryReducerAction,
-  MemoryReducerState,
+  MemoryStoreState,
 } from './Memory.models';
+import { create, useStore } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 const DEFAULT_SIZE = 12;
 const DEFAULT_WAIT = 1500;
@@ -58,103 +59,87 @@ function drawCards(size: number, deck: MemoryDataSources): MemoryDataSources {
   return cards as MemoryDataSources;
 }
 
-export function useMemory(source: MemoryDataSources) {
-  const [{ cards, matched, flipped, status, left, wait }, dispatch] =
-    useReducer(
-      (state: MemoryReducerState, action: MemoryReducerAction) => {
-        switch (action.type) {
-          case 'reset': {
-            return {
-              ...state,
-              cards: action.cards,
-              flipped: [],
-              left: action.left,
-              matched: [],
-              status: P,
-              wait: action.wait,
-              redeem: action.redeem,
-            };
-          }
-          case 'flip': {
-            // I'm playing
-            if (state.status === P) {
-              // Didn't turn a card?
-              if (state.flipped.length === 0) {
-                // Turn the card
-                return { ...state, flipped: [action.index] };
-              } else {
-                // I matched the turned card?
-                if (
-                  // Check also the index because with animations
-                  // you can try to turn the same card twice and it would count as a correct match
-                  state.flipped[0] !== action.index &&
-                  state.cards[state.flipped[0]] === state.cards[action.index]
-                ) {
-                  const newState = {
-                    ...state,
-                    flipped: [],
-                    matched: [
-                      ...state.matched,
-                      state.cards[state.flipped[0]].id,
-                    ],
-                  };
-                  // I don't have any match left?
-                  if ((state.matched.length + 1) * 2 === state.cards.length) {
-                    // Add the cards to the matched list and win the game!
-                    return { ...newState, status: W };
-                  } else {
-                    // If redeem is on every time I match two cards I add a chance
-                    if (state.redeem) {
-                      newState.left += 1;
-                    }
-                    // Add the cards to the matched list
-                    return newState;
-                  }
-                  //Didn't match the card
-                } else {
-                  const newState = {
-                    ...state,
-                    flipped: [...state.flipped, action.index],
-                  };
-                  // I still have some retries
-                  if (state.left > 0) {
-                    // Turn back both cards
-                    return newState;
-                    // No more retries
-                  } else {
-                    // Game over
-                    return {
-                      ...newState,
-                      flipped: [...state.flipped, action.index],
-                      left: 0,
-                      status: G,
-                    };
-                  }
-                }
+const store = create<MemoryStoreState>()(
+  immer((set) => ({
+    cards: [],
+    matched: [],
+    flipped: [],
+    status: I,
+    left: -1,
+    wait: -1,
+    redeem: false,
+    reset: (action) => {
+      set({
+        cards: action.cards,
+        flipped: [],
+        left: action.left,
+        matched: [],
+        status: P,
+        wait: action.wait,
+        redeem: action.redeem,
+      });
+    },
+    flip: (action) =>
+      set((state) => {
+        // I'm playing
+        if (state.status === P) {
+          // Didn't turn a card?
+          if (state.flipped.length === 0) {
+            // Turn the card
+            state.flipped = [action.index];
+          } else {
+            // I matched the turned card?
+            if (
+              // Check also the index because with animations
+              // you can try to turn the same card twice and it would count as a correct match
+              state.flipped[0] !== action.index &&
+              state.cards[state.flipped[0]].id === state.cards[action.index].id
+            ) {
+              // Add the cards to the matched list
+              state.matched.push(state.cards[state.flipped[0]].id);
+              // And reset the flipped list
+              state.flipped = [];
+              // I don't have any match left?
+              if (state.matched.length * 2 === state.cards.length) {
+                // Add the cards to the matched list and win the game!
+                state.status = W;
+              } else if (state.redeem) {
+                // If redeem is on every time I match two cards I add a chance
+                state.left += 1;
+              }
+              //Didn't match the card
+            } else {
+              // Mark the card as flipped for flip back
+              state.flipped.push(action.index);
+              // No more retries
+              if (state.left === 0) {
+                // Game over
+                state.status = G;
               }
             }
-            return state;
-          }
-          case 'cover': {
-            // Turn back both cards
-            return {
-              ...state,
-              flipped: [],
-              left: state.left - 1,
-            };
           }
         }
-      },
-      {
-        cards: [],
-        matched: [],
-        flipped: [],
-        status: I,
-        left: -1,
-        wait: -1,
-        redeem: false,
-      }
-    );
+      }),
+    cover: () =>
+      set((state) => {
+        state.flipped = [];
+        state.left -= 1;
+      }),
+  }))
+);
+
+export function useMemory(source: MemoryDataSources) {
+  const {
+    cards,
+    matched,
+    flipped,
+    status,
+    left,
+    wait,
+    reset: resetAction,
+    cover: coverAction,
+    flip: flipAction,
+  } = useStore(store);
 
   const reset = useCallback(
     ({
@@ -163,15 +148,14 @@ export function useMemory(source: MemoryDataSources) {
       wait = DEFAULT_WAIT,
       redeem = DEFAULT_REDEEM,
     }: MemoryConfig = {}) => {
-      dispatch({
-        type: 'reset',
+      resetAction({
         cards: drawCards(size, source),
         left,
         wait,
         redeem,
       });
     },
-    [source]
+    [source, resetAction]
   );
 
   useEffect(() => {
@@ -181,23 +165,21 @@ export function useMemory(source: MemoryDataSources) {
   useEffect(() => {
     if (flipped.length > 1 && left > 0) {
       const timerId = setTimeout(() => {
-        dispatch({
-          type: 'cover',
-        });
+        coverAction();
       }, wait);
       return () => {
         clearTimeout(timerId);
       };
     }
-  }, [flipped, left, wait]);
+  }, [flipped, left, wait, coverAction]);
 
   const flip = useCallback(
     (index: number) => {
       if (flipped.length < 2) {
-        dispatch({ type: 'flip', index });
+        flipAction({ index });
       }
     },
-    [flipped]
+    [flipped, flipAction]
   );
 
   const isFlipped = useCallback(
