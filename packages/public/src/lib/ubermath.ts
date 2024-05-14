@@ -180,4 +180,36 @@ export namespace UberMath {
     }
     return output;
   };
+
+  class SQRTApprox {
+    private lb = 0;
+    private hb = Infinity;
+    private candidate = 0;
+    constructor(private input: number, private iterations = 100) {
+      this.candidate = this.input;
+      this.hb = input;
+    }
+    public approx() {
+      for(let i = 0; i < this.iterations; i += 1) {
+        if(this.lb === this.hb) {
+          this.candidate = this.lb;
+          break;
+        } else {
+          const delta = (this.hb - this.lb);
+          this.candidate = this.lb + delta / 2;
+          const sqr = this.candidate ** 2;
+          if(sqr > this.input) {
+            this.hb = this.candidate;
+          } else if(sqr < this.input) {
+            this.lb = this.candidate;
+          } else {
+            break;
+          }
+        }
+      }
+      return this.candidate;
+    }
+  }
+
+  export const approximateSquareRoot = (input: number, iterations?: number): number => new SQRTApprox(input, iterations ?? input).approx();
 }

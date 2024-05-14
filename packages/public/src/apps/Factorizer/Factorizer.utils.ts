@@ -12,7 +12,9 @@ import {
   sortBy,
 } from 'ramda';
 import { UberMath } from '../../lib/ubermath';
-import { useReducer, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import { createStore, useStore } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 export const getGroupedFactors = pipe(
   UberMath.factorize,
@@ -50,6 +52,14 @@ type UseFactorizerAction =
       index: number;
     }
   | { type: 'reset' };
+
+type ZuUseFactorizerAction = {
+  [K in UseFactorizerAction['type']]: (
+    action: keyof Omit<UseFactorizerAction & { type: K }, 'type'> extends never
+      ? never
+      : Omit<UseFactorizerAction & { type: K }, 'type'>
+  ) => void;
+};
 
 const normalize = (input: string) => {
   const candidate = parseInt(input);
@@ -120,106 +130,79 @@ const getSortedMcd = pipe(getMcd, sorter);
 export const getNumber = (input: FactorizedNumber) =>
   input.reduce<number>((acc, [factor, pow]) => acc * factor ** pow, 1);
 
-export const useFactorizer = () => {
-  const [output, dispatch] = useReducer(
-    (state: UseFactorizerState, action: UseFactorizerAction) => {
-      switch (action.type) {
-        case 'add': {
-          const normalizedInput = normalize(action.value);
-          const newFactorized = [
-            ...state.factorized,
-            getGroupedFactors(normalizedInput),
-          ] as FactorizedList;
-          return {
-            ...state,
-            inputs: [...state.inputs, normalizedInput],
-            factorized: newFactorized,
-            mcm: getSortedMcm(newFactorized),
-            mcd: getSortedMcd(newFactorized),
-          };
-        }
-        case 'update': {
-          const normalizedInput = normalize(action.value);
-          const newInputs = [
-            ...state.inputs.slice(0, action.index),
-            normalizedInput,
-            ...state.inputs.slice(action.index + 1),
-          ];
-          const newFactorized = [
-            ...state.factorized.slice(0, action.index),
-            getGroupedFactors(normalizedInput),
-            ...state.factorized.slice(action.index + 1),
-          ] as FactorizedList;
-          return {
-            ...state,
-            inputs: newInputs,
-            factorized: newFactorized,
-            mcm: getSortedMcm(newFactorized),
-            mcd: getSortedMcd(newFactorized),
-          };
-        }
-        case 'delete': {
-          if (state.inputs.length <= 1) {
-            return state;
-          }
-          const newInputs = [
-            ...state.inputs.slice(0, action.index),
-            ...state.inputs.slice(action.index + 1),
-          ];
-          const newFactorized = [
-            ...state.factorized.slice(0, action.index),
-            ...state.factorized.slice(action.index + 1),
-          ] as FactorizedList;
-          return {
-            ...state,
-            inputs: newInputs,
-            factorized: newFactorized,
-            mcm: getSortedMcm(newFactorized),
-            mcd: getSortedMcd(newFactorized),
-          };
-        }
-        case 'reset': {
-          return {
-            inputs: [2],
-            factorized: [[[2, 1]]] as FactorizedList,
-            mcm: [[2, 1]] as FactorizedNumber,
-            mcd: [[2, 1]] as FactorizedNumber,
-          };
-        }
-      }
-    },
-    {
-      inputs: [2],
-      factorized: [[[2, 1]]],
-      mcd: [[2, 1]],
-      mcm: [[2, 1]],
-    }
-  );
+const initialStatus: UseFactorizerState = {
+  inputs: [2],
+  factorized: [[[2, 1]]],
+  mcd: [[2, 1]],
+  mcm: [[2, 1]],
+};
 
-  const add = useCallback(
-    (value: string) =>
-      dispatch({
-        type: 'add',
-        value,
-      }),
-    [dispatch]
-  );
+const store = createStore<UseFactorizerState & ZuUseFactorizerAction>()(
+  immer((set) => ({
+    ...initialStatus,
+    add: (action) => {
+      const normalizedInput = normalize(action.value);
+      set((state) => {
+        state.factorized.push(
+          getGroupedFactors(normalizedInput) as FactorizedNumber
+        );
+        state.inputs.push(normalizedInput);
+        state.mcm = getSortedMcm(state.factorized);
+        state.mcd = getSortedMcd(state.factorized);
+      });
+    },
+    delete: (action) => {
+      set((state) => {
+        if (state.inputs.length > 1) {
+          state.inputs.splice(action.index, 1);
+          state.factorized.splice(action.index, 1);
+          state.mcm = getSortedMcm(state.factorized);
+          state.mcd = getSortedMcd(state.factorized);
+        }
+      });
+    },
+    reset: () => {
+      set(initialStatus);
+    },
+    update: (action) => {
+      const normalizedInput = normalize(action.value);
+      set((state) => {
+        state.inputs.splice(action.index, 1, normalizedInput);
+        state.factorized.splice(
+          action.index,
+          1,
+          getGroupedFactors(normalizedInput) as FactorizedNumber
+        );
+        state.mcm = getSortedMcm(state.factorized);
+        state.mcd = getSortedMcd(state.factorized);
+      });
+    },
+  }))
+);
+
+export const useFactorizer = () => {
+  const {
+    add: addAction,
+    update: updateAction,
+    delete: deleteAction,
+    ...output
+  } = useStore(store);
+
+  const add = useCallback((value: string) => addAction({ value }), [addAction]);
   const update = useCallback(
     (index: number, value: string) =>
-      dispatch({
-        type: 'update',
+      updateAction({
         index,
         value,
       }),
-    [dispatch]
+    [updateAction]
   );
   const del = useCallback(
     (index: number) =>
-      dispatch({
-        type: 'delete',
+      deleteAction({
         index,
       }),
-    [dispatch]
+    [deleteAction]
   );
 
   return useMemo(
