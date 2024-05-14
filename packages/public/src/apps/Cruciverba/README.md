@@ -10,6 +10,7 @@ you're automatically moved to the next horizontal cell.
 On mobile devices it can be hard to toggle the block, you may have to focus
 on an input and then *very rapidly* double tap the cell.
 
-You should try the *Incroci Obbligati* mode, it seriously helped me to
-solve some scheme that were *DOOOOMED* on paper. Inspired by that I added
-some other recurring schemes in the *Settimana Enigmistica*. 
+You should try the templates for *Incroci Obbligati*, *Ricerca di Parole Crociate*
+and *Cornici Concentriche* modes, they seriously helped me to solve some schemes
+that were hoplessly *DOOOOMED* on paper. Inspired by that I added
+some other recurring schemes in the *Settimana Enigmistica*.

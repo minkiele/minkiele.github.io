@@ -1,10 +1,12 @@
 "use client"
 
-import { clone, repeat, times, xor } from 'ramda';
-import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, MouseEventHandler, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
+import { repeat, times, xor } from 'ramda';
+import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, MouseEventHandler, useEffect, useMemo, useRef } from 'react';
 import CruciverbaMd from './README.md';
 import styles from './Cruciverba.module.scss';
 import classNames from 'classnames';
+import { createStore, useStore } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 const DEFAULT_ROWS = 12;
 const DEFAULT_COLS = 22;
@@ -166,132 +168,122 @@ const isGreyRow = (
         (currentRow >= CORNICI_COLS - currentCol - 1 &&
           currentRow < CORNICI_ROWS - (CORNICI_COLS - currentCol - 1)))));
 
+type ZuReducerAction = {
+  [K in ReducerAction['type']]: keyof Omit<ReducerAction & { type: K }, 'type'> extends never ? () => void : (action: Omit<ReducerAction & { type: K }, 'type'>) => void;
+};
+
+type ZuState = ReducerState & ZuReducerAction;
+
+const store = createStore<ZuState>()(immer((set) => ({
+  ...initReducer({
+    rows: DEFAULT_ROWS,
+    cols: DEFAULT_COLS,
+    showDefs: DEFAULT_SHOW_DEFS,
+    showNumbers: DEFAULT_SHOW_NUMBERS,
+    direction: 'H'
+  }),
+  setValue: (action) => {
+    set((state) => {
+      state.matrix[action.row][action.col] = action.value;
+    })
+  },
+  toggleBlack: (action) => {
+    set((state) => {
+      state.matrix[action.row][action.col] = state.matrix[action.row][action.col] == null ? '' : null;
+      state.definitions = getDefinitions(state.matrix);
+    });
+  },
+  setSize: (action) => {
+    set((state) => initReducer({
+      rows: action.rows,
+      cols: action.cols,
+      showDefs: state.showDefs,
+      showNumbers: state.showNumbers,
+      oldState: state
+    }));
+  },
+  setDefinition: (action) => {
+    set((state) => {
+      state.definitions.forEach((definition) => {
+        if(definition.row === action.row && definition.col === action.col) {
+          definition.horizontalDefinition = action.horizontalDefinition;
+          definition.verticalDefinition = action.verticalDefinition;
+        }
+      })
+    });
+  },
+  setShowDefs: (action) => {
+    set((state) => {
+      state.showDefs = action.showDefs;
+    });
+  },
+  setShowNumbers: (action) => {
+    set((state) => {
+      state.showNumbers = action.showNumbers;
+    });
+  },
+  setIncrociObbligatiMode: () => {
+    set(initReducer({
+      rows: INCROCI_OBBLIGATI_ROWS,
+      cols: INCROCI_OBBLIGATI_COLS,
+      showDefs: INCROCI_OBBLIGATI_SHOW_DEFS,
+      showNumbers: INCROCI_OBBLIGATI_SHOW_NUMBERS,
+    }));
+  },
+  setRicercaMode: () => {
+    const newState = initReducer({
+      rows: RICERCA_ROWS,
+      cols: RICERCA_COLS,
+      showDefs: RICERCA_SHOW_DEFS,
+      showNumbers: RICERCA_SHOW_NUMBERS,
+    });
+    // First 3 cells usually are marked black
+    for (let i = 0; i < 3; i += 1) {
+      (newState.matrix as ReducerState['matrix'])[0][i] = null;
+    }
+    set({
+      ...newState,
+      definitions: getDefinitions(newState.matrix)
+    });
+  },
+  wipe: () => {
+    set((state) => {
+      state.matrix = state.matrix.map((row) => row.map((col) => col == null ? null : ''))
+      return initReducer({
+        rows: state.rows,
+        cols: state.cols,
+        showDefs: state.showDefs,
+        showNumbers: state.showNumbers,
+        oldState: {
+          ...state,
+          matrix: state.matrix,
+          definitions: getDefinitions(state.matrix)
+        }
+      });
+    });
+  },
+  setCorniciConcentricheMode: () => {
+    const newState = initReducer({
+      rows: CORNICI_ROWS,
+      cols: CORNICI_COLS,
+      showDefs: CORNICI_SHOW_DEFS,
+      showNumbers: CORNICI_SHOW_NUMBERS,
+    });
+    (newState.matrix as ReducerState['matrix'])[Math.floor(CORNICI_ROWS / 2)][Math.floor(CORNICI_ROWS / 2)] = null;
+    set({
+      ...newState,
+      definitions: getDefinitions(newState.matrix)
+    });
+  },
+  setDirection: (action) => {
+    set((state) => {
+      state.direction = action.direction;
+    });
+  },
+})));
+
 function Cruciverba() {
-  const [{ matrix, definitions, rows: ROWS, cols: COLS, showDefs, showNumbers, direction }, dispatch] = useReducer(
-    (state: ReducerState, action: ReducerAction) => {
-      switch (action.type) {
-        case 'setValue': {
-          const newState: ReducerState['matrix'] = clone(state.matrix);
-          newState[action.row][action.col] = action.value;
-          return { ...state, matrix: newState };
-        }
-        case 'toggleBlack': {
-          const newState: ReducerState['matrix'] = clone(state.matrix);
-          newState[action.row][action.col] = newState[action.row][action.col] == null ? '' : null;
-          return {
-            ...state,
-            matrix: newState,
-            definitions: getDefinitions(newState),
-          };
-        }
-        case 'setSize': {
-          return initReducer({
-            rows: action.rows,
-            cols: action.cols,
-            showDefs: state.showDefs,
-            showNumbers: state.showNumbers,
-            oldState: state
-          });
-        }
-        case 'setDefinition': {
-          return {
-            ...state,
-            definitions: state.definitions.reduce<Array<Definition>>(
-              (acc, definition) => [
-                ...acc,
-                {
-                  ...definition,
-                  ...(definition.row === action.row &&
-                    definition.col === action.col && {
-                    horizontalDefinition: action.horizontalDefinition,
-                    verticalDefinition: action.verticalDefinition,
-                  }),
-                },
-              ],
-              []
-            ),
-          };
-        }
-        case 'setShowDefs': {
-          return {
-            ...state,
-            showDefs: action.showDefs,
-          };
-        }
-        case 'setShowNumbers': {
-          return {
-            ...state,
-            showNumbers: action.showNumbers,
-          };
-        }
-        case 'setIncrociObbligatiMode': {
-          return initReducer({
-            rows: INCROCI_OBBLIGATI_ROWS,
-            cols: INCROCI_OBBLIGATI_COLS,
-            showDefs: INCROCI_OBBLIGATI_SHOW_DEFS,
-            showNumbers: INCROCI_OBBLIGATI_SHOW_NUMBERS,
-          });
-        }
-        case 'setRicercaMode': {
-          const newState = initReducer({
-            rows: RICERCA_ROWS,
-            cols: RICERCA_COLS,
-            showDefs: RICERCA_SHOW_DEFS,
-            showNumbers: RICERCA_SHOW_NUMBERS,
-          });
-          // First 3 cells usually are marked black
-          for (let i = 0; i < 3; i += 1) {
-            (newState.matrix as ReducerState['matrix'])[0][i] = null;
-          }
-          return {
-            ...newState,
-            definitions: getDefinitions(newState.matrix)
-          };
-        }
-        case 'wipe': {
-          const newMatrix = state.matrix.map((row) => row.map((col) => col == null ? null : ''))
-          return initReducer({
-            rows: state.rows,
-            cols: state.cols,
-            showDefs: state.showDefs,
-            showNumbers: state.showNumbers,
-            oldState: {
-              ...state,
-              matrix: newMatrix,
-              definitions: getDefinitions(newMatrix)
-            }
-          });
-        }
-        case 'setCorniciConcentricheMode': {
-          const newState = initReducer({
-            rows: CORNICI_ROWS,
-            cols: CORNICI_COLS,
-            showDefs: CORNICI_SHOW_DEFS,
-            showNumbers: CORNICI_SHOW_NUMBERS,
-          });
-          (newState.matrix as ReducerState['matrix'])[Math.floor(CORNICI_ROWS / 2)][Math.floor(CORNICI_ROWS / 2)] = null;
-          return {
-            ...newState,
-            definitions: getDefinitions(newState.matrix)
-          };
-        }
-        case'setDirection': {
-          return {
-            ...state,
-            direction: action.direction
-          }
-        }
-      }
-    },
-    {
-      rows: DEFAULT_ROWS,
-      cols: DEFAULT_COLS,
-      showDefs: DEFAULT_SHOW_DEFS,
-      showNumbers: DEFAULT_SHOW_NUMBERS,
-      direction: 'H'
-    },
-    initReducer
-  );
+  const { matrix, definitions, rows: ROWS, cols: COLS, showDefs, showNumbers, direction, ...dispatch} = useStore(store);
 
   const rowsRef = useRef<HTMLInputElement | null>(null);
   const colsRef = useRef<HTMLInputElement | null>(null);
@@ -326,8 +318,7 @@ function Cruciverba() {
   const handleChangeFactory = (row: number, col: number) => (evt: ChangeEvent<HTMLInputElement>) => {
     const value = evt.target.value.toUpperCase();
     if (/^[A-Z]?$/.test(value)) {
-      dispatch({
-        type: 'setValue',
+      dispatch.setValue({
         row,
         col,
         value,
@@ -336,8 +327,7 @@ function Cruciverba() {
   };
 
   const handleToggleBlackFactory = (row: number, col: number) => () => {
-    dispatch({
-      type: 'toggleBlack',
+    dispatch.toggleBlack({
       row,
       col,
     });
@@ -348,16 +338,14 @@ function Cruciverba() {
     const rows = parseInt(rowsRef.current?.value ?? '');
     const cols = parseInt(colsRef.current?.value ?? '');
 
-    dispatch({
-      type: 'setSize',
+    dispatch.setSize({
       rows: isNaN(rows) || rows < 2 ? DEFAULT_ROWS : rows,
       cols: isNaN(cols) || cols < 2 ? DEFAULT_COLS : cols,
     });
   };
 
   const handleDefinitionFactory = (definition: Definition, direction: 'h' | 'v') => (evt: ChangeEvent<HTMLInputElement>) => {
-    dispatch({
-      type: 'setDefinition',
+    dispatch.setDefinition({
       row: definition.row,
       col: definition.col,
       horizontalDefinition: direction === 'h' ? evt.target.value : definition.horizontalDefinition,
@@ -366,28 +354,25 @@ function Cruciverba() {
   };
 
   const handleToggleDefs: ChangeEventHandler<HTMLInputElement> = (evt) => {
-    dispatch({
-      type: 'setShowDefs',
+    dispatch.setShowDefs({
       showDefs: evt.target.checked,
     });
   };
 
   const handleToggleNumbers: ChangeEventHandler<HTMLInputElement> = (evt) => {
-    dispatch({
-      type: 'setShowNumbers',
+    dispatch.setShowNumbers({
       showNumbers: evt.target.checked,
     });
   };
 
   const handleChangeDirection: ChangeEventHandler<HTMLInputElement> = (evt) => {
-    dispatch({
-      type: 'setDirection',
+    dispatch.setDirection({
       direction: evt.target.value as 'H' | 'V'
     })
   }
 
   const handleSimpleAction = (type: ReducerSimpleAction): MouseEventHandler<HTMLButtonElement> => () => {
-    dispatch({ type });
+    dispatch[type]();
   }
 
   const handleKeyDownNavigateFactory =
@@ -396,8 +381,7 @@ function Cruciverba() {
         if (evt.key === ' ') {
           // Must prevent default otherwise page will slide down!
           evt.preventDefault();
-          dispatch({
-            type: 'toggleBlack',
+          dispatch.toggleBlack({
             row,
             col
           });
