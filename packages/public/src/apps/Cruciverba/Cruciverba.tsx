@@ -247,20 +247,17 @@ const store = createStore<ZuState>()(immer((set) => ({
     });
   },
   wipe: () => {
-    set((state) => {
-      state.matrix = state.matrix.map((row) => row.map((col) => col == null ? null : ''))
-      return initReducer({
-        rows: state.rows,
-        cols: state.cols,
-        showDefs: state.showDefs,
-        showNumbers: state.showNumbers,
-        oldState: {
-          ...state,
-          matrix: state.matrix,
-          definitions: getDefinitions(state.matrix)
-        }
-      });
-    });
+    set((state) => initReducer({
+      rows: state.rows,
+      cols: state.cols,
+      showDefs: state.showDefs,
+      showNumbers: state.showNumbers,
+      oldState: {
+        ...state,
+        matrix: state.matrix.map((row) => row.map((col) => col == null ? null : '')),
+        definitions: getDefinitions(state.matrix)
+      }
+    }));
   },
   setCorniciConcentricheMode: () => {
     const newState = initReducer({

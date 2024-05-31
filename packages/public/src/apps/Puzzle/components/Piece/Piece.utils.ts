@@ -66,34 +66,22 @@ export const usePiece = (props: PieceEdges) => {
           };
         case 'rotate':
           const { clockwise = true } = action;
-          if (clockwise) {
-            return {
-              ...state,
-              ...(clockwise
-                ? {
-                    N: state.W,
-                    S: state.E,
-                    W: state.S,
-                    E: state.N,
-                  }
-                : {
-                    N: state.E,
-                    S: state.W,
-                    W: state.N,
-                    E: state.S,
-                  }),
-            };
-          } else {
-            return {
-              N: state.E,
-              S: state.W,
-              W: state.N,
-              E: state.S,
-              isCorner: false,
-              isFrame: false,
-              isValid: false,
-            };
-          }
+          return {
+            ...state,
+            ...(clockwise
+              ? {
+                  N: state.W,
+                  S: state.E,
+                  W: state.S,
+                  E: state.N,
+                }
+              : {
+                  N: state.E,
+                  S: state.W,
+                  W: state.N,
+                  E: state.S,
+                }),
+          };
       }
     },
     {
