@@ -115,6 +115,11 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     name: 'The Archive',
     prefetch: false,
   },
+  {
+    route: '/journal',
+    name: 'The Journal',
+    prefetch: false,
+  },
 ];
 
 export const lazyRouteComponents = allLazyRouteComponents.filter(

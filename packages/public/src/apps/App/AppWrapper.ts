@@ -1,4 +1,5 @@
 import {
+  ComponentProps,
   Fragment,
   FunctionComponent,
   ReactNode,
@@ -26,13 +27,17 @@ const AppWrapper: FunctionComponent<AppWrapperProps> = ({
   );
 };
 
-export const getAppAndMetadata = (
+export const getAppAndMetadata = <P extends {}>(
   route: string,
-  App: FunctionComponent
-): { metadata: Metadata; App: FunctionComponent } => ({
+  App: FunctionComponent<P>
+): { metadata: Metadata; App: FunctionComponent<P> } => ({
   metadata: getMetadata(route),
-  App: async function InternalAppWrapper() {
-    return createElement(AppWrapper, { route }, createElement(App));
+  App: async function InternalAppWrapper(props: P) {
+    return createElement(
+      AppWrapper,
+      { route },
+      createElement(App, { ...props })
+    );
   },
 });
 
