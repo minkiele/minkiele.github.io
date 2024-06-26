@@ -27,11 +27,22 @@ const AppWrapper: FunctionComponent<AppWrapperProps> = ({
   );
 };
 
-export const getAppAndMetadata = <P extends {}>(
+export const getAppAndMetadata = (
+  route: string,
+  App: FunctionComponent
+): { metadata: Metadata; App: FunctionComponent } => ({
+  metadata: getMetadata(route),
+  App: async function InternalAppWrapper() {
+    return createElement(AppWrapper, { route }, createElement(App));
+  },
+});
+
+export const getDynamicAppAndMetadata = <P extends {}>(
   route: string,
   App: FunctionComponent<P>
-): { metadata: Metadata; App: FunctionComponent<P> } => ({
+): { metadata: Metadata; dynamic: 'force-static'; App: FunctionComponent<P> } => ({
   metadata: getMetadata(route),
+  dynamic: 'force-static',
   App: async function InternalAppWrapper(props: P) {
     return createElement(
       AppWrapper,
