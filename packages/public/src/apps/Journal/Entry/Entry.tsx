@@ -3,16 +3,17 @@
 import Link from 'next/link';
 import entries from '../entries';
 import { headingsMap } from './Entry.utils';
+import { isValidElement } from 'react';
 
 export default function Entry({
   params: { entry },
 }: {
   params: { entry: string };
 }) {
-  const Content = entries.find(({ id }) => id === entry)?.entry;
+  const Component = entries.find(({ entry: listEntry }) => entry === listEntry)?.component;
   return (
     <div>
-      {Content && <Content components={headingsMap} />}
+      {isValidElement(Component) && <Component components={headingsMap} />}
       <Link href="/journal">Back</Link>
     </div>
   );

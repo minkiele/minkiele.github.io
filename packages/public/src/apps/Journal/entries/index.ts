@@ -1,16 +1,21 @@
 import dynamic from 'next/dynamic';
+import { ComponentType } from 'react';
+import type { MDXProps } from 'mdx/types';
 
-const entries = [
-  {
-    id: '001-warioland',
-    entry: dynamic(() => import('./001-warioland.md')),
-  },
-  {
-    id: '000-why',
-    entry: dynamic(() => import('./000-why.md')),
-  },
-];
+export interface JournalEntry {
+  entry: string;
+  component: ComponentType<MDXProps>;
+}
 
+const entries: Array<JournalEntry> = [];
 export default entries;
 
-export const ids = entries.map(({ id }) => id);
+entries.push({
+  entry: '000-why',
+  component: dynamic(() => import('./000-why.md')),
+});
+
+entries.push({
+  entry: '001-warioland',
+  component: dynamic(() => import('./001-warioland.md')),
+});
