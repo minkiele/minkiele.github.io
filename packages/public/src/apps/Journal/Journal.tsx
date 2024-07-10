@@ -12,7 +12,7 @@ export default async function Journal() {
       <ol>
         {sortEntries(entries).map(({ entry }) => (
           <li key={entry}>
-            <Link href={`/journal/${entry}`}>{entry}</Link>
+            <Link href={`/journal/${entry}`} prefetch={false}>{entry}</Link>
           </li>
         ))}
       </ol>

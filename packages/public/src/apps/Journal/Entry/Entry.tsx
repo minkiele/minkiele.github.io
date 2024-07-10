@@ -12,7 +12,7 @@ export default function Entry({
   return (
     <div>
       {Component && <Component />}
-      <Link href="/journal">Back</Link>
+      <Link href="/journal" prefetch={false}>Back</Link>
     </div>
   );
 }
