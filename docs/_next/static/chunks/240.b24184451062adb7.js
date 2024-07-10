@@ -1,9 +1,0 @@
-"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[240],{5514:function(e,n,t){/**
- * @license React
- * react-jsx-runtime.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */var r=t(7653),o=Symbol.for("react.element"),s=Symbol.for("react.fragment"),a=Object.prototype.hasOwnProperty,i=r.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,c={key:!0,ref:!0,__self:!0,__source:!0};function u(e,n,t){var r,s={},u=null,l=null;for(r in void 0!==t&&(u=""+t),void 0!==n.key&&(u=""+n.key),void 0!==n.ref&&(l=n.ref),n)a.call(n,r)&&!c.hasOwnProperty(r)&&(s[r]=n[r]);if(e&&e.defaultProps)for(r in n=e.defaultProps)void 0===s[r]&&(s[r]=n[r]);return{$$typeof:o,type:e,key:u,ref:l,props:s,_owner:i.current}}n.Fragment=s,n.jsx=u,n.jsxs=u},5001:function(e,n,t){e.exports=t(5514)},2240:function(e,n,t){t.r(n);var r=t(5001),o=t(58);function s(e){let n=Object.assign({p:"p"},(0,o.ah)(),e.components);return(0,r.jsxs)(r.Fragment,{children:[(0,r.jsx)(n.p,{children:"Because sometimes sharing is caring.\nAlso there are some thughts I'd like to share with the Internet."}),"\n",(0,r.jsx)(n.p,{children:"Like... now I'm sleepy, and I think that date handling's a bitch,\nand I feel my colleague does not share my caution...ness? (What did I write?)."})]})}n.default=function(){let e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},{wrapper:n}=Object.assign({},(0,o.ah)(),e.components);return n?(0,r.jsx)(n,Object.assign({},e,{children:(0,r.jsx)(s,e)})):s(e)}},58:function(e,n,t){t.d(n,{ah:function(){return s}});var r=t(7653);let o=r.createContext({});function s(e){let n=r.useContext(o);return r.useMemo(()=>"function"==typeof e?e(n):{...n,...e},[n,e])}}}]);

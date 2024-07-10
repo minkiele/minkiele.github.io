@@ -1,4 +1,6 @@
-# WarioLand
+# Journal Entry
+
+## WarioLand
 
 Or "_Sometimes gambling pays off_".
 
