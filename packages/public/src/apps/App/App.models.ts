@@ -6,4 +6,5 @@ export interface LazyRouteComponent {
   setTitle?: boolean;
   archived?: boolean;
   prefetch?: boolean;
+  order?: number;
 }

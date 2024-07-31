@@ -1,4 +1,5 @@
 import { LazyRouteComponent } from './App.models';
+import { sortRoutes } from './App.utils';
 
 export const allLazyRouteComponents: Array<LazyRouteComponent> = [
   {
@@ -114,13 +115,14 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     route: '/archive',
     name: 'The Archive',
     prefetch: false,
+    order: 1,
   },
   {
     route: '/journal',
     name: 'The Journal',
     prefetch: false,
   },
-];
+].sort(sortRoutes);
 
 export const lazyRouteComponents = allLazyRouteComponents.filter(
   (lazyRouteComponent) => lazyRouteComponent.archived !== true

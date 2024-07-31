@@ -26,8 +26,9 @@ with a chance of 12,5%. From a purely statistical point of view by playing the s
 you should have a `Total = 8x + 6x + 1.5x + 0.125x = 15.625x`. The average gain per game then should
 be `AvgGain = Total / 8x = 15.625x / 8x = 1.9525`, almost doubling whatever you were making before
 the game. This proved to be helpful by playing the secret level in World 1, that gives you always
-99 coins at the end. By playing that level 8 times you should statistically have almost
-`15.625 * 99 = 1546` coins. Obviously being a game of chances there's always the risk of blowing
+91 coins at the end. By playing that level 8 times you should statistically have almost
+`15.625 * 91 = 1421` coins. By playing that level about 60 times you should collect
+more than 10000 coins. Obviously being a game of chances there's always the risk of blowing
 away the loot. One of the limitations also is that you cannot win more 999 coins of loot.
 
 Why would I put myself through all this? Because at the end of the game, when counting up the loot
