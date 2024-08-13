@@ -19,3 +19,8 @@ entries.push({
   entry: '001-warioland',
   component: dynamic(() => import('./001-warioland.md')),
 });
+
+entries.push({
+  entry: '002-folklore',
+  component: dynamic(() => import('./002-folklore.md')),
+});

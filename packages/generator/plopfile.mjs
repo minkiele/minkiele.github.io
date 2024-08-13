@@ -8,7 +8,7 @@ export default function(plop) {
         }],
         actions: [{
             type: 'add',
-            path: '../public/src/apps/Journal/entries/{{name}}.md',
+            path: '../public/src/apps/Journal/entries/{{kebabCase name}}.md',
             templateFile: 'templates/new-entry.hbs'
         }, {
             type: 'append',

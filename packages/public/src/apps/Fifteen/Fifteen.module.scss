@@ -1,0 +1,25 @@
+.tiles {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    @media(min-width: 678px) {
+        width: 50%;
+    }
+    @media(min-width: 992px) {
+        width: 33.33%;
+    }
+    aspect-ratio: 1;
+    &_row {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 25%;
+    }
+    &_hole {
+        display: block;
+    }
+    &_tile, &_hole {
+        width: 25%;
+        height: 100%;
+    }
+}

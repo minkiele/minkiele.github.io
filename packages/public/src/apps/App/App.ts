@@ -107,6 +107,10 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     archived: true,
   },
   {
+    route: '/fifteen',
+    name: 'Fifteen',
+  },
+  {
     route: '/records',
     name: 'My records',
     prefetch: false,
