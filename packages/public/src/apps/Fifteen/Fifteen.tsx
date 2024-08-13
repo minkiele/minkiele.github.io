@@ -1,23 +1,41 @@
 'use client';
 
-import { FormEventHandler, FunctionComponent, MouseEventHandler, useEffect } from 'react';
-import { useStore } from './Fifteen.lib';
+import {
+  FormEventHandler,
+  FunctionComponent,
+  MouseEventHandler,
+  useEffect,
+} from 'react';
+import { DEFAULT_SCRAMBLE, DEFAULT_SPEED, useFifteen } from './Fifteen.lib';
 import styles from './Fifteen.module.scss';
 import FifteenMD from './README.md';
-
-const DEFAULT_SCRAMBLE = 15;
+import { constrainInput, parseInputValue } from './Fifteen.utils';
 
 const Fifteen: FunctionComponent = () => {
-  const { move, reset, scramble, isPlaying, isValid, tiles } = useStore();
+  const { move, reset, scramble, isPlaying, isValid, isScrambling, tiles } =
+    useFifteen();
   const handleClickFactory =
     (x: number, y: number): MouseEventHandler<HTMLButtonElement> =>
     () => {
-      move({ x, y });
+      if (!isScrambling) {
+        move({ x, y });
+      }
     };
   const handleSubmit: FormEventHandler<HTMLFormElement> = (evt) => {
     evt.preventDefault();
-    const moves = parseInt((evt.target as HTMLFormElement).moves.value);
-    scramble(isNaN(moves) || moves <= 0 ? DEFAULT_SCRAMBLE : moves);
+    if (!isScrambling) {
+      const moves = constrainInput(
+        parseInputValue('moves', evt),
+        DEFAULT_SCRAMBLE,
+        (input) => input >= 0
+      );
+      const speed = constrainInput(
+        parseInputValue('speed', evt),
+        DEFAULT_SPEED,
+        (input) => input >= 0
+      );
+      scramble(moves, speed);
+    }
   };
   useEffect(() => {
     scramble(DEFAULT_SCRAMBLE);
@@ -50,17 +68,29 @@ const Fifteen: FunctionComponent = () => {
       <form onSubmit={handleSubmit}>
         <fieldset>
           <legend>Controls</legend>
-          <button type="button" onClick={reset}>
-            Reset
-          </button>{' '}
           <label htmlFor="moves">Moves</label>{' '}
           <input
             type="number"
             name="moves"
             id="moves"
             defaultValue={DEFAULT_SCRAMBLE}
-          />
-          <button type="submit">Scramble</button>
+            disabled={isScrambling}
+          />{' '}
+          <label htmlFor="moves">Speed</label>{' '}
+          <input
+            type="number"
+            name="speed"
+            id="speed"
+            defaultValue={DEFAULT_SPEED}
+            disabled={isScrambling}
+          />{' '}
+          <button type="submit" disabled={isScrambling}>
+            Scramble
+          </button>
+          <br />
+          <button type="button" onClick={reset} disabled={isScrambling}>
+            Reset
+          </button>
         </fieldset>
       </form>
     </div>
