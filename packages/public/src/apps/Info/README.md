@@ -2,9 +2,8 @@
 
 ## About the author
 
-Hi there, my name is Michele, I was born and raised in Italy,
-in a small town nearby Venice lagoon and I still live there;
-I'm scared shitless of becoming forty.
+Hi there, my name is Michele, I am a digital engineer, I was born
+in a small town nearby the Venice lagoon and I still live there.
 
 ## About this little project
 
