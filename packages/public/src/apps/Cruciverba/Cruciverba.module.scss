@@ -17,7 +17,7 @@
     &__grey {
       &,
       .app_input {
-        background-color: #ddd;
+        background-color: rgba(colors.$fg-color, .10);
       }
     }
   }
@@ -34,6 +34,7 @@
     width: 30px;
     height: 30px;
     text-align: center;
+    background-color: colors.$bg;
   }
   &_black {
     display: block;
@@ -89,7 +90,7 @@
       &__grey {
         &,
         .app_input {
-          background-color: #666;
+          background-color: rgba(colors.$dark-fg-color, .10);
         }
       }
     }

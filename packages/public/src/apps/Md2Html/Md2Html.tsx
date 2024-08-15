@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';

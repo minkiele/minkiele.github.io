@@ -63,6 +63,7 @@ fieldset {
   input {
     &:not([type='checkbox']):not([type='radio']) {
       border: 1px solid colors.$fg;
+      background-color: colors.$bg;
       padding: 0.5rem;
       font-family: inherit;
       border-radius: 0;

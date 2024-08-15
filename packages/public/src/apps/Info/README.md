@@ -50,6 +50,11 @@ every time you reload the website light theme will flash briefly before setting
 to dark mode. Unfortunately that's something I cannot remove without causing the
 reverse problem. Trying to waste a little bit less energy.
 
+### All that green is killing my eyes
+
+Yeah I know. I will try for some time and if it becomes unbearable in a few days
+I will revert to good old black and white.
+
 ## About other little projects
 
 Yes, I have another little project published in Github:
