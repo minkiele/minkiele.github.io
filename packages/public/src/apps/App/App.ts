@@ -8,6 +8,11 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     setTitle: false,
   },
   {
+    route: '/about',
+    name: 'About',
+    list: false,
+  },
+  {
     route: '/snake',
     name: 'Snake',
   },
