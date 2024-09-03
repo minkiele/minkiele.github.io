@@ -2,9 +2,10 @@
 
 import { ChangeEvent, Children, useCallback, useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
-import anagrammator, { countAnagrams, getCountAnagramFactors } from 'anagrammator';
+import { getCountAnagramFactors } from 'anagrammator';
 import { UberMath } from '../../lib/ubermath';
 import AnagrammatorMd from './README.md';
+import { useAnagrammatorWorker } from './Anagrammator.utils';
 
 interface AnagrammatorState {
   value: string;
@@ -30,48 +31,12 @@ function Anagrammator() {
     formula: undefined,
   });
 
+  const { input, output: newAnagramms, request } = useAnagrammatorWorker();
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceGenerateAnagrams = useCallback(
     debounce((input: string) => {
-      const newTotal = input.length > 0 ? UberMath.factorial(input.length) : 0;
-
-      new Promise<Array<string>>((resolve, reject) => {
-        const total = countAnagrams(input);
-        if (total < 10000) {
-          const newAnagramms = anagrammator(input);
-          resolve(newAnagramms);
-        } else {
-          reject(total);
-        }
-      }).then(
-        (newAnagramms) => {
-          setState((oldState) => {
-            const newSize = newAnagramms.length;
-            const newSkipped = newTotal - newSize;
-            return {
-              ...oldState,
-              anagramms: newAnagramms,
-              size: newSize,
-              total: newTotal,
-              skipped: newSkipped,
-              formula: getCountAnagramFactors(input),
-            };
-          });
-        },
-        (newSize) => {
-          setState((oldState) => {
-            const newSkipped = newTotal - newSize;
-            return {
-              ...oldState,
-              anagramms: [],
-              size: newSize,
-              total: newTotal,
-              skipped: newSkipped,
-              formula: getCountAnagramFactors(input),
-            };
-          });
-        }
-      );
+      request(input);
     }, 500),
     []
   );
@@ -82,6 +47,24 @@ function Anagrammator() {
       debounceGenerateAnagrams.cancel();
     };
   }, [debounceGenerateAnagrams, value]);
+
+  useEffect(() => {
+    if(input != null && input.length > 0 && newAnagramms.length > 0) {
+      setState((oldState) => {
+        const newTotal = UberMath.factorial(input.length);
+        const newSize = newAnagramms.length;
+        const newSkipped = newTotal - newSize;
+        return {
+          ...oldState,
+          anagramms: newAnagramms,
+          size: newSize,
+          total: newTotal,
+          skipped: newSkipped,
+          formula: getCountAnagramFactors(input),
+        };
+      });
+    }
+  }, [input, newAnagramms]);
 
   const handleChangeValue = (evt: ChangeEvent<HTMLInputElement>) => {
     setState((oldState) => ({
