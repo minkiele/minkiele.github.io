@@ -2,7 +2,7 @@
 
 import { ChangeEvent, Children, useCallback, useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
-import anagrammator, { countAnagrams, getCountAnagramFactors } from 'anagrammator';
+import anagrammator, { getCountAnagramFactors } from 'anagrammator';
 import { UberMath } from '../../lib/ubermath';
 import AnagrammatorMd from './README.md';
 
@@ -20,6 +20,10 @@ const normalizeInput = (input: string) => {
   return trimmedInput.length > 0 ? trimmedInput.toUpperCase().replace(/[^A-Z]/, '') : trimmedInput;
 };
 
+/**
+ * Create anagrams that go beyond your imagination
+ * @returns JSX.Element
+ */
 function Anagrammator() {
   const [{ value, anagramms, size, total, skipped, formula }, setState] = useState<AnagrammatorState>({
     value: '',
@@ -34,15 +38,11 @@ function Anagrammator() {
   const debounceGenerateAnagrams = useCallback(
     debounce((input: string) => {
       const newTotal = input.length > 0 ? UberMath.factorial(input.length) : 0;
-
-      new Promise<Array<string>>((resolve, reject) => {
-        const total = countAnagrams(input);
-        if (total < 10000) {
+      new Promise<Array<string>>((resolve) => {
+        setTimeout(() => {
           const newAnagramms = anagrammator(input);
           resolve(newAnagramms);
-        } else {
-          reject(total);
-        }
+        });
       }).then(
         (newAnagramms) => {
           setState((oldState) => {
@@ -58,19 +58,6 @@ function Anagrammator() {
             };
           });
         },
-        (newSize) => {
-          setState((oldState) => {
-            const newSkipped = newTotal - newSize;
-            return {
-              ...oldState,
-              anagramms: [],
-              size: newSize,
-              total: newTotal,
-              skipped: newSkipped,
-              formula: getCountAnagramFactors(input),
-            };
-          });
-        }
       );
     }, 500),
     []
