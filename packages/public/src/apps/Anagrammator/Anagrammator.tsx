@@ -2,9 +2,10 @@
 
 import { ChangeEvent, Children, useCallback, useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
-import anagrammator, { getCountAnagramFactors } from 'anagrammator';
+import { countAnagrams, getCountAnagramFactors } from 'anagrammator';
 import { UberMath } from '../../lib/ubermath';
 import AnagrammatorMd from './README.md';
+import { useAnagrammatorWorker } from './Anagrammator.utils';
 
 interface AnagrammatorState {
   value: string;
@@ -34,34 +35,37 @@ function Anagrammator() {
     formula: undefined,
   });
 
+  const {
+    input: serviceInput,
+    anagramm: serviceAnagrammator,
+    anagramms: serviceAnagramms,
+    idle: serviceIdle
+  } = useAnagrammatorWorker();
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceGenerateAnagrams = useCallback(
     debounce((input: string) => {
       const newTotal = input.length > 0 ? UberMath.factorial(input.length) : 0;
-      new Promise<Array<string>>((resolve) => {
-        setTimeout(() => {
-          const newAnagramms = anagrammator(input);
-          resolve(newAnagramms);
-        });
-      }).then(
-        (newAnagramms) => {
-          setState((oldState) => {
-            const newSize = newAnagramms.length;
-            const newSkipped = newTotal - newSize;
-            return {
-              ...oldState,
-              anagramms: newAnagramms,
-              size: newSize,
-              total: newTotal,
-              skipped: newSkipped,
-              formula: getCountAnagramFactors(input),
-            };
-          });
-        },
-      );
+      const newSize = input.length > 0 ? countAnagrams(input) : 0;
+      const newSkipped = newTotal - newSize;
+      setState((oldState) => ({
+        ...oldState,
+        anagramms: [],
+        size: newSize,
+        total: newTotal,
+        skipped: newSkipped,
+        formula: getCountAnagramFactors(input),
+      }));
+      serviceAnagrammator(input);
     }, 500),
-    []
+    [serviceAnagrammator]
   );
+
+  useEffect(() => {
+    if(serviceIdle && serviceInput === value) {
+      setState((current) => ({ ...current, anagramms: serviceAnagramms }));
+    }
+  }, [serviceInput, value, serviceIdle, serviceAnagramms]);
 
   useEffect(() => {
     debounceGenerateAnagrams(value);
@@ -82,7 +86,7 @@ function Anagrammator() {
       <AnagrammatorMd />
       <fieldset>
         <legend>Generator controls</legend>
-        <label htmlFor="input">Type in a word:</label> <input id="input" value={value} type="text" onChange={handleChangeValue} />{' '}
+        <label htmlFor="input">Type in a word:</label> <input id="input" value={value} type="text" onChange={handleChangeValue} readOnly={size > 0 && anagramms.length === 0} />{' '}
       </fieldset>
       {total > 0 && (
         <>
@@ -107,7 +111,7 @@ function Anagrammator() {
               </dd>
             </dl>
           )}
-
+          {anagramms.length === 0 && size > 0 && <p>Loading...</p>}
           {anagramms.length > 0 && (
             <>
               <h2>The anagrams</h2>
