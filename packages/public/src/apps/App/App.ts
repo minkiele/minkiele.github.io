@@ -116,6 +116,22 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     name: 'Fifteen',
   },
   {
+    route: '/oracoli',
+    name: 'Oracoli',
+  },
+  {
+    route: '/oracoli/respuestis',
+    name: 'Respuestis',
+    prefetch: false,
+    list: false,
+  },
+  {
+    route: '/oracoli/risposte',
+    name: 'Risposte',
+    prefetch: false,
+    list: false,
+  },
+  {
     route: '/records',
     name: 'My records',
     prefetch: false,
