@@ -2,6 +2,7 @@
   "namedInputs": {
     "build": [
       "{projectRoot}/**/*",
+      "{projectRoot}/.env*",
       "!{projectRoot}/node_modules/**/*",
       "!{projectRoot}/.next/**/*"
     ]
