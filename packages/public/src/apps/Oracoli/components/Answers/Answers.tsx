@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import dayjs from 'dayjs';
 import { ChangeEventHandler, FC, FormEventHandler, useEffect } from 'react';
@@ -94,7 +94,12 @@ const Answers: FC<AnswersProps> = ({ answers, labels }) => {
 
   useEffect(() => {
     if (next === A) {
-      answerRandomly();
+      const timerId = setTimeout(() => {
+        answerRandomly();
+      }, 1000);
+      return () => {
+        clearTimeout(timerId);
+      };
     }
   }, [next, answerRandomly]);
 
