@@ -1,0 +1,26 @@
+{
+  "name": "oracolos",
+  "version": "1.0.0",
+  "description": "State Machine for an Oracolo",
+  "main": "index.js",
+  "scripts": {
+    "build-code": "esbuild --bundle --outfile=index.js --minify --packages=external --sourcemap src/index.ts",
+    "build-types": "tsc -d --declarationMap --emitDeclarationOnly --outDir typings",
+    "build": "npm run build-code && npm run build-types"
+  },
+  "keywords": [
+    "Oracolos",
+    "State Machine",
+    "XState"
+  ],
+  "author": "Michele Montagner",
+  "license": "MIT",
+  "dependencies": {
+    "xstate": "^5.19.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0",
+    "typescript": "^5.7.2"
+  },
+  "types": "typings/index.d.ts" 
+}
