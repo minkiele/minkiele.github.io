@@ -4,6 +4,18 @@
 
 This is the first year I seriously committed to solving the [Advent of Code](https://adventofcode.com/).
 I don't care for the whole Christmas theme but I loved solving the enigmas.
+
+### February Update
+At last! I have completed all the challenges of the 2024 Advent of Code.
+Today I was ready to give up and to shred my computer to pieces due to frustration and rage. I have
+to admit that I was stuck on 2 challenges: *day 16 part 2* and *day 21 part 2*. Last night I
+completed day 16 and today I completed day 21. I'm not proud to admit that I got the last one by
+looking to some suggestions in Reddit that got me on the right track. I came very close to the
+solution a couple of times days before but I couldn't get rid of the code I wrote for the first part which
+was elegant but very inefficient. When it finally dawned on me what I'd been missing to complete
+the challenge I couldn't get rid of the old code fast enough.
+
+### The original article
 So far I solved all 25 first parts and 21 second parts and that was surprising to me because
 I was convinced that I could solve all those enigmas without any help but I found myself
 throwing away half of my holidays helplessly trying to understand how to unwrap some enigmas.
