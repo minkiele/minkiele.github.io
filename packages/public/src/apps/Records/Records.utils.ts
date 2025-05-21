@@ -58,5 +58,6 @@ export const getDiscography = async () => {
     title: release.basic_information.title,
     thumb: release.basic_information.thumb,
     medium: getMedium(release.basic_information.formats),
+    year: release.basic_information.year,
   }));
 };

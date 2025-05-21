@@ -4,6 +4,7 @@ export interface MemoryDataSource {
   title: string;
   thumb: string;
   medium: string;
+  year?: number;
 }
 
 export type MemoryDataSources = Array<MemoryDataSource>;

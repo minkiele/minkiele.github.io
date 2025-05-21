@@ -29,7 +29,7 @@ export interface DiscogsReleaseBasicInformation {
   master_id?: string;
   master_url?: string;
   title: string;
-  year: string;
+  year: number;
   resource_url: string;
   thumb: string;
   cover_image: string;

@@ -60,6 +60,7 @@ export default function Memory({ deck }: MemoryProps) {
           const handleFlip = (index: number) => () => {
             flip(index);
           };
+          const yearMedium = [release.year, release.medium].filter(d => d).join(', ');
           return (
             <li key={`${release.id}-${index}`} className={styles.list_item}>
               <FlipCard
@@ -98,7 +99,7 @@ export default function Memory({ deck }: MemoryProps) {
                 >
                   <span className={styles.recordDescription}>
                   <strong>{release.artist}</strong>: {release.title} (
-                  {release.medium})
+                  {yearMedium})
                   </span>
                 </Toggler>
               )}

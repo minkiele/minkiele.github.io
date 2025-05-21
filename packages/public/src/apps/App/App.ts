@@ -106,6 +106,12 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     archived: true,
   },
   {
+    route: '/rotd',
+    name: 'Record Of The Day',
+    prefetch: false,
+    archived: true,
+  },
+  {
     route: '/md2html',
     name: 'MD2HTML',
     prefetch: false,
