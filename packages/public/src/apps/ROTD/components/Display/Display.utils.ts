@@ -1,27 +1,20 @@
 import type { getDiscography } from '@/apps/Records/Records.utils';
-import { createStore } from 'zustand';
+import { createStore, useStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import MersenneTwister from 'mersenne-twister';
+import dayjs from 'dayjs';
+import { useEffect } from 'react';
 
-export const pickOne = <T extends unknown>(input: Array<T>) =>
-  input[Math.floor(input.length * Math.random())];
+// Mersenne-Twister is a big-ass pseudo-random number generator
+// And feeding the same seed value for 24 hours will provide always the same
+// sequence of random numbers at every execution, so there's no need
+// to store the choice inside browser storage.
+// So same devices in the same time zones should provide
+// the same pseudo-random sequences.
+const getPseudoRandom = () => new MersenneTwister(dayjs().startOf('day').toDate().getTime()).random();
 
-const storageFactory = (key: string) => ({
-  get: () => localStorage.getItem(key),
-  set: (value: string) => localStorage.setItem(key, value),
-  del: () => localStorage.removeItem(key),
-});
-
-export const serialize = <T extends unknown>(input: NonNullable<T>): string =>
-  JSON.stringify(input);
-export const unserialize = <T extends unknown>(input: string) => {
-  try {
-    return JSON.parse(input) as T;
-  } catch {
-    return undefined;
-  }
-};
-
-export const storage = storageFactory('ROTD');
+const pickOne = <T extends unknown>(input: Array<T>) =>
+  input[Math.floor(input.length * getPseudoRandom())];
 
 export type DiscographyEntry = ReturnType<
   typeof getDiscography
@@ -29,12 +22,7 @@ export type DiscographyEntry = ReturnType<
   ? E
   : never;
 
-export interface StoredROTD {
-  id: number;
-  validity: string;
-}
-
-export const store = createStore<{
+const store = createStore<{
   rotd: DiscographyEntry | undefined;
   setRotd: (rotd: DiscographyEntry) => void;
 }>()(
@@ -47,3 +35,22 @@ export const store = createStore<{
     },
   }))
 );
+
+export const useRotd = (discography: Array<DiscographyEntry>) => {
+  const { rotd, setRotd } = useStore(store);
+
+  useEffect(() => {
+    const updateRotd = () => {
+      if (discography.length > 0 && rotd == null) {
+        setRotd(pickOne(discography));
+      }
+    };
+    updateRotd();
+    const timerId = setInterval(updateRotd, 60000);
+    return () => {
+      clearInterval(timerId);
+    };
+  }, [rotd, setRotd, discography]);
+
+  return rotd;
+};
