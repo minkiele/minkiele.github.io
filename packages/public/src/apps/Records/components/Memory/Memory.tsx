@@ -18,6 +18,7 @@ import FlipCard from '../FlipCard/FlipCard';
 import classNames from 'classnames';
 import Toggler from '../Toggler/Toggler';
 import { T } from 'ramda';
+import ReadmeMD from '../../README.md';
 
 export default function Memory({ deck }: MemoryProps) {
   const { status, left, cards, matched, flip, isFlipped, reset } =
@@ -53,6 +54,9 @@ export default function Memory({ deck }: MemoryProps) {
   };
   return (
     <div>
+      <div>
+        <ReadmeMD />
+      </div>
       <ol className={styles.list}>
         {cards.map((release, index) => {
           const isCardFlipped = isFlipped(index);

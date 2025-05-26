@@ -7,6 +7,7 @@ import {
 } from './Memory.models';
 import { create, useStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import MersenneTwister from 'mersenne-twister';
 
 const DEFAULT_SIZE = 12;
 const DEFAULT_WAIT = 1500;
@@ -40,8 +41,9 @@ function drawCards(size: number, deck: MemoryDataSources): MemoryDataSources {
   >({
     length: length,
   }).fill(undefined);
+  const randomizer = new MersenneTwister();
   while (drawed.length < length / 2) {
-    const candidate = deck[Math.floor(Math.random() * deck.length)];
+    const candidate = deck[Math.floor(randomizer.random() * deck.length)];
     if (!drawed.some((current) => current.id === candidate.id)) {
       drawed.push(candidate);
     }
@@ -49,7 +51,7 @@ function drawCards(size: number, deck: MemoryDataSources): MemoryDataSources {
   for (let i = 0; i < drawed.length; i += 1) {
     let placed = 0;
     while (placed < 2) {
-      const candidate = Math.floor(Math.random() * cards.length);
+      const candidate = Math.floor(randomizer.random() * cards.length);
       if (cards[candidate] == null) {
         cards[candidate] = drawed[i];
         placed += 1;
