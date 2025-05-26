@@ -6,6 +6,7 @@ import {
 } from './Display.utils';
 import Image from 'next/image';
 import ROTDMD from '../../README.md';
+import styles from './Display.module.scss';
 
 interface DisplayProps {
   discography: Array<DiscographyEntry>;
@@ -31,6 +32,7 @@ export default function Display({ discography }: DisplayProps) {
             alt="Album cover art"
             width={250}
             height={250}
+            className={styles.cover}
           />
           <p>Available on {rotd.medium}</p>
         </div>
