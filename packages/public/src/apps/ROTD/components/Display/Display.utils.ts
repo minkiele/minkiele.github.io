@@ -5,13 +5,14 @@ import MersenneTwister from 'mersenne-twister';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 
-// Mersenne-Twister is a big-ass pseudo-random number generator
+// Mersenne Twister is a big-ass pseudo-random number generator
 // And feeding the same seed value for 24 hours will provide always the same
 // sequence of random numbers at every execution, so there's no need
 // to store the choice inside browser storage.
 // So same devices in the same time zones should provide
 // the same pseudo-random sequences.
-const getPseudoRandom = () => new MersenneTwister(dayjs().startOf('day').toDate().getTime()).random();
+const getPseudoRandom = () =>
+  new MersenneTwister(dayjs().startOf('day').toDate().getTime()).random();
 
 const pickOne = <T extends unknown>(input: Array<T>) =>
   input[Math.floor(input.length * getPseudoRandom())];
