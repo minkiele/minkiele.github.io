@@ -25,7 +25,7 @@ export default function Display({ discography }: DisplayProps) {
         <div>
           <h2>
             {rotd.artist} - {rotd.title}
-            {rotd.year && <> ({rotd.year})</>}
+            {rotd.year > 0 && <> ({rotd.year})</>}
           </h2>
           <Image
             src={rotd.thumb}
