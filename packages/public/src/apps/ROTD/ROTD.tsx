@@ -1,8 +1,9 @@
 import { getDiscography } from '../Records/Records.utils';
-import Display from './components/Display/Display';
+import Grid from './components/Grid/Grid';
 
 export default async function ROTD() {
   const myDiscography = await getDiscography();
 
-  return <Display discography={myDiscography} />;
+  // return <Display discography={myDiscography} />;
+  return <Grid discography={myDiscography} />;
 }
