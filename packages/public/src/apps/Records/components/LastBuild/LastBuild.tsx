@@ -1,12 +1,12 @@
 import dayjs from 'dayjs';
 
+const date = dayjs(process.env.NEXT_BUILD_TIMESTAMP).startOf('minute');
+
 export default function LastBuild() {
-  return process.env.NEXT_BUILD_TIMESTAMP ? (
+  return (
     <p>
-      Last build:{' '}
-      {dayjs(process.env.NEXT_BUILD_TIMESTAMP)
-        .startOf('minute')
-        .format('DD/MM/YYYY@HH:mm:ss')}
+      Last build: {date.format('DD/MM/YYYY')}
+      at {date.format('HH:mm')}
     </p>
-  ) : null;
+  );
 }
