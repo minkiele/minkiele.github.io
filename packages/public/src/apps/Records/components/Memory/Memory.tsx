@@ -13,12 +13,13 @@ import {
 import styles from '../../Records.module.scss';
 import Image from 'next/image';
 import Emoji from '@/apps/App/components/Emoji/Emoji';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect } from 'react';
 import FlipCard from '../FlipCard/FlipCard';
 import classNames from 'classnames';
 import Toggler from '../Toggler/Toggler';
 import { T } from 'ramda';
 import ReadmeMD from '../../README.md';
+import { event } from '@/apps/App/App.analytics';
 
 export default function Memory({ deck }: MemoryProps) {
   const { status, left, cards, matched, flip, isFlipped, reset } =
@@ -52,6 +53,15 @@ export default function Memory({ deck }: MemoryProps) {
       redeem: customRedeem,
     });
   };
+
+  useEffect(() => {
+    if(status === W) {
+      event({
+        action: 'memory'
+      });
+    }
+  }, [status]);
+
   return (
     <div>
       <div>

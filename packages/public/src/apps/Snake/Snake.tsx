@@ -8,6 +8,7 @@ import styles from './Snake.module.scss';
 import SnakeMd from './README.md';
 import { getCellStyle, getSortedSnake } from './Snake.utils';
 import Emoji from '../App/components/Emoji/Emoji';
+import { event } from '../App/App.analytics';
 
 interface SnakeTileProps {
   tile: SnakeGameCoords;
@@ -138,6 +139,21 @@ const Snake: FunctionComponent = () => {
       document.body.classList.remove(styles.stopScrolling);
       document.querySelector('html')?.classList.remove(styles.stopScrolling);
     }
+
+    if(status === SnakeGame.STATUS.OVER || status === SnakeGame.STATUS.COMPLETE) {
+      event({
+        action: 'snake',
+        label: 'over'
+      });
+    }
+
+    if(status === SnakeGame.STATUS.COMPLETE) {
+      event({
+        action: 'snake',
+        label: 'complete'
+      });
+    }
+
   }, [status]);
 
   const handleSetSpeed: ChangeEventHandler<HTMLInputElement> = (evt) => {

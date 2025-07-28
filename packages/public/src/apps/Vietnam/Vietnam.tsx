@@ -8,6 +8,7 @@ import VietnamMd from './README.md';
 import { thunkify } from 'ramda';
 import classNames from 'classnames';
 import useClock from '../../hooks/useClock';
+import { event } from '../App/App.analytics';
 
 const COLS: Array<Column> = ['left', 'center', 'right'];
 const DEFAULT_SIZE = 3;
@@ -93,6 +94,15 @@ const Vietnam: FunctionComponent = () => {
       startClock();
     }
   }, [startClock, stopClock, isValid, moves]);
+
+  useEffect(() => {
+    if(isValid) {
+      event({
+        action: 'vietnam',
+        value: size
+      });
+    }
+  }, [isValid, size]);
 
   return (
     <div>
