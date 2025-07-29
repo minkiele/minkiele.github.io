@@ -7,11 +7,13 @@ const getEntries = map<JournalEntry, Pick<JournalEntry, 'entry'>>(pick(['entry']
 
 const {
   metadata,
-  dynamic,
   App: Entry,
 } = getDynamicAppAndMetadata('/journal', BaseEntry);
 export default Entry;
-export { metadata, dynamic };
+
+export const dynamic = 'force-static';
+
+export { metadata };
 
 export function generateStaticParams() {
   return getEntries(entries);

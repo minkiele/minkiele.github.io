@@ -1,7 +1,7 @@
 # minkiele.github.io
 
 If you are reading this page you probably are
-either a search engine or (improbably) really curious about me. 
+either a search engine or (improbably) really curious about me.
 
 ## About this little project
 
@@ -51,7 +51,8 @@ reverse problem. Trying to waste a little bit less energy.
 ### All that green is killing my eyes
 
 Yeah I know. I will try for some time and if it becomes unbearable in a few days
-I will revert to good old black and white.
+I will revert to good old black and white. After several months of careful consideration
+I decided to make it permanent.
 
 ## About other little projects
 

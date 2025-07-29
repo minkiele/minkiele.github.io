@@ -39,9 +39,8 @@ export const getAppAndMetadata = (
 export const getDynamicAppAndMetadata = <P extends {}>(
   route: string,
   App: FunctionComponent<P>
-): { metadata: Metadata; dynamic: 'force-static'; App: FunctionComponent<P> } => ({
+): { metadata: Metadata; App: FunctionComponent<P> } => ({
   metadata: getMetadata(route),
-  dynamic: 'force-static',
   App: async function InternalAppWrapper(props: P) {
     return createElement(
       AppWrapper,

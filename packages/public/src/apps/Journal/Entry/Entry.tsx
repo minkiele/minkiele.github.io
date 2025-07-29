@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import entries from '../entries';
+import { use } from 'react';
 
 export default function Entry({
-  params: { entry },
+  params,
 }: {
-  params: { entry: string };
+  params: Promise<{ entry: string }>;
 }) {
+  const { entry } = use(params);
   const Component = entries.find(({ entry: listEntry }) => entry === listEntry)?.component;
   return (
     <div>
