@@ -195,6 +195,8 @@ const Dragons: FunctionComponent = () => {
             iterations: getCompatIterations(dragons.iterations),
             direction: getCompatDirection(dragons.fold),
             orientation: getCompatOrientation(dragons.orientation),
+            arcLength: dragons.iterations >=  15 ? 0 : undefined,
+            border: true
           }}
         />
       ) : (

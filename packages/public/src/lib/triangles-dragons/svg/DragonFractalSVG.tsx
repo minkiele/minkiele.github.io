@@ -8,6 +8,7 @@ interface DragonFractalSVGOptions {
   direction?: Direction;
   segmentLength?: number;
   arcLength?: number;
+  border?: boolean | number;
 }
 
 interface DragonFractalSVGProps extends SVGAttributes<SVGSVGElement> {
@@ -20,9 +21,12 @@ const DragonFractalSVG: FC<DragonFractalSVGProps> = ({ options, className, viewB
     plotter.run(Plotter.getDirections(options.iterations, options.direction));
     return plotter.plot(options.segmentLength, options.arcLength);
   }, [options]);
+
+  const border = options.border === true ? (options.segmentLength ?? Plotter.DEFAULT_LENGTH) : Number(options.border ?? 0);
+
   return (
-    <svg {...props} className={classNames('dragonFractalSVG', className)} viewBox={viewBox ?? `0 0 ${width + 1} ${height + 1}`}>
-      <path d={path} stroke='currentColor' />
+    <svg {...props} className={classNames('dragonFractalSVG', className)} viewBox={viewBox ?? `0 0 ${width + 2 * border} ${height + 2 * border}`}>
+      <path d={path} stroke='currentColor' fill="none" transform={border > 0 ? `translate(${border}, ${border})` : undefined} />
     </svg>
   );
 };

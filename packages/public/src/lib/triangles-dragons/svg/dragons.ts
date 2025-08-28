@@ -57,8 +57,10 @@ export default class Plotter {
   public plot(length = Plotter.DEFAULT_LENGTH, arc = Plotter.DEFAULT_ARC) {
     let output = '';
 
-    let size = [0, 0, 0, 0];
-    let cursor = [0, 0];
+    let [N, E, S, W] = [0, 0, 0, 0];
+    let [x, y] = [0, 0];
+
+    // const paths: Array<{path: string, x: number, y: number}> = [];
 
     for (let index = 0; index < this.moves.length; index += 1) {
       const move = this.moves[index];
@@ -68,76 +70,85 @@ export default class Plotter {
         case 'N': {
           if (index > 0 && arc > 0) {
             const isLeftTurn = this.moves[index - 1] === 'E';
-            output += `a${arc} ${arc} 0 0 ${isLeftTurn ? 0 : 1} ${
-              isLeftTurn ? '' : '-'
-            }${arc} -${arc}`;
+            output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} ${
+              (isLeftTurn ? 1 : -1) * arc
+            } -${arc}`;
           }
           output += `v-${segLength}`;
-          cursor[1] -= length;
-          if (cursor[1] > size[0]) {
-            size[0] = cursor[1];
+          y -= length;
+          if (y > N) {
+            N = y;
           }
-          if (cursor[1] < size[2]) {
-            size[2] = cursor[1];
+          if (y < S) {
+            S = y;
           }
           break;
         }
         case 'S': {
           if (index > 0 && arc > 0) {
             const isLeftTurn = this.moves[index - 1] === 'W';
-            output += `a${arc} ${arc} 0 0 ${isLeftTurn ? 0 : 1} ${
-              isLeftTurn ? '-' : ''
-            }${arc} ${arc}`;
+            output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} ${
+              (isLeftTurn ? -1 : 1) * arc
+            } ${arc}`;
           }
           output += `v${segLength}`;
-          cursor[1] += length;
-          if (cursor[1] > size[0]) {
-            size[0] = cursor[1];
+          y += length;
+          if (y > N) {
+            N = y;
           }
-          if (cursor[1] < size[2]) {
-            size[2] = cursor[1];
+          if (y < S) {
+            S = y;
           }
           break;
         }
         case 'E': {
           if (index > 0 && arc > 0) {
             const isLeftTurn = this.moves[index - 1] === 'S';
-            output += `a${arc} ${arc} 0 0 ${isLeftTurn ? 0 : 1} ${arc} ${
-              isLeftTurn ? '' : '-'
-            }${arc}`;
+            output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} ${arc} ${
+              (isLeftTurn ? 1 : -1) * arc
+            }`;
           }
           output += `h${segLength}`;
-          cursor[0] += length;
-          if (cursor[0] > size[1]) {
-            size[1] = cursor[0];
+          x += length;
+          if (x > E) {
+            E = x;
           }
-          if (cursor[0] < size[3]) {
-            size[3] = cursor[0];
+          if (x < W) {
+            W = x;
           }
           break;
         }
         case 'W': {
           if (index > 0 && arc > 0) {
             const isLeftTurn = this.moves[index - 1] === 'N';
-            output += `a${arc} ${arc} 0 0 ${isLeftTurn ? 0 : 1} -${arc} ${
-              isLeftTurn ? '-' : ''
-            }${arc}`;
+            output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} -${arc} ${
+              (isLeftTurn ? -1 : 1) * arc
+            }`;
           }
           output += `h-${segLength}`;
-          cursor[0] -= length;
-          if (cursor[0] > size[1]) {
-            size[1] = cursor[0];
+          x -= length;
+          if (x > E) {
+            E = x;
           }
-          if (cursor[0] < size[3]) {
-            size[3] = cursor[0];
+          if (x < W) {
+            W = x;
           }
           break;
         }
       }
+
+      // if(index % 128 === 0 || index === this.moves.length - 1) {
+      //   // Snapshot
+      //   paths.push({path: output, x, y});
+      //   output = `M${x} ${y}`;
+      // }
     }
-    const path = `M${-size[3]} ${-size[2]}${output}`;
-    const width = size[1] - size[3];
-    const height = size[0] - size[2];
-    return { path, width, height };
+    return {
+      path: `M${-W} ${-S}${output}`,
+      width: E - W,
+      height: N - S,
+      x: -W,
+      y: -S,
+    };
   }
 }
