@@ -6,11 +6,13 @@ import Emoji from '../Emoji/Emoji';
 export interface ThemeSelectorProps {
   theme: ReturnType<typeof useTheme>['theme'];
   onChange: (theme: UseThemeType) => void;
+  batterySaver?: boolean;
 }
 
 const ThemeSelector: FunctionComponent<ThemeSelectorProps> = ({
   theme,
   onChange,
+  batterySaver,
 }) => {
   const handleChangeTheme =
     (theme: UseThemeType): MouseEventHandler<HTMLButtonElement> =>
@@ -19,11 +21,18 @@ const ThemeSelector: FunctionComponent<ThemeSelectorProps> = ({
     };
   return (
     <div className={styles.themeSelector}>
-      <p className="sr-only">Current theme: {theme === 'dark' ? 'dark' : 'light'}</p>
+      <p className="sr-only">
+        Current theme: {theme === 'dark' ? 'dark' : 'light'}
+      </p>
       <button
-        aria-label={`Change theme to ${theme === 'dark' ? 'light' : 'dark'}`}
+        aria-label={
+          batterySaver
+            ? 'Since it appears you are low on battery theme was automatically set as dark'
+            : `Change theme to ${theme === 'dark' ? 'light' : 'dark'}`
+        }
         className={styles.themeSelector_switch}
         onClick={handleChangeTheme(theme === 'dark' ? 'light' : 'dark')}
+        disabled={batterySaver}
       >
         <Emoji>🔦</Emoji>
       </button>
