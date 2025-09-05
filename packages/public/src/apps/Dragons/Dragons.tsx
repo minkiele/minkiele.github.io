@@ -96,7 +96,6 @@ const Dragons: FunctionComponent = () => {
           <legend>Iterations</legend>
           <label htmlFor="newDragons">
             This will generate a dragon fractal with the specified iterations
-            (after 15 iterations will start to considerably slow down).
           </label>
           <input
             id="newDragons"
@@ -175,7 +174,10 @@ const Dragons: FunctionComponent = () => {
             onChange={handleRendering}
             checked={dragons.svg}
           />
-          <label htmlFor="renderingSvg">SVG</label>{' '}
+          <label htmlFor="renderingSvg">
+            SVG (will render a single segment with rounded corners up to iteration 14, will slow down
+            after iteration 19 but will still render up to iteration 24)
+          </label><br />
           <input
             type="radio"
             name="rendering"
@@ -184,19 +186,28 @@ const Dragons: FunctionComponent = () => {
             onChange={handleRendering}
             checked={!dragons.svg}
           />
-          <label htmlFor="renderingText">Text</label>{' '}
+          <label htmlFor="renderingText">
+            Text (will not render a single segment, will considerably slow
+            down after iteration 15, will still render up to iteration 22)
+          </label>{' '}
         </fieldset>
       </div>
       {dragons.svg ? (
         <DragonFractalSVG
-        className={styles.dragonSvg}
-          style={{width: `${Math.min(100, Math.max(10, Math.log(dragons.iterations) / Math.log(17) * 100))}%`}}
+          className={styles.dragonSvg}
+          style={{
+            width: `${Math.min(
+              100,
+              Math.max(10, (Math.log(dragons.iterations) / Math.log(17)) * 100)
+            )}%`,
+          }}
           options={{
             iterations: getCompatIterations(dragons.iterations),
             direction: getCompatDirection(dragons.fold),
             orientation: getCompatOrientation(dragons.orientation),
-            arcLength: dragons.iterations >=  15 ? 0 : undefined,
-            border: true
+            arcLength: dragons.iterations >= 15 ? 0 : undefined,
+            border: true,
+            split: dragons.iterations > 20,
           }}
         />
       ) : (

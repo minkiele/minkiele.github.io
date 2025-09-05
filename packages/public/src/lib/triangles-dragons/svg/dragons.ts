@@ -60,7 +60,9 @@ export default class Plotter {
     let [N, E, S, W] = [0, 0, 0, 0];
     let [x, y] = [0, 0];
 
-    // const paths: Array<{path: string, x: number, y: number}> = [];
+    const segments: Array<{ segment: string; x: number; y: number }> = [];
+
+    let segment = '';
 
     for (let index = 0; index < this.moves.length; index += 1) {
       const move = this.moves[index];
@@ -75,6 +77,7 @@ export default class Plotter {
             } -${arc}`;
           }
           output += `v-${segLength}`;
+          segment += `v-${length}`;
           y -= length;
           if (y > N) {
             N = y;
@@ -92,6 +95,7 @@ export default class Plotter {
             } ${arc}`;
           }
           output += `v${segLength}`;
+          segment += `v${length}`;
           y += length;
           if (y > N) {
             N = y;
@@ -109,6 +113,7 @@ export default class Plotter {
             }`;
           }
           output += `h${segLength}`;
+          segment += `h${length}`;
           x += length;
           if (x > E) {
             E = x;
@@ -126,6 +131,7 @@ export default class Plotter {
             }`;
           }
           output += `h-${segLength}`;
+          segment += `h-${length}`;
           x -= length;
           if (x > E) {
             E = x;
@@ -137,18 +143,29 @@ export default class Plotter {
         }
       }
 
-      // if(index % 128 === 0 || index === this.moves.length - 1) {
-      //   // Snapshot
-      //   paths.push({path: output, x, y});
-      //   output = `M${x} ${y}`;
-      // }
+      if (
+        index > 0 &&
+        ((index + 1) % 2 ** 16 === 0 || index >= this.moves.length - 1)
+      ) {
+        segments.push({ segment, x, y });
+        segment = '';
+      }
     }
+
+    const outputSegments = segments.map(
+      ({ segment: s }, i) =>
+        `M${-W + (i > 0 ? segments[i - 1].x : 0)} ${
+          -S + (i > 0 ? segments[i - 1].y : 0)
+        }${s}`
+    );
+
     return {
       path: `M${-W} ${-S}${output}`,
       width: E - W,
       height: N - S,
       x: -W,
       y: -S,
+      segments: outputSegments,
     };
   }
 }
