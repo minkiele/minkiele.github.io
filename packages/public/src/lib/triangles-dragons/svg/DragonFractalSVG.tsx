@@ -33,6 +33,11 @@ const DragonFractalSVG: FC<DragonFractalSVGProps> = ({
       ? options.segmentLength ?? Plotter.DEFAULT_LENGTH
       : Number(options.border ?? 0);
 
+  const strokeLinejoin =
+    options.split || (options.arcLength ?? Plotter.DEFAULT_ARC) <= 0
+      ? 'round'
+      : undefined;
+
   return (
     <svg
       {...props}
@@ -47,10 +52,18 @@ const DragonFractalSVG: FC<DragonFractalSVGProps> = ({
               d={segment}
               stroke="currentColor"
               fill="none"
+              strokeLinecap="round"
+              strokeLinejoin={strokeLinejoin}
             />
           ))
         ) : (
-          <path d={path} stroke="currentColor" fill="none" />
+          <path
+            d={path}
+            stroke="currentColor"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin={strokeLinejoin}
+          />
         )}
       </g>
     </svg>
