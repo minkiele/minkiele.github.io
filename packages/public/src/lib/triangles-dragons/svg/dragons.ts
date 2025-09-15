@@ -61,8 +61,10 @@ export default class Plotter {
     let [x, y] = [0, 0];
 
     const segments: Array<{ segment: string; x: number; y: number }> = [];
+    const absegs: Array<{ segment: string; x: number; y: number }> = [];
 
     let segment = '';
+    let abseg = '';
 
     for (let index = 0; index < this.moves.length; index += 1) {
       const move = this.moves[index];
@@ -79,6 +81,7 @@ export default class Plotter {
           output += `v-${segLength}`;
           segment += `v-${length}`;
           y -= length;
+          abseg += `V${y}`;
           if (y > N) {
             N = y;
           }
@@ -97,6 +100,7 @@ export default class Plotter {
           output += `v${segLength}`;
           segment += `v${length}`;
           y += length;
+          abseg += `V${y}`;
           if (y > N) {
             N = y;
           }
@@ -115,6 +119,7 @@ export default class Plotter {
           output += `h${segLength}`;
           segment += `h${length}`;
           x += length;
+          abseg += `H${x}`;
           if (x > E) {
             E = x;
           }
@@ -133,6 +138,7 @@ export default class Plotter {
           output += `h-${segLength}`;
           segment += `h-${length}`;
           x -= length;
+          abseg += `H${x}`;
           if (x > E) {
             E = x;
           }
@@ -148,15 +154,22 @@ export default class Plotter {
         ((index + 1) % 2 ** 16 === 0 || index >= this.moves.length - 1)
       ) {
         segments.push({ segment, x, y });
+        absegs.push({ segment: abseg, x, y });
         segment = '';
+        abseg = '';
       }
     }
 
     const outputSegments = segments.map(
-      ({ segment: s }, i) =>
+      ({ segment: s }, i, segments) =>
         `M${-W + (i > 0 ? segments[i - 1].x : 0)} ${
           -S + (i > 0 ? segments[i - 1].y : 0)
         }${s}`
+    );
+
+    const outputAbsegs = absegs.map(
+      ({ segment: s }, i, segments) =>
+        `M${i > 0 ? segments[i - 1].x : 0} ${i > 0 ? segments[i - 1].y : 0}${s}`
     );
 
     return {
@@ -166,6 +179,7 @@ export default class Plotter {
       x: -W,
       y: -S,
       segments: outputSegments,
+      absegs: outputAbsegs,
     };
   }
 }

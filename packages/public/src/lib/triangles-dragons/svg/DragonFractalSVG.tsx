@@ -1,4 +1,4 @@
-import { FC, SVGAttributes, useMemo } from 'react';
+import { FC, SVGAttributes, useDebugValue, useMemo } from 'react';
 import Plotter, { Direction, Orientation } from './dragons';
 import classNames from 'classnames';
 
@@ -22,7 +22,7 @@ const DragonFractalSVG: FC<DragonFractalSVGProps> = ({
   viewBox,
   ...props
 }) => {
-  const { path, width, height, segments } = useMemo(() => {
+  const { path, width, height, segments, absegs, x, y } = useMemo(() => {
     const plotter = new Plotter(options.orientation);
     plotter.run(Plotter.getDirections(options.iterations, options.direction));
     return plotter.plot(options.segmentLength, options.arcLength);
@@ -44,9 +44,9 @@ const DragonFractalSVG: FC<DragonFractalSVGProps> = ({
       className={classNames('dragonFractalSVG', className)}
       viewBox={viewBox ?? `0 0 ${width + 2 * border} ${height + 2 * border}`}
     >
-      <g transform={border > 0 ? `translate(${border}, ${border})` : undefined}>
+      <g transform={border > 0 ? `translate(${border + x}, ${border + y})` : undefined}>
         {options.split ? (
-          segments.map((segment, i) => (
+          absegs.map((segment, i) => (
             <path
               key={`seg-${segment}-${i}`}
               d={segment}
