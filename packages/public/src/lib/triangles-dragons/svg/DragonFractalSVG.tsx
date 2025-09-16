@@ -22,10 +22,10 @@ const DragonFractalSVG: FC<DragonFractalSVGProps> = ({
   viewBox,
   ...props
 }) => {
-  const { path, width, height, segments, absegs, x, y } = useMemo(() => {
+  const { path, width, height, segments, x, y } = useMemo(() => {
     const plotter = new Plotter(options.orientation);
     plotter.run(Plotter.getDirections(options.iterations, options.direction));
-    return plotter.plot(options.segmentLength, options.arcLength);
+    return plotter.plot(options.segmentLength, options.arcLength, options.split);
   }, [options]);
 
   const border =
@@ -44,9 +44,17 @@ const DragonFractalSVG: FC<DragonFractalSVGProps> = ({
       className={classNames('dragonFractalSVG', className)}
       viewBox={viewBox ?? `0 0 ${width + 2 * border} ${height + 2 * border}`}
     >
-      <g transform={border > 0 ? `translate(${border + x}, ${border + y})` : undefined}>
+      <g
+        transform={
+          border > 0
+            ? `translate(${border + (options.split ? x : 0)}, ${
+                border + (options.split ? y : 0)
+              })`
+            : undefined
+        }
+      >
         {options.split ? (
-          absegs.map((segment, i) => (
+          segments.map((segment, i) => (
             <path
               key={`seg-${segment}-${i}`}
               d={segment}

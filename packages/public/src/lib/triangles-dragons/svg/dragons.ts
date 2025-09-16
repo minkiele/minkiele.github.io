@@ -4,6 +4,7 @@ export type Direction = 'L' | 'R';
 export default class Plotter {
   public static readonly DEFAULT_LENGTH = 10;
   public static readonly DEFAULT_ARC = 3;
+  public static readonly DEFAULT_SPLIT = false;
 
   public static orientations: [
     Orientation,
@@ -35,6 +36,42 @@ export default class Plotter {
         Plotter.orientations.length
     ];
   }
+
+  public static mergeCoords(
+    { d, o, f, t }: { d: 'H' | 'V'; o: number; f: number; t: number },
+    coords: Record<
+      'H' | 'V',
+      Record<string | number, Array<{ f: number; t: number }>>
+    >
+  ): typeof coords {
+    const dm = coords[d] ?? new Map<number, Array<{ f: number; t: number }>>();
+    const om = dm[o] ?? [];
+    const n = om
+      .map((s, i) => ({ ...s, i }))
+      .filter(({ f: fc, t: tc }) => fc === t || tc === f);
+    switch (n.length) {
+      case 0:
+        om.push({ f, t });
+        om.sort(({ f: f1, t: t1 }, { f: f2, t: t2 }) =>
+          f1 === f2 ? t1 - t2 : f1 - f2
+        );
+        break;
+      case 1:
+        if (n[0].f === t) {
+          om[n[0].i].f = f;
+        } else {
+          om[n[0].i].t = t;
+        }
+        break;
+      default:
+        om[n[0].i].t = om[n[1].i].t;
+        om.splice(n[1].i, 1);
+        break;
+    }
+    dm[o] = om;
+    coords[d] = dm;
+    return coords;
+  }
   private moves: Array<Orientation> = [];
   public constructor(private orientation: Orientation) {
     this.moves.push(this.orientation);
@@ -54,17 +91,20 @@ export default class Plotter {
     return index === 0 || index === this.moves.length - 1;
   }
 
-  public plot(length = Plotter.DEFAULT_LENGTH, arc = Plotter.DEFAULT_ARC) {
+  public plot(
+    length = Plotter.DEFAULT_LENGTH,
+    arc = Plotter.DEFAULT_ARC,
+    split = Plotter.DEFAULT_SPLIT
+  ) {
     let output = '';
 
     let [N, E, S, W] = [0, 0, 0, 0];
     let [x, y] = [0, 0];
 
-    const segments: Array<{ segment: string; x: number; y: number }> = [];
-    const absegs: Array<{ segment: string; x: number; y: number }> = [];
-
-    let segment = '';
-    let abseg = '';
+    const coords: Record<
+      'H' | 'V',
+      Record<string | number, Array<{ f: number; t: number }>>
+    > = { H: {}, V: {} };
 
     for (let index = 0; index < this.moves.length; index += 1) {
       const move = this.moves[index];
@@ -72,16 +112,18 @@ export default class Plotter {
       const segLength = length - arc * (isTerminal ? 1 : 2);
       switch (move) {
         case 'N': {
-          if (index > 0 && arc > 0) {
-            const isLeftTurn = this.moves[index - 1] === 'E';
-            output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} ${
-              (isLeftTurn ? 1 : -1) * arc
-            } -${arc}`;
+          if (split && arc === 0) {
+            Plotter.mergeCoords({ d: 'V', o: x, f: y - length, t: y }, coords);
+          } else {
+            if (index > 0 && arc > 0) {
+              const isLeftTurn = this.moves[index - 1] === 'E';
+              output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} ${
+                (isLeftTurn ? 1 : -1) * arc
+              } ${-arc}`;
+            }
+            output += `v${-segLength}`;
           }
-          output += `v-${segLength}`;
-          segment += `v-${length}`;
           y -= length;
-          abseg += `V${y}`;
           if (y > N) {
             N = y;
           }
@@ -91,16 +133,18 @@ export default class Plotter {
           break;
         }
         case 'S': {
-          if (index > 0 && arc > 0) {
-            const isLeftTurn = this.moves[index - 1] === 'W';
-            output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} ${
-              (isLeftTurn ? -1 : 1) * arc
-            } ${arc}`;
+          if (split && arc === 0) {
+            Plotter.mergeCoords({ d: 'V', o: x, f: y, t: y + length }, coords);
+          } else {
+            if (index > 0 && arc > 0) {
+              const isLeftTurn = this.moves[index - 1] === 'W';
+              output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} ${
+                (isLeftTurn ? -1 : 1) * arc
+              } ${arc}`;
+            }
+            output += `v${segLength}`;
           }
-          output += `v${segLength}`;
-          segment += `v${length}`;
           y += length;
-          abseg += `V${y}`;
           if (y > N) {
             N = y;
           }
@@ -110,16 +154,18 @@ export default class Plotter {
           break;
         }
         case 'E': {
-          if (index > 0 && arc > 0) {
-            const isLeftTurn = this.moves[index - 1] === 'S';
-            output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} ${arc} ${
-              (isLeftTurn ? 1 : -1) * arc
-            }`;
+          if (split && arc === 0) {
+            Plotter.mergeCoords({ d: 'H', o: y, f: x, t: x + length }, coords);
+          } else {
+            if (index > 0 && arc > 0) {
+              const isLeftTurn = this.moves[index - 1] === 'S';
+              output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} ${arc} ${
+                (isLeftTurn ? 1 : -1) * arc
+              }`;
+            }
+            output += `h${segLength}`;
           }
-          output += `h${segLength}`;
-          segment += `h${length}`;
           x += length;
-          abseg += `H${x}`;
           if (x > E) {
             E = x;
           }
@@ -129,16 +175,18 @@ export default class Plotter {
           break;
         }
         case 'W': {
-          if (index > 0 && arc > 0) {
-            const isLeftTurn = this.moves[index - 1] === 'N';
-            output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} -${arc} ${
-              (isLeftTurn ? -1 : 1) * arc
-            }`;
+          if (split && arc === 0) {
+            Plotter.mergeCoords({ d: 'H', o: y, f: x - length, t: x }, coords);
+          } else {
+            if (index > 0 && arc > 0) {
+              const isLeftTurn = this.moves[index - 1] === 'N';
+              output += `a${arc} ${arc} 0 0 ${Number(!isLeftTurn)} ${-arc} ${
+                (isLeftTurn ? -1 : 1) * arc
+              }`;
+            }
+            output += `h${-segLength}`;
           }
-          output += `h-${segLength}`;
-          segment += `h-${length}`;
           x -= length;
-          abseg += `H${x}`;
           if (x > E) {
             E = x;
           }
@@ -148,29 +196,21 @@ export default class Plotter {
           break;
         }
       }
-
-      if (
-        index > 0 &&
-        ((index + 1) % 2 ** 16 === 0 || index >= this.moves.length - 1)
-      ) {
-        segments.push({ segment, x, y });
-        absegs.push({ segment: abseg, x, y });
-        segment = '';
-        abseg = '';
-      }
     }
 
-    const outputSegments = segments.map(
-      ({ segment: s }, i, segments) =>
-        `M${-W + (i > 0 ? segments[i - 1].x : 0)} ${
-          -S + (i > 0 ? segments[i - 1].y : 0)
-        }${s}`
-    );
-
-    const outputAbsegs = absegs.map(
-      ({ segment: s }, i, segments) =>
-        `M${i > 0 ? segments[i - 1].x : 0} ${i > 0 ? segments[i - 1].y : 0}${s}`
-    );
+    const outputCoords: Record<string, string> = {};
+    if (split && arc === 0) {
+      for (const o of Object.keys(coords['H'])) {
+        for (const { f, t } of coords['H'][o]) {
+          outputCoords[`H${o}`] = (outputCoords[`H${o}`] ?? '') + `M${f} ${o}h${t - f}`;
+        }
+      }
+      for (const o of Object.keys(coords['V'])) {
+        for (const { f, t } of coords['V'][o]) {
+          outputCoords[`V${o}`] = (outputCoords[`V${o}`] ?? '') + `M${o} ${f}v${t - f}`;
+        }
+      }
+    }
 
     return {
       path: `M${-W} ${-S}${output}`,
@@ -178,8 +218,7 @@ export default class Plotter {
       height: N - S,
       x: -W,
       y: -S,
-      segments: outputSegments,
-      absegs: outputAbsegs,
+      segments: Object.values(outputCoords),
     };
   }
 }
