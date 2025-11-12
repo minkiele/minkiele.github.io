@@ -1,14 +1,14 @@
-import dayjs from 'dayjs';
-import { getDiscography } from './Records.utils';
+import { getCompressedDiscography } from './Records.utils';
 import Memory from './components/Memory/Memory';
 import LastBuild from './components/LastBuild/LastBuild';
+import Decompressor from './components/Decompressor/Decompressor';
 
 export default async function Records() {
-  const myDiscography = await getDiscography();
+  const { discography, tokens } = await getCompressedDiscography();
 
   return (
     <div>
-      <Memory deck={myDiscography} />
+      <Decompressor discography={discography} tokens={tokens} component={Memory} mapTo='deck' />
       <LastBuild />
     </div>
   );

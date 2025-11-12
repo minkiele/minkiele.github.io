@@ -39,7 +39,7 @@ const fetchDiscography = async () => {
       currentPage += 1;
       retries = 0;
     } catch (exc) {
-      if(retries < 3) {
+      if (retries < 3) {
         retries += 1;
       } else {
         throw new Error(`Cannot fetch page ${currentPage}`);
@@ -60,4 +60,79 @@ export const getDiscography = async () => {
     medium: getMedium(release.basic_information.formats),
     year: release.basic_information.year,
   }));
+};
+
+class TokenStorage {
+  private static BASE = 36;
+  public constructor(private tokens: Array<string> = []) {}
+  public getToken(input: string) {
+    if (input.length > 0) {
+      const index = this.tokens.indexOf(input);
+      if (index >= 0) {
+        return index.toString(TokenStorage.BASE);
+      } else {
+        this.tokens.push(input);
+        return (this.tokens.length - 1).toString(TokenStorage.BASE);
+      }
+    }
+    return input;
+  }
+  public getString(token: string) {
+    if (token.length > 0) {
+      const index = parseInt(token, TokenStorage.BASE);
+      if (!isNaN(index)) {
+        const output = this.tokens[index];
+        if (output != null) {
+          return output;
+        }
+      }
+    }
+    return '';
+  }
+  public getTokens() {
+    return this.tokens;
+  }
+}
+
+const compressUrl = (url: string, tokens: TokenStorage) =>
+  url
+    .split('/')
+    .map((src) => tokens.getToken(src))
+    .join('/');
+const uncompressUrl = (url: string, tokens: TokenStorage) =>
+  url
+    .split('/')
+    .map((src) => tokens.getString(src))
+    .join('/');
+
+type Discography = ReturnType<typeof getDiscography> extends Promise<infer R>
+  ? R
+  : never;
+
+const compressDiscography = (discography: Discography) => {
+  const tokens = new TokenStorage();
+  const compressedDiscography = discography.map(({ thumb, ...record }) => ({
+    ...record,
+    thumb: compressUrl(thumb, tokens),
+  }));
+  return { discography: compressedDiscography, tokens: tokens.getTokens() };
+};
+
+export const getCompressedDiscography = async () =>
+  compressDiscography(await getDiscography());
+
+export const uncompressDiscography = (
+  discography: Discography,
+  storedTokens: Array<string>
+) => {
+  const tokens = new TokenStorage(storedTokens);
+  const uncompressedDiscography = discography.map(({ thumb, ...record }) => {
+    Object.defineProperty(record, 'thumb', {
+      configurable: false,
+      enumerable: true,
+      get: () => uncompressUrl(thumb, tokens),
+    });
+    return record;
+  });
+  return uncompressedDiscography;
 };
