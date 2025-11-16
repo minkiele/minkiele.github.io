@@ -16,6 +16,5 @@
     "build": {
       "dependsOn": ["^build"]
     }
-  },
-  "useLegacyCache": true
+  }
 }
