@@ -5,7 +5,7 @@
   "scripts": {},
   "private": true,
   "devDependencies": {
-    "nx": "19.8.9",
+    "nx": "20.8.2",
     "prettier": "^2.6.2"
   },
   "workspaces": [

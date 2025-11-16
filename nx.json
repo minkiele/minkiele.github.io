@@ -5,9 +5,7 @@
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": [
-          "build"
-        ]
+        "cacheableOperations": ["build"]
       }
     }
   },
@@ -18,5 +16,6 @@
     "build": {
       "dependsOn": ["^build"]
     }
-  }
+  },
+  "useLegacyCache": true
 }
