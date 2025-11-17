@@ -94,16 +94,27 @@ class TokenStorage {
   }
 }
 
-const compressUrl = (url: string, tokens: TokenStorage) =>
-  url
-    .split('/')
-    .map((src) => tokens.getToken(src))
-    .join('/');
-const uncompressUrl = (url: string, tokens: TokenStorage) =>
-  url
-    .split('/')
-    .map((src) => tokens.getString(src))
-    .join('/');
+const URL_SCHEMA =
+  /^https:\/\/i.discogs.com\/(.+?)\/rs:fit\/g:sm\/q:40\/h:150\/w:150\/(.+?)\/(.+?)\/(.+?)\/(.+?)\/(.+?)\.jpeg$/;
+
+const compressUrl = (url: string, tokens: TokenStorage) => {
+  const matches = url.match(URL_SCHEMA);
+  return matches
+    ? [`${matches[2]}/${matches[3]}`, matches[6]]
+        .map(tokens.getToken.bind(tokens))
+        .concat(matches[1], `${matches[4]}/${matches[5]}`)
+        .join('$')
+    : '';
+};
+
+const uncompressUrl = (url: string, storage: TokenStorage) => {
+  const tokens = url.split('$');
+  return `https://i.discogs.com/${
+    tokens[2]
+  }/rs:fit/g:sm/q:40/h:150/w:150/${storage.getString(tokens[0])}/${
+    tokens[3]
+  }/${storage.getString(tokens[1])}.jpeg`;
+};
 
 type Discography = ReturnType<typeof getDiscography> extends Promise<infer R>
   ? R
