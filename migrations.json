@@ -1,18 +1,30 @@
 {
   "migrations": [
     {
-      "version": "22.0.0-beta.1",
-      "description": "Updates release version config based on the breaking changes in Nx v22",
-      "implementation": "./src/migrations/update-22-0-0/release-version-config-changes",
+      "cli": "nx",
+      "version": "22.1.0-beta.5",
+      "description": "Updates the nx wrapper.",
+      "implementation": "./src/migrations/update-22-1-0/update-nx-wrapper",
       "package": "nx",
-      "name": "22-0-0-release-version-config-changes"
-    },
-    {
-      "version": "22.0.0-beta.2",
-      "description": "Consolidates releaseTag* options into nested releaseTag object structure",
-      "implementation": "./src/migrations/update-22-0-0/consolidate-release-tag-config",
-      "package": "nx",
-      "name": "22-0-0-consolidate-release-tag-config"
+      "name": "22-1-0-update-nx-wrapper"
     }
-  ]
+  ],
+  "nx-console": {
+    "initialGitRef": {
+      "ref": "a996f253eb55c7e0828ab1603ab55615555255dc",
+      "subject": "minor changes on config files"
+    },
+    "targetVersion": "latest",
+    "confirmedPackageUpdates": true,
+    "runningMigrations": [],
+    "completedMigrations": {
+      "22-1-0-update-nx-wrapper": {
+        "type": "successful",
+        "name": "22-1-0-update-nx-wrapper",
+        "changedFiles": [],
+        "ref": "a996f253eb55c7e0828ab1603ab55615555255dc",
+        "nextSteps": []
+      }
+    }
+  }
 }
