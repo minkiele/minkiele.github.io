@@ -84,14 +84,14 @@ const compressDiscography = async (discography: Discography) => {
       });
     }
   );
-  return Buffer.from(compressed).toString('binary');
+  return Buffer.from(compressed).toString('base64');
 };
 
 export const getCompressedDiscography = async () =>
   await compressDiscography(await getDiscography());
 
 export const uncompressDiscography = async(discography: string) => {
-  const compressed = Buffer.from(discography, 'binary');
+  const compressed = Buffer.from(discography, 'base64');
   const binary = Uint8Array.from(compressed);
   const decompressed = await new Promise<Uint8Array<ArrayBufferLike>>(
     (resolve, reject) => {
