@@ -244,7 +244,7 @@ const TwentyFourClock: FunctionComponent = () => {
         S0: S % 10,
       });
       setBlink(S % 2 === 0);
-      const audioReady = audioRef?.current?.readyState === 4 ?? false;
+      const audioReady = audioRef?.current?.readyState === 4;
       setAutoplay((current) => ({
         ...current,
         audioLoaded: audioReady,
