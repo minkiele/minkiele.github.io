@@ -1,17 +1,9 @@
 'use client';
-import { ComponentType, createElement, useMemo } from 'react';
-import {
-  uncompressDiscography,
-  type getDiscography,
-} from '../../Records.utils';
-
-type Discography = ReturnType<typeof getDiscography> extends Promise<infer R>
-  ? R
-  : never;
+import { ComponentType, createElement, useEffect, useMemo, useState } from 'react';
+import { Discography, uncompressDiscography } from '../../Records.utils';
 
 interface DecompressorProps<P extends object> {
-  discography: Discography;
-  tokens: Array<string>;
+  discography: string;
   component: ComponentType<P>;
   mapTo?: keyof P;
   otherProps?: P;
@@ -19,15 +11,15 @@ interface DecompressorProps<P extends object> {
 
 const Decompressor = <P extends object>({
   discography,
-  tokens,
   component: Component,
   mapTo,
   otherProps,
 }: DecompressorProps<P>) => {
-  const uncompressedDiscography = useMemo(
-    () => uncompressDiscography(discography, tokens),
-    [discography, tokens]
-  );
+
+  const [uncompressedDiscography, setUncompressedDiscography] = useState<Discography>([]);
+  useEffect(() => {
+    uncompressDiscography(discography).then(setUncompressedDiscography);
+  }, [discography]);
   const props = useMemo(
     () =>
       ({
@@ -39,6 +31,6 @@ const Decompressor = <P extends object>({
   return createElement(Component, props);
 };
 
-Decompressor.displayName = 'Decompressor';
+Decompressor.displayName = 'Decompressoro';
 
 export default Decompressor;

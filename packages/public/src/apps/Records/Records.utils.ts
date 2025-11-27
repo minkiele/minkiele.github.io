@@ -1,8 +1,11 @@
+import { zlib, unzlib, Inflate } from 'fflate';
+import { Buffer } from 'buffer';
 import {
   DiscogsCollectionItemsByFolder,
   DiscogsRelease,
 } from './Records.models';
 import { join, map, pipe, prop, replace } from 'ramda';
+import { ReadableStream } from 'stream/web';
 
 const getArtistName = pipe(
   map(pipe(prop('name'), replace(/\s*\(\d+\)$/, ''))),
@@ -62,88 +65,46 @@ export const getDiscography = async () => {
   }));
 };
 
-class TokenStorage {
-  private static BASE = 36;
-  public constructor(private tokens: Array<string> = []) {}
-  public getToken(input: string) {
-    if (input.length > 0) {
-      const index = this.tokens.indexOf(input);
-      if (index >= 0) {
-        return index.toString(TokenStorage.BASE);
-      } else {
-        this.tokens.push(input);
-        return (this.tokens.length - 1).toString(TokenStorage.BASE);
-      }
-    }
-    return input;
-  }
-  public getString(token: string) {
-    if (token.length > 0) {
-      const index = parseInt(token, TokenStorage.BASE);
-      if (!isNaN(index)) {
-        const output = this.tokens[index];
-        if (output != null) {
-          return output;
-        }
-      }
-    }
-    return '';
-  }
-  public getTokens() {
-    return this.tokens;
-  }
-}
-
-const URL_SCHEMA =
-  /^https:\/\/i.discogs.com\/(.+?)\/rs:fit\/g:sm\/q:40\/h:150\/w:150\/(.+?)\/(.+?)\/(.+?)\/(.+?)\/(.+?)\.jpeg$/;
-
-const compressUrl = (url: string, tokens: TokenStorage) => {
-  const matches = url.match(URL_SCHEMA);
-  return matches
-    ? [`${matches[2]}/${matches[3]}`, matches[6]]
-        .map(tokens.getToken.bind(tokens))
-        .concat(matches[1], `${matches[4]}/${matches[5]}`)
-        .join('$')
-    : '';
-};
-
-const uncompressUrl = (url: string, storage: TokenStorage) => {
-  const tokens = url.split('$');
-  return `https://i.discogs.com/${
-    tokens[2]
-  }/rs:fit/g:sm/q:40/h:150/w:150/${storage.getString(tokens[0])}/${
-    tokens[3]
-  }/${storage.getString(tokens[1])}.jpeg`;
-};
-
-type Discography = ReturnType<typeof getDiscography> extends Promise<infer R>
+export type Discography = ReturnType<typeof getDiscography> extends Promise<infer R>
   ? R
   : never;
 
-const compressDiscography = (discography: Discography) => {
-  const tokens = new TokenStorage();
-  const compressedDiscography = discography.map(({ thumb, ...record }) => ({
-    ...record,
-    thumb: compressUrl(thumb, tokens),
-  }));
-  return { discography: compressedDiscography, tokens: tokens.getTokens() };
+const compressDiscography = async (discography: Discography) => {
+  const serializedDiscography = JSON.stringify(discography);
+  const encoder = new TextEncoder();
+  const encoded = encoder.encode(serializedDiscography);
+  const compressed = await new Promise<Uint8Array<ArrayBufferLike>>(
+    (resolve, reject) => {
+      zlib(encoded, { level: 9 }, (err, data) => {
+        if (err == null) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
+    }
+  );
+  return Buffer.from(compressed).toString('binary');
 };
 
 export const getCompressedDiscography = async () =>
-  compressDiscography(await getDiscography());
+  await compressDiscography(await getDiscography());
 
-export const uncompressDiscography = (
-  discography: Discography,
-  storedTokens: Array<string>
-) => {
-  const tokens = new TokenStorage(storedTokens);
-  const uncompressedDiscography = discography.map(({ thumb, ...record }) => {
-    Object.defineProperty(record, 'thumb', {
-      configurable: false,
-      enumerable: true,
-      get: () => uncompressUrl(thumb, tokens),
-    });
-    return record;
-  });
-  return uncompressedDiscography;
+export const uncompressDiscography = async(discography: string) => {
+  const compressed = Buffer.from(discography, 'binary');
+  const binary = Uint8Array.from(compressed);
+  const decompressed = await new Promise<Uint8Array<ArrayBufferLike>>(
+    (resolve, reject) => {
+      unzlib(binary, (err, data) => {
+        if (err == null) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
+    }
+  );
+  const decoder = new TextDecoder();
+  const decoded = decoder.decode(decompressed);
+  return JSON.parse(decoded) as Discography;
 };

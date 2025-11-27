@@ -4,11 +4,11 @@ import { getCompressedDiscography } from '../Records/Records.utils';
 import Display from './components/Display/Display';
 
 export default async function ROTD() {
-  const {discography: myDiscography, tokens} = await getCompressedDiscography();
+  const myDiscography = await getCompressedDiscography();
 
   return (
     <>
-      <Decompressor discography={myDiscography} tokens={tokens} component={Display} />
+      <Decompressor discography={myDiscography} component={Display} />
       <LastBuild />
     </>
   );
