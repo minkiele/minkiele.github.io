@@ -120,9 +120,11 @@ type Discography = ReturnType<typeof getDiscography> extends Promise<infer R>
   ? R
   : never;
 
+const reverse = <T>(input: Array<T>) => [...input].reverse();
+
 const compressDiscography = (discography: Discography) => {
   const tokens = new TokenStorage();
-  const compressedDiscography = discography.map(({ thumb, ...record }) => ({
+  const compressedDiscography =reverse(discography).map(({ thumb, ...record }) => ({
     ...record,
     thumb: compressUrl(thumb, tokens),
   }));
@@ -137,7 +139,7 @@ export const uncompressDiscography = (
   storedTokens: Array<string>
 ) => {
   const tokens = new TokenStorage(storedTokens);
-  const uncompressedDiscography = discography.map(({ thumb, ...record }) => {
+  const uncompressedDiscography = reverse(discography).map(({ thumb, ...record }) => {
     Object.defineProperty(record, 'thumb', {
       configurable: false,
       enumerable: true,
