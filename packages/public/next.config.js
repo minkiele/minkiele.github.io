@@ -4,8 +4,8 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'export',
   images: {
-    unoptimized: true
-  }
+    unoptimized: true,
+  },
 };
 
 const withMdx = require('@next/mdx')({
@@ -24,11 +24,11 @@ module.exports = async (phase) => {
   if (phase === PHASE_PRODUCTION_BUILD) {
     return {
       ...nextConfigWidthMdx,
-      distDir: '../../docs',
+      distDir: '../../out',
       env: {
         // Every time we build the app invalidate the request for Discogs API
-        NEXT_BUILD_TIMESTAMP: new Date().toISOString()
-      }
+        NEXT_BUILD_TIMESTAMP: new Date().toISOString(),
+      },
     };
   }
   return nextConfigWidthMdx;
