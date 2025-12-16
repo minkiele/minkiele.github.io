@@ -36,9 +36,9 @@ jobs:
       - name: Create .env files
         id: create-dotenv-files
         run: |
-          echo "${{secrets.DISCOGS_TOKEN}}" >> packages/public/.env.local
-          echo "${{vars.NEXT_PUBLIC_ANALYTICS_ID}}" >> packages/public/.env.production.local
-          echo "${{vars.NEXT_PUBLIC_GTM_ID}}" >> packages/public/.env.production.local
+          echo "DISCOGS_TOKEN=${{secrets.DISCOGS_TOKEN}}" >> ./packages/public/.env.local
+          echo "NEXT_PUBLIC_ANALYTICS_ID=${{vars.NEXT_PUBLIC_ANALYTICS_ID}}" >> ./packages/public/.env.production.local
+          echo "NEXT_PUBLIC_GTM_ID=${{vars.NEXT_PUBLIC_GTM_ID}}" >> ./packages/public/.env.production.local
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
