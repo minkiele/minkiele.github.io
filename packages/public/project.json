@@ -14,7 +14,7 @@
         "script": "build"
       },
       "inputs": ["build"],
-      "outputs": ["{projectRoot}/.next", "{workspaceRoot}/docs"],
+      "outputs": ["{projectRoot}/.next", "{workspaceRoot}/out"],
       "dependsOn": ["^build"]
     },
     "dev": {
