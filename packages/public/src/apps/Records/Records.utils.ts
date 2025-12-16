@@ -13,7 +13,7 @@ const getMedium = pipe(map(prop('name')), join(', '));
 
 const fetchDiscographyPage = async (page: number) => {
   const myDiscogsRequest = await fetch(
-    `https://api.discogs.com/users/minkiele/collection/folders/0/releases?token=${process.env.DISCOGS_TOKEN}&page=${page}&sort=added&sort_order=desc#${process.env.DISCOGS_TIMESTAMP}`
+    `https://api.discogs.com/users/minkiele/collection/folders/0/releases?token=${process.env.DISCOGS_TOKEN}&page=${page}&sort=added&sort_order=desc#${process.env.NEXT_BUILD_TIMESTAMP}`
   );
   if (!myDiscogsRequest.ok) {
     throw new Error('Cannot download Discogs releases');
@@ -124,10 +124,12 @@ const reverse = <T>(input: Array<T>) => [...input].reverse();
 
 const compressDiscography = (discography: Discography) => {
   const tokens = new TokenStorage();
-  const compressedDiscography =reverse(discography).map(({ thumb, ...record }) => ({
-    ...record,
-    thumb: compressUrl(thumb, tokens),
-  }));
+  const compressedDiscography = reverse(discography).map(
+    ({ thumb, ...record }) => ({
+      ...record,
+      thumb: compressUrl(thumb, tokens),
+    })
+  );
   return { discography: compressedDiscography, tokens: tokens.getTokens() };
 };
 
@@ -139,13 +141,15 @@ export const uncompressDiscography = (
   storedTokens: Array<string>
 ) => {
   const tokens = new TokenStorage(storedTokens);
-  const uncompressedDiscography = reverse(discography).map(({ thumb, ...record }) => {
-    Object.defineProperty(record, 'thumb', {
-      configurable: false,
-      enumerable: true,
-      get: () => uncompressUrl(thumb, tokens),
-    });
-    return record;
-  });
+  const uncompressedDiscography = reverse(discography).map(
+    ({ thumb, ...record }) => {
+      Object.defineProperty(record, 'thumb', {
+        configurable: false,
+        enumerable: true,
+        get: () => uncompressUrl(thumb, tokens),
+      });
+      return record;
+    }
+  );
   return uncompressedDiscography;
 };
