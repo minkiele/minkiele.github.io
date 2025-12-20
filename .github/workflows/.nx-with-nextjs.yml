@@ -60,7 +60,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build with Next.js
-        run: npx --no-install nx run public:build
+        run: npx --no nx run public:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
