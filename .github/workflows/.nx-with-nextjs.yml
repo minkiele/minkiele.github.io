@@ -49,9 +49,8 @@ jobs:
       - name: Restore cache
         uses: actions/cache@v4
         with:
-          path: |
-            .nx
-            packages/public/.next
+          # .nx cache is invalidated each run so we do not need to store it.
+          path: packages/public/.next
           # Generate a new cache whenever packages or source files change.
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx', '.env') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
