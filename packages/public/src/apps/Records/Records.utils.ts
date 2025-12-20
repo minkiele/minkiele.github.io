@@ -128,6 +128,7 @@ const compressDiscography = (discography: Discography) => {
     ({ thumb, ...record }) => ({
       ...record,
       thumb: compressUrl(thumb, tokens),
+      medium: tokens.getToken(record.medium),
     })
   );
   return { discography: compressedDiscography, tokens: tokens.getTokens() };
@@ -142,11 +143,16 @@ export const uncompressDiscography = (
 ) => {
   const tokens = new TokenStorage(storedTokens);
   const uncompressedDiscography = reverse(discography).map(
-    ({ thumb, ...record }) => {
+    ({ thumb, medium, ...record }) => {
       Object.defineProperty(record, 'thumb', {
         configurable: false,
         enumerable: true,
         get: () => uncompressUrl(thumb, tokens),
+      });
+      Object.defineProperty(record, 'medium', {
+        configurable: false,
+        enumerable: true,
+        get: () => tokens.getString(medium),
       });
       return record;
     }
