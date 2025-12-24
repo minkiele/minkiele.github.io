@@ -55,9 +55,9 @@ export default function Memory({ deck }: MemoryProps) {
   };
 
   useEffect(() => {
-    if(status === W) {
+    if (status === W) {
       event({
-        action: 'memory'
+        action: 'memory',
       });
     }
   }, [status]);
@@ -74,7 +74,9 @@ export default function Memory({ deck }: MemoryProps) {
           const handleFlip = (index: number) => () => {
             flip(index);
           };
-          const yearMedium = [release.year, release.medium].filter(d => d).join(', ');
+          const yearMedium = [release.year, release.medium]
+            .filter((d) => d)
+            .join(', ');
           return (
             <li key={`${release.id}-${index}`} className={styles.list_item}>
               <FlipCard
@@ -112,8 +114,8 @@ export default function Memory({ deck }: MemoryProps) {
                   onToggle={status === W || status === G ? T : undefined}
                 >
                   <span className={styles.recordDescription}>
-                  <strong>{release.artist}</strong>: {release.title} (
-                  {yearMedium})
+                    <strong>{release.artist}</strong>: {release.title} (
+                    {yearMedium})
                   </span>
                 </Toggler>
               )}
@@ -153,10 +155,10 @@ export default function Memory({ deck }: MemoryProps) {
             onClick={handleReset({
               size: 2 * deck.length,
               left: Infinity,
-              wait: 750
+              wait: 750,
             })}
           >
-            New game Avengers
+            New game Avengers ({2 * deck.length} tiles)
           </button>
           <form onSubmit={handleCustomOptions}>
             <label htmlFor="tries">Tries</label>{' '}
