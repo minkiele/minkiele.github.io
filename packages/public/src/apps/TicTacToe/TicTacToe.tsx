@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import {
   ChangeEventHandler,
@@ -153,7 +153,7 @@ const TicTacToe: FunctionComponent = () => {
                       side
                     )} space marked with  ${col.description}`}
                   >
-                    <Emoji>{col.description}</Emoji>
+                    <Emoji>{col.description ?? '🤔'}</Emoji>
                   </span>
                 )}
               </div>
@@ -163,7 +163,8 @@ const TicTacToe: FunctionComponent = () => {
       </div>
       {announce != null && (
         <p role="alert" aria-live="assertive" className="sr-only">
-          PC marked with <Emoji>⭕</Emoji> the {getAriaLabel(...announce, side)} space
+          PC marked with <Emoji>⭕</Emoji> the {getAriaLabel(...announce, side)}{' '}
+          space
         </p>
       )}
       {victoryCoords ? (
@@ -179,7 +180,11 @@ const TicTacToe: FunctionComponent = () => {
       )}
       <fieldset>
         <legend>Settings</legend>
-        Player 1 (<span className={styles.board_sign}><Emoji>❌</Emoji></span>) Vs.{' '}
+        Player 1 (
+        <span className={styles.board_sign}>
+          <Emoji>❌</Emoji>
+        </span>
+        ) Vs.{' '}
         <input
           type="radio"
           name="vspc"
@@ -198,7 +203,10 @@ const TicTacToe: FunctionComponent = () => {
           checked={vsPc}
         />
         <label htmlFor="vspcTrue">PC </label> (
-        <span className={styles.board_sign}><Emoji>⭕</Emoji></span>)
+        <span className={styles.board_sign}>
+          <Emoji>⭕</Emoji>
+        </span>
+        )
         <br />
         <label htmlFor="side">Size of the grid: </label>
         <input
@@ -214,7 +222,10 @@ const TicTacToe: FunctionComponent = () => {
           New match
         </button>{' '}
         <button type="button" onClick={handleResetSign(O)}>
-          New match, but starts <span className={styles.board_sign}><Emoji>⭕</Emoji></span>
+          New match, but starts{' '}
+          <span className={styles.board_sign}>
+            <Emoji>⭕</Emoji>
+          </span>
         </button>
       </fieldset>
     </div>
