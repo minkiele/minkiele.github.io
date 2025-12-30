@@ -20,6 +20,7 @@ import Toggler from '../Toggler/Toggler';
 import { T } from 'ramda';
 import ReadmeMD from '../../README.md';
 import { event } from '@/apps/App/App.analytics';
+import { IdProvider } from '@/hooks/useEnsureId';
 
 export default function Memory({ deck }: MemoryProps) {
   const { status, left, cards, matched, flip, isFlipped, reset } =
@@ -78,48 +79,54 @@ export default function Memory({ deck }: MemoryProps) {
             .filter((d) => d)
             .join(', ');
           return (
-            <li key={`${release.id}-${index}`} className={styles.list_item}>
-              <FlipCard
-                isFlipped={isCardFlipped}
-                className={styles.imageWrapper}
-              >
-                {({ isBack }) => (
-                  <>
-                    {/* I always render the image so I can use the prefetch
+            <IdProvider key={`${release.id}-${index}`}>
+              {({ id }) => (
+                <li className={styles.list_item}>
+                  <FlipCard
+                    isFlipped={isCardFlipped}
+                    className={styles.imageWrapper}
+                  >
+                    {({ isBack }) => (
+                      <>
+                        {/* I always render the image so I can use the prefetch
                   and I show it when the card is flipped */}
-                    <Image
-                      src={release.thumb}
-                      alt="Cover image"
-                      fill
-                      className={classNames(styles.image, {
-                        [styles.image__hidden]: isBack,
-                      })}
-                      priority={index < DEFAULT_SIZE}
-                    />
-                    {isBack && (
-                      <button
-                        type="button"
-                        className={styles.cover}
-                        onClick={handleFlip(index)}
-                      >
-                        <Emoji>😅</Emoji>
-                      </button>
+                        <Image
+                          src={release.thumb}
+                          alt={isCardMatched ? '' : 'Cover image'}
+                          aria-hidden={isBack}
+                          aria-labelledby={isCardMatched ? id : undefined}
+                          fill
+                          className={classNames(styles.image, {
+                            [styles.image__hidden]: isBack,
+                          })}
+                          priority={index < DEFAULT_SIZE}
+                        />
+                        {isBack && (
+                          <button
+                            type="button"
+                            className={styles.cover}
+                            onClick={handleFlip(index)}
+                          >
+                            <Emoji aria-label="Flip the card">😅</Emoji>
+                          </button>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </FlipCard>
-              {isCardMatched && (
-                <Toggler
-                  show={status === W || status === G ? true : undefined}
-                  onToggle={status === W || status === G ? T : undefined}
-                >
-                  <span className={styles.recordDescription}>
-                    <strong>{release.artist}</strong>: {release.title} (
-                    {yearMedium})
-                  </span>
-                </Toggler>
+                  </FlipCard>
+                  {isCardMatched && (
+                    <Toggler
+                      show={status === W || status === G ? true : undefined}
+                      onToggle={status === W || status === G ? T : undefined}
+                    >
+                      <span id={id} className={styles.recordDescription}>
+                        <strong>{release.artist}</strong>: {release.title} (
+                        {yearMedium})
+                      </span>
+                    </Toggler>
+                  )}
+                </li>
               )}
-            </li>
+            </IdProvider>
           );
         })}
       </ol>
