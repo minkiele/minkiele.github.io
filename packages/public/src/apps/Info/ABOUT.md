@@ -59,3 +59,6 @@ I decided to make it permanent.
 Yes, I have another little project published in Github:
 [EnigmaUI](https://minkiele.github.io/EnigmaUI). This is a
 javascript implementation of the Enigma Machine.
+
+And yes it needed a little upgrade since it was deployed in 2016,
+so I rewrote it in modern React, and this is the result: [enigma-ui](https://minkiele.github.io/enigma-ui).

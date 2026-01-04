@@ -57,6 +57,7 @@ const Toggler: FunctionComponent<TogglerProps> = ({
             role="button"
             onClick={handleToggle}
             className={styles.toggler_controlButton}
+            aria-label={toggled ? 'Hide text' : 'Show text'}
           >
             {toggled ? '-' : '+'}
           </span>
