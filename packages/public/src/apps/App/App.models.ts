@@ -8,4 +8,5 @@ export interface LazyRouteComponent {
   prefetch?: boolean;
   order?: number;
   list?: boolean;
+  external?: boolean;
 }

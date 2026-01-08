@@ -137,6 +137,17 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     name: 'The Journal',
     prefetch: false,
   },
+  {
+    route: '/enigma-ui',
+    name: 'EnigmaUI',
+    external: true,
+  },
+  {
+    route: '/EnigmaUI',
+    name: 'EnigmaUI (Legacy Version)',
+    external: true,
+    archived: true,
+  },
 ].sort(sortRoutes);
 
 export const lazyRouteComponents = allLazyRouteComponents.filter(
