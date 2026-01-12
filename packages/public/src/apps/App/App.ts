@@ -8,6 +8,11 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     setTitle: false,
   },
   {
+    route: '/enigma-ui',
+    name: 'EnigmaUI',
+    external: true,
+  },
+  {
     route: '/about',
     name: 'About',
     list: false,
@@ -127,26 +132,20 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     prefetch: false,
   },
   {
-    route: '/archive',
-    name: 'The Archive',
-    prefetch: false,
-    order: 1,
-  },
-  {
     route: '/journal',
     name: 'The Journal',
     prefetch: false,
-  },
-  {
-    route: '/enigma-ui',
-    name: 'EnigmaUI',
-    external: true,
   },
   {
     route: '/EnigmaUI',
     name: 'EnigmaUI (Legacy Version)',
     external: true,
     archived: true,
+  },
+  {
+    route: '/archive',
+    name: 'The Archive',
+    prefetch: false,
   },
 ].sort(sortRoutes);
 
