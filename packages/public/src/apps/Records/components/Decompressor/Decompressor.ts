@@ -10,8 +10,7 @@ type Discography = ReturnType<typeof getDiscography> extends Promise<infer R>
   : never;
 
 interface DecompressorProps<P extends object> {
-  discography: Discography;
-  tokens: Array<string>;
+  discography: Uint8Array<ArrayBuffer>;
   component: ComponentType<P>;
   mapTo?: keyof P;
   otherProps?: P;
@@ -19,14 +18,13 @@ interface DecompressorProps<P extends object> {
 
 const Decompressor = <P extends object>({
   discography,
-  tokens,
   component: Component,
   mapTo,
   otherProps,
 }: DecompressorProps<P>) => {
   const uncompressedDiscography = useMemo(
-    () => uncompressDiscography(discography, tokens),
-    [discography, tokens]
+    () => uncompressDiscography(discography),
+    [discography]
   );
   const props = useMemo(
     () =>
