@@ -13,6 +13,12 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     external: true,
   },
   {
+    route: '/EnigmaUI',
+    name: 'EnigmaUI',
+    external: true,
+    list: false,
+  },
+  {
     route: '/about',
     name: 'About',
     list: false,
