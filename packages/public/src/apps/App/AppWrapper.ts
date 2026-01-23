@@ -1,9 +1,4 @@
-import {
-  Fragment,
-  FunctionComponent,
-  ReactNode,
-  createElement,
-} from 'react';
+import { Fragment, FunctionComponent, ReactNode, createElement } from 'react';
 import { getMetadata, getPageName } from './App.metadata';
 import { Metadata } from 'next';
 
@@ -26,17 +21,7 @@ const AppWrapper: FunctionComponent<AppWrapperProps> = ({
   );
 };
 
-export const getAppAndMetadata = (
-  route: string,
-  App: FunctionComponent
-): { metadata: Metadata; App: FunctionComponent } => ({
-  metadata: getMetadata(route),
-  App: async function InternalAppWrapper() {
-    return createElement(AppWrapper, { route }, createElement(App));
-  },
-});
-
-export const getDynamicAppAndMetadata = <P extends {}>(
+export const getAppAndMetadata = <P extends {}>(
   route: string,
   App: FunctionComponent<P>
 ): { metadata: Metadata; App: FunctionComponent<P> } => ({

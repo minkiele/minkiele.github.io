@@ -1,14 +1,13 @@
-import { getDynamicAppAndMetadata } from '@/apps/App/AppWrapper';
+import { getAppAndMetadata } from '@/apps/App/AppWrapper';
 import BaseEntry from '@/apps/Journal/Entry/Entry';
 import entries, { JournalEntry } from '@/apps/Journal/entries';
 import { map, pick } from 'ramda';
 
-const getEntries = map<JournalEntry, Pick<JournalEntry, 'entry'>>(pick(['entry']));
+const getEntries = map<JournalEntry, Pick<JournalEntry, 'entry'>>(
+  pick(['entry'])
+);
 
-const {
-  metadata,
-  App: Entry,
-} = getDynamicAppAndMetadata('/journal', BaseEntry);
+const { metadata, App: Entry } = getAppAndMetadata('/journal', BaseEntry);
 export default Entry;
 
 export const dynamic = 'force-static';
