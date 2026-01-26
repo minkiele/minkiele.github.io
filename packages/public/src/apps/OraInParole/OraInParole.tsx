@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
 import { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { pronunciaDataOra } from '../../lib/EnunciateNumbers';
-import OraInParoleMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 
 interface Orora {
   now?: Date;
@@ -13,12 +13,12 @@ const orora = () => {
   const now = new Date();
   return {
     now,
-    time: pronunciaDataOra(now)
+    time: pronunciaDataOra(now),
   };
 };
 
 const OraInParole: FunctionComponent = () => {
-  const [{time: oraInParole, now }, setOraInParole] = useState<Orora>({});
+  const [{ time: oraInParole, now }, setOraInParole] = useState<Orora>({});
 
   useEffect(() => {
     setOraInParole(orora());
@@ -31,14 +31,9 @@ const OraInParole: FunctionComponent = () => {
   }, []);
 
   // Announce time every 30s
-  const ariaLive = useMemo(() =>(now?.getSeconds() ?? 1) % 30 === 0, [now]);
+  const ariaLive = useMemo(() => (now?.getSeconds() ?? 1) % 30 === 0, [now]);
 
-  return (
-    <div>
-      <OraInParoleMd />
-      <h2 aria-live={ariaLive ? 'polite' : 'off'}>{oraInParole}</h2>
-    </div>
-  );
+  return <h2 aria-live={ariaLive ? 'polite' : 'off'}>{oraInParole}</h2>;
 };
 
 export default OraInParole;

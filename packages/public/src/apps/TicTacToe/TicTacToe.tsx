@@ -8,7 +8,7 @@ import {
   useMemo,
 } from 'react';
 import styles from './TicTacToe.module.scss';
-import TicTacToeMD from './README.md';
+export { default as ReadmeMd } from './README.md';
 import classNames from 'classnames';
 import {
   getAriaLabel,
@@ -115,8 +115,7 @@ const TicTacToe: FunctionComponent = () => {
   );
 
   return (
-    <div>
-      <TicTacToeMD />
+    <>
       <div className={styles.board}>
         {matrix.map((row, rowIndex) => (
           <div key={`row-${rowIndex}`} className={styles.board_row}>
@@ -228,7 +227,7 @@ const TicTacToe: FunctionComponent = () => {
           </span>
         </button>
       </fieldset>
-    </div>
+    </>
   );
 };
 

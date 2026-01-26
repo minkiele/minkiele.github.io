@@ -1,5 +1,8 @@
 import { getAppAndMetadata } from '@/apps/App/AppWrapper';
 import BaseRecords from '@/apps/Records/Records';
-const { metadata, App: Records } = getAppAndMetadata('/records', BaseRecords);
+import ReadmeMd from '@/apps/Records/Readme';
+const { metadata, App: Records } = getAppAndMetadata('/records', BaseRecords, {
+  readme: ReadmeMd,
+});
 export default Records;
 export { metadata };

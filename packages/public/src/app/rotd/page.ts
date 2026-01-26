@@ -1,5 +1,8 @@
 import { getAppAndMetadata } from '@/apps/App/AppWrapper';
 import BaseROTD from '@/apps/ROTD/ROTD';
-const { metadata, App: ROTD } = getAppAndMetadata('/rotd', BaseROTD);
+import ReadmeMd from '@/apps/ROTD/Readme';
+const { metadata, App: ROTD } = getAppAndMetadata('/rotd', BaseROTD, {
+  readme: ReadmeMd,
+});
 export default ROTD;
 export { metadata };

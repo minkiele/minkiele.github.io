@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import classNames from 'classnames';
 import {
@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 import styles from './TwentyFourClock.module.scss';
-import TwentyFourClockMD from './README.md';
+export { default as ReadmeMd } from './README.md';
 
 const getBit = (digit: number, bit: number = 0): boolean =>
   ((digit >> bit) & 1) === 1;
@@ -284,8 +284,7 @@ const TwentyFourClock: FunctionComponent = () => {
     };
 
   return (
-    <div>
-      <TwentyFourClockMD />
+    <>
       <div className={styles.clock}>
         <HourDigit digit={H1} />
         <Digit digit={H0} />
@@ -317,7 +316,7 @@ const TwentyFourClock: FunctionComponent = () => {
         />
         <label htmlFor="autoplayOff">It kinda upsets me.</label>
       </fieldset>
-    </div>
+    </>
   );
 };
 

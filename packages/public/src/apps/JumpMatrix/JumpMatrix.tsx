@@ -1,10 +1,10 @@
-"use client"
+'use client';
 
 import classNames from 'classnames';
 import { FunctionComponent, useEffect, useState } from 'react';
 import { JumpMatrix as JumpMatrixLogic } from '../../lib/JumpMatrix';
 import styles from './JumpMatrix.module.scss';
-import JumpMatrixMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 
 interface JumpMatrixState {
   matrix: JumpMatrixLogic;
@@ -58,40 +58,42 @@ const JumpMatrix: FunctionComponent = () => {
   };
 
   return (
-    <div>
-      <JumpMatrixMd />
+    <>
       <h3>Facts</h3>
-      {moves != null && tries != null && matrix != null && <>
-      <dl>
-        <dt>Total tries:</dt>
-        <dd>{tries}</dd>
-        <dt>Average moves:</dt>
-        <dd>{moves / tries}</dd>
-      </dl>
-      <table>
-        <tbody>
-          {matrix.getMatrix().map((row, index) => (
-            <tr key={`${row.toString()}-${index}`}>
-              {row.map((col, colIndex) => (
-                <td
-                  key={`${col}-${colIndex}`}
-                  className={classNames({
-                    [styles.cell]: true,
-                    [styles.cell__visible]: visible,
-                  })}
-                  data-c={col}>
-                  {col}
-                </td>
+      {moves != null && tries != null && matrix != null && (
+        <>
+          <dl>
+            <dt>Total tries:</dt>
+            <dd>{tries}</dd>
+            <dt>Average moves:</dt>
+            <dd>{moves / tries}</dd>
+          </dl>
+          <table>
+            <tbody>
+              {matrix.getMatrix().map((row, index) => (
+                <tr key={`${row.toString()}-${index}`}>
+                  {row.map((col, colIndex) => (
+                    <td
+                      key={`${col}-${colIndex}`}
+                      className={classNames({
+                        [styles.cell]: true,
+                        [styles.cell__visible]: visible,
+                      })}
+                      data-c={col}
+                    >
+                      {col}
+                    </td>
+                  ))}
+                </tr>
               ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </>}
+            </tbody>
+          </table>
+        </>
+      )}
       <p>
         <button onClick={handleUpdate}>More magic please</button>
       </p>
-    </div>
+    </>
   );
 };
 

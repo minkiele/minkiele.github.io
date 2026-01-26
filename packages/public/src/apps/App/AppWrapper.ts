@@ -1,6 +1,13 @@
-import { Fragment, FunctionComponent, ReactNode, createElement } from 'react';
+import {
+  ComponentType,
+  Fragment,
+  FunctionComponent,
+  ReactNode,
+  createElement,
+} from 'react';
 import { getMetadata, getPageName } from './App.metadata';
 import { Metadata } from 'next';
+import AppStructure from './AppStructure';
 
 interface AppWrapperProps {
   route: string;
@@ -24,16 +31,26 @@ const AppWrapper: FunctionComponent<AppWrapperProps> = ({
 export const getAppAndMetadata = <P extends {}>(
   route: string,
   App: FunctionComponent<P>,
-  isAsync = false
-): { metadata: Metadata; App: FunctionComponent<P> } => ({
-  metadata: getMetadata(route),
-  App: async function InternalAppWrapper(props: P) {
-    return createElement(
-      AppWrapper,
-      { route },
-      createElement(App, isAsync ? { ...props } : undefined)
-    );
-  },
-});
+  options?: {
+    isAsync?: boolean;
+    readme?: ComponentType;
+  }
+): { metadata: Metadata; App: FunctionComponent<P> } => {
+  const isAsync = options?.isAsync ?? false;
+  const readme = options?.readme;
+  return {
+    metadata: getMetadata(route),
+    App: async function InternalAppWrapper(props: P) {
+      const appChild = createElement(App, isAsync ? { ...props } : undefined);
+      return createElement(
+        AppWrapper,
+        { route },
+        readme == null
+          ? appChild
+          : createElement(AppStructure, { readme }, appChild)
+      );
+    },
+  };
+};
 
 export default AppWrapper;

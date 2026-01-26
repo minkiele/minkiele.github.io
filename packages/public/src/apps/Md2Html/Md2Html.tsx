@@ -6,7 +6,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-dom-stringify';
 import { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import styles from './Md2Html.module.scss';
-import Md2HtmlMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 import kebabCase from 'lodash.kebabcase';
 
 const serializer = (output: string) =>
@@ -76,8 +76,7 @@ const Md2Html = () => {
   };
 
   return (
-    <div>
-      <Md2HtmlMd />
+    <>
       <div className={styles.container}>
         <div className={styles.column}>
           <label htmlFor="input">Markdown</label>
@@ -107,7 +106,7 @@ const Md2Html = () => {
           <input id="kebab" type="text" value={kebab} />
         </fieldset>
       </div>
-    </div>
+    </>
   );
 };
 

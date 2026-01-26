@@ -1,13 +1,29 @@
-import { LazyRouteComponent } from "./App.models";
+import { ReactNode } from 'react';
+import { LazyRouteComponent } from './App.models';
 
-export const sortRoutes = (a: LazyRouteComponent, b: LazyRouteComponent): number => {
-    if(a.order == null && b.order == null) {
-      return 0;
-    } else if(a.order == null) {
-      return -1;
-    } else if(b.order == null) {
-      return 1;
-    } else {
-      return a.order - b.order;
-    }
+export const sortRoutes = (
+  a: LazyRouteComponent,
+  b: LazyRouteComponent
+): number => {
+  if (a.order == null && b.order == null) {
+    return 0;
+  } else if (a.order == null) {
+    return -1;
+  } else if (b.order == null) {
+    return 1;
+  } else {
+    return a.order - b.order;
   }
+};
+
+export const isVisibleChildren = (input: ReactNode) => {
+  if (input == null) {
+    return false;
+  } else if (input instanceof Array) {
+    return input.length > 0;
+  } else if (typeof input === 'boolean') {
+    return false;
+  } else {
+    return true;
+  }
+};

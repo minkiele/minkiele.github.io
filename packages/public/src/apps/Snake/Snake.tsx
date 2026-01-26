@@ -1,11 +1,19 @@
-"use client"
+'use client';
 
 import classNames from 'classnames';
 import { thunkify } from 'ramda';
-import { ChangeEventHandler, FunctionComponent, memo, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEventHandler,
+  FunctionComponent,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { SnakeGame, SnakeGameCoords } from './Snake.lib';
 import styles from './Snake.module.scss';
-import SnakeMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 import { getCellStyle, getSortedSnake } from './Snake.utils';
 import Emoji from '../App/components/Emoji/Emoji';
 import { event } from '../App/App.analytics';
@@ -15,16 +23,19 @@ interface SnakeTileProps {
   className?: string;
 }
 
-const SnakeTile: FunctionComponent<SnakeTileProps> = memo(({ tile, className }) => (
-  <div
-    className={classNames({
-      [styles.cell]: true,
-      [className as string]: className,
-    })}
-    style={getCellStyle(tile)}>
-    &nbsp;
-  </div>
-));
+const SnakeTile: FunctionComponent<SnakeTileProps> = memo(
+  ({ tile, className }) => (
+    <div
+      className={classNames({
+        [styles.cell]: true,
+        [className as string]: className,
+      })}
+      style={getCellStyle(tile)}
+    >
+      &nbsp;
+    </div>
+  )
+);
 
 SnakeTile.displayName = 'SnakeTile';
 
@@ -54,8 +65,11 @@ const Snake: FunctionComponent = () => {
     const handleKeyDown = (evt: KeyboardEvent) => {
       evt.preventDefault();
       const gameStatus = snakeGame.current.getStatus();
-      const isWaiting = gameStatus === SnakeGame.STATUS.IDLE || gameStatus === SnakeGame.STATUS.PAUSE;
-      const isGameNotEnded = isWaiting || gameStatus === SnakeGame.STATUS.RUNNING;
+      const isWaiting =
+        gameStatus === SnakeGame.STATUS.IDLE ||
+        gameStatus === SnakeGame.STATUS.PAUSE;
+      const isGameNotEnded =
+        isWaiting || gameStatus === SnakeGame.STATUS.RUNNING;
       switch (evt.key) {
         case 'ArrowUp':
         case 'w': {
@@ -140,20 +154,22 @@ const Snake: FunctionComponent = () => {
       document.querySelector('html')?.classList.remove(styles.stopScrolling);
     }
 
-    if(status === SnakeGame.STATUS.OVER || status === SnakeGame.STATUS.COMPLETE) {
+    if (
+      status === SnakeGame.STATUS.OVER ||
+      status === SnakeGame.STATUS.COMPLETE
+    ) {
       event({
         action: 'snake',
-        label: 'over'
+        label: 'over',
       });
     }
 
-    if(status === SnakeGame.STATUS.COMPLETE) {
+    if (status === SnakeGame.STATUS.COMPLETE) {
       event({
         action: 'snake',
-        label: 'complete'
+        label: 'complete',
       });
     }
-
   }, [status]);
 
   const handleSetSpeed: ChangeEventHandler<HTMLInputElement> = (evt) => {
@@ -173,8 +189,11 @@ const Snake: FunctionComponent = () => {
   const handleGamepadThunk = useCallback(
     thunkify((direction: symbol) => {
       const gameStatus = snakeGame.current.getStatus();
-      const isWaiting = gameStatus === SnakeGame.STATUS.IDLE || gameStatus === SnakeGame.STATUS.PAUSE;
-      const isGameNotEnded = isWaiting || gameStatus === SnakeGame.STATUS.RUNNING;
+      const isWaiting =
+        gameStatus === SnakeGame.STATUS.IDLE ||
+        gameStatus === SnakeGame.STATUS.PAUSE;
+      const isGameNotEnded =
+        isWaiting || gameStatus === SnakeGame.STATUS.RUNNING;
       if (isGameNotEnded) {
         snakeGame.current.setDirection(direction);
       }
@@ -186,17 +205,23 @@ const Snake: FunctionComponent = () => {
   );
 
   return (
-    <div>
-      <SnakeMd />
+    <>
       <div
         className={classNames({
           [styles.board]: true,
           [styles.board__noWalls]: !hasWalls,
-        })}>
+        })}
+      >
         {snake?.map((tile) => (
-          <SnakeTile tile={tile} className={styles.cell__snake} key={`tile-x-${tile.x}-y-${tile.y}`} />
+          <SnakeTile
+            tile={tile}
+            className={styles.cell__snake}
+            key={`tile-x-${tile.x}-y-${tile.y}`}
+          />
         ))}
-        {apple != null && <SnakeTile tile={apple} className={styles.cell__apple} />}
+        {apple != null && (
+          <SnakeTile tile={apple} className={styles.cell__apple} />
+        )}
       </div>
       <div>
         {status === SnakeGame.STATUS.IDLE && <p>Insert coin to play...</p>}
@@ -210,30 +235,48 @@ const Snake: FunctionComponent = () => {
             <strong>And that&#39;s how it&#39;s done.</strong>
           </p>
         )}
-        {status === SnakeGame.STATUS.PAUSE && <p>Do your thing, I&#39;ll wait here...</p>}
+        {status === SnakeGame.STATUS.PAUSE && (
+          <p>Do your thing, I&#39;ll wait here...</p>
+        )}
         {status === SnakeGame.STATUS.RUNNING && <p>Run Forrest, Run!</p>}
       </div>
       <div className={styles.gamepad}>
         <div className={styles.gamepad_row}>
           <div className={styles.gamepad_col}>
-            <button className={styles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.U)} aria-label="Up">
+            <button
+              className={styles.gamepad_button}
+              onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.U)}
+              aria-label="Up"
+            >
               <Emoji>⬆️</Emoji>
             </button>
           </div>
           <div className={styles.gamepad_col}>
-            <button className={styles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.R)} aria-label="Right">
+            <button
+              className={styles.gamepad_button}
+              onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.R)}
+              aria-label="Right"
+            >
               <Emoji>➡️</Emoji>
             </button>
           </div>
         </div>
         <div className={styles.gamepad_row}>
           <div className={styles.gamepad_col}>
-            <button className={styles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.L)} aria-label="Left">
+            <button
+              className={styles.gamepad_button}
+              onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.L)}
+              aria-label="Left"
+            >
               <Emoji>⬅️</Emoji>
             </button>
           </div>
           <div className={styles.gamepad_col}>
-            <button className={styles.gamepad_button} onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.D)} aria-label="Down">
+            <button
+              className={styles.gamepad_button}
+              onMouseDown={handleGamepadThunk(SnakeGame.DIRECTION.D)}
+              aria-label="Down"
+            >
               <Emoji>⬇️</Emoji>
             </button>
           </div>
@@ -242,15 +285,28 @@ const Snake: FunctionComponent = () => {
       <div>
         <fieldset>
           <legend>Settings</legend>
-          <label htmlFor="speed">Speed:</label> <input id="speed" type="number" onChange={handleSetSpeed} value={speed} />{' '}
-          <input id="hasWalls" name="hasWalls" checked={hasWalls} onChange={handleSetWalls} type="checkbox" value="hasWalls" />{' '}
+          <label htmlFor="speed">Speed:</label>{' '}
+          <input
+            id="speed"
+            type="number"
+            onChange={handleSetSpeed}
+            value={speed}
+          />{' '}
+          <input
+            id="hasWalls"
+            name="hasWalls"
+            checked={hasWalls}
+            onChange={handleSetWalls}
+            type="checkbox"
+            value="hasWalls"
+          />{' '}
           <label htmlFor="hasWalls">Has walls</label>{' '}
           <button type="button" onClick={handleReset}>
             Reset
           </button>
         </fieldset>
       </div>
-    </div>
+    </>
   );
 };
 

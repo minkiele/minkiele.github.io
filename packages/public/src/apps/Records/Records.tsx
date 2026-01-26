@@ -7,9 +7,14 @@ export default async function Records() {
   const { discography, tokens } = await getCompressedDiscography();
 
   return (
-    <div>
-      <Decompressor discography={discography} tokens={tokens} component={Memory} mapTo='deck' />
+    <>
+      <Decompressor
+        discography={discography}
+        tokens={tokens}
+        component={Memory}
+        mapTo="deck"
+      />
       <LastBuild />
-    </div>
+    </>
   );
 }

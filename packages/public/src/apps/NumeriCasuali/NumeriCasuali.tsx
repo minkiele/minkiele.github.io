@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
 import { FunctionComponent, useEffect, useState } from 'react';
 import { pronunciaNumero } from '../../lib/EnunciateNumbers';
-import NumeriCasualiMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 
 const NUMBER_LENGTH = 32;
 
@@ -43,13 +43,14 @@ const NumeriCasuali: FunctionComponent = () => {
   }, []);
 
   return (
-    <div>
-      <NumeriCasualiMd />
-      {numeroCasuale != null && <h2>
-        {numeroCasuale.aParole} (<small>{numeroCasuale.inNumero}</small>)
-      </h2>}
+    <>
+      {numeroCasuale != null && (
+        <h2>
+          {numeroCasuale.aParole} (<small>{numeroCasuale.inNumero}</small>)
+        </h2>
+      )}
       <button onClick={handleNextRandom}>Prossimo numero</button>
-    </div>
+    </>
   );
 };
 

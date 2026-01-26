@@ -1,11 +1,7 @@
 'use client';
 
-import {
-  DiscographyEntry,
-  useRotd,
-} from './Display.utils';
+import { DiscographyEntry, useRotd } from './Display.utils';
 import Image from 'next/image';
-import ROTDMD from '../../README.md';
 import styles from './Display.module.scss';
 
 interface DisplayProps {
@@ -13,16 +9,14 @@ interface DisplayProps {
 }
 
 export default function Display({ discography }: DisplayProps) {
-
   const rotd = useRotd(discography);
 
   return (
-    <div>
-      <ROTDMD />
+    <>
       {rotd == null ? (
         'Loading...'
       ) : (
-        <div>
+        <>
           <h2>
             {rotd.artist} - {rotd.title}
             {rotd.year > 0 && <> ({rotd.year})</>}
@@ -35,8 +29,8 @@ export default function Display({ discography }: DisplayProps) {
             className={styles.cover}
           />
           <p>Available on {rotd.medium}</p>
-        </div>
+        </>
       )}
-    </div>
+    </>
   );
 }

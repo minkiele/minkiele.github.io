@@ -14,7 +14,8 @@ export interface ClockData extends ClockRelativeSize {
   fullHour: number;
 }
 
-const isLeapYear = (year: number): boolean => year % 4 === 0 && (year % 100 !== 0 || year % 4000 === 0);
+const isLeapYear = (year: number): boolean =>
+  year % 4 === 0 && (year % 100 !== 0 || year % 4000 === 0);
 
 const getDaysInMonth = (month: number, year: number): number => {
   switch (month) {
@@ -30,12 +31,17 @@ const getDaysInMonth = (month: number, year: number): number => {
   }
 };
 const getDaySize = (day: number): number => (((day + 6) % 7) + 1) / 7;
-const getDateSize = (day: number, month: number, year: number): number => day / getDaysInMonth(month, year);
+const getDateSize = (day: number, month: number, year: number): number =>
+  day / getDaysInMonth(month, year);
 const getMonthSize = (month: number): number => (month + 1) / 12;
 const getHourSize = (hour: number): number => hour / 24;
 const getMinuteSize = (minute: number): number => minute / 60;
 
-export const getDayOfYear = (date: number, month: number, year: number): number => {
+export const getDayOfYear = (
+  date: number,
+  month: number,
+  year: number
+): number => {
   let output = date;
   for (let m = 0; m < month; m += 1) {
     output += getDaysInMonth(m, year);
@@ -65,4 +71,25 @@ export const getGetCircleSize = (size: number): CSSProperties => {
   };
 };
 
-export const CIRCLES: Array<keyof ClockRelativeSize> = ['day', 'date', 'month', 'hour', 'minute', 'second'];
+export const CIRCLES: Array<keyof ClockRelativeSize> = [
+  'day',
+  'date',
+  'month',
+  'hour',
+  'minute',
+  'second',
+];
+
+export const getDoy = (
+  circle: keyof ClockRelativeSize,
+  doy?: number
+): number | undefined =>
+  circle === 'date' || circle === 'day' || circle === 'month' ? doy : undefined;
+
+export const getHour = (
+  circle: keyof ClockRelativeSize,
+  hour?: number
+): number | undefined =>
+  circle === 'hour' || circle === 'minute' || circle === 'second'
+    ? hour
+    : undefined;

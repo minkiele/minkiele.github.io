@@ -1,8 +1,17 @@
-"use client"
+'use client';
 
 import { repeat, times, xor } from 'ramda';
-import { ChangeEvent, ChangeEventHandler, FormEventHandler, KeyboardEventHandler, MouseEventHandler, useEffect, useMemo, useRef } from 'react';
-import CruciverbaMd from './README.md';
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  FormEventHandler,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
+export { default as ReadmeMd } from './README.md';
 import styles from './Cruciverba.module.scss';
 import classNames from 'classnames';
 import { createStore, useStore } from 'zustand';
@@ -28,7 +37,6 @@ const CORNICI_COLS = 13;
 const CORNICI_SHOW_DEFS = false;
 const CORNICI_SHOW_NUMBERS = false;
 
-
 type ReducerState = {
   matrix: Array<Array<string | null>>;
   definitions: Array<Definition>;
@@ -39,47 +47,51 @@ type ReducerState = {
   direction: string;
 };
 
-type ReducerSimpleAction = 'setIncrociObbligatiMode' | 'setRicercaMode' | 'wipe' | 'setCorniciConcentricheMode';
+type ReducerSimpleAction =
+  | 'setIncrociObbligatiMode'
+  | 'setRicercaMode'
+  | 'wipe'
+  | 'setCorniciConcentricheMode';
 
 type ReducerAction =
   | {
-    type: 'setValue';
-    row: number;
-    col: number;
-    value: string;
-  }
+      type: 'setValue';
+      row: number;
+      col: number;
+      value: string;
+    }
   | {
-    type: 'toggleBlack';
-    row: number;
-    col: number;
-  }
+      type: 'toggleBlack';
+      row: number;
+      col: number;
+    }
   | {
-    type: 'setSize';
-    rows: number;
-    cols: number;
-  }
+      type: 'setSize';
+      rows: number;
+      cols: number;
+    }
   | {
-    type: 'setDefinition';
-    horizontalDefinition: string;
-    verticalDefinition: string;
-    row: number;
-    col: number;
-  }
+      type: 'setDefinition';
+      horizontalDefinition: string;
+      verticalDefinition: string;
+      row: number;
+      col: number;
+    }
   | {
-    type: 'setShowDefs';
-    showDefs: boolean;
-  }
+      type: 'setShowDefs';
+      showDefs: boolean;
+    }
   | {
-    type: 'setShowNumbers';
-    showNumbers: boolean;
-  }
+      type: 'setShowNumbers';
+      showNumbers: boolean;
+    }
   | {
-    type: 'setDirection';
-    direction: 'H' | 'V';
-  }
+      type: 'setDirection';
+      direction: 'H' | 'V';
+    }
   | {
-    type: ReducerSimpleAction;
-  };
+      type: ReducerSimpleAction;
+    };
 
 interface Definition {
   order: number;
@@ -91,26 +103,38 @@ interface Definition {
   verticalDefinition: string;
 }
 
-const shouldBeBlack = (row: number, col: number, matrix: ReducerState['matrix']) => {
+const shouldBeBlack = (
+  row: number,
+  col: number,
+  matrix: ReducerState['matrix']
+) => {
   if (matrix[row][col] == null) {
     return true;
   }
   const isPreviousRowBlack = row === 0 ? true : matrix[row - 1][col] == null;
   const isPreviousColBlack = col === 0 ? true : matrix[row][col - 1] == null;
-  const isNextRowBlack = row === matrix.length - 1 ? true : matrix[row + 1][col] == null;
-  const isNextColBlack = col === matrix[row].length - 1 ? true : matrix[row][col + 1] == null;
-  return isPreviousRowBlack && isPreviousColBlack && isNextRowBlack && isNextColBlack;
+  const isNextRowBlack =
+    row === matrix.length - 1 ? true : matrix[row + 1][col] == null;
+  const isNextColBlack =
+    col === matrix[row].length - 1 ? true : matrix[row][col + 1] == null;
+  return (
+    isPreviousRowBlack && isPreviousColBlack && isNextRowBlack && isNextColBlack
+  );
 };
 
-const getDefinitions = (matrix: Array<Array<string | null>>): Array<Definition> => {
+const getDefinitions = (
+  matrix: Array<Array<string | null>>
+): Array<Definition> => {
   const definitions: Array<Definition> = [];
   for (let i = 0; i < matrix.length; i += 1) {
     for (let j = 0; j < matrix[i].length; j += 1) {
       if (matrix[i][j] != null) {
         const isPreviousRowBlack = i === 0 ? true : matrix[i - 1][j] == null;
         const isPreviousColBlack = j === 0 ? true : matrix[i][j - 1] == null;
-        const hasOneFreeRowAfter = i < matrix.length - 1 ? matrix[i + 1][j] != null : false;
-        const hasOneFreeColAfter = j < matrix[i].length - 1 ? matrix[i][j + 1] != null : false;
+        const hasOneFreeRowAfter =
+          i < matrix.length - 1 ? matrix[i + 1][j] != null : false;
+        const hasOneFreeColAfter =
+          j < matrix[i].length - 1 ? matrix[i][j + 1] != null : false;
         const isVertical = isPreviousRowBlack && hasOneFreeRowAfter;
         const isHorizontal = isPreviousColBlack && hasOneFreeColAfter;
         if (isHorizontal || isVertical) {
@@ -130,7 +154,10 @@ const getDefinitions = (matrix: Array<Array<string | null>>): Array<Definition> 
   return definitions;
 };
 
-const dumpMatrix = (fromMatrix: ReducerState['matrix'], toMatrix: ReducerState['matrix']) => {
+const dumpMatrix = (
+  fromMatrix: ReducerState['matrix'],
+  toMatrix: ReducerState['matrix']
+) => {
   for (let i = 0; i < toMatrix.length; i += 1) {
     for (let j = 0; j < toMatrix[i].length; j += 1) {
       if (i < fromMatrix.length && j < fromMatrix[i].length) {
@@ -138,9 +165,23 @@ const dumpMatrix = (fromMatrix: ReducerState['matrix'], toMatrix: ReducerState['
       }
     }
   }
-}
+};
 
-const initReducer = ({ rows, cols, showDefs = true, showNumbers = true, direction = 'H', oldState }: { rows: number; cols: number; showDefs?: boolean, showNumbers?: boolean, direction?: 'H' | 'V', oldState?: ReducerState }) => {
+const initReducer = ({
+  rows,
+  cols,
+  showDefs = true,
+  showNumbers = true,
+  direction = 'H',
+  oldState,
+}: {
+  rows: number;
+  cols: number;
+  showDefs?: boolean;
+  showNumbers?: boolean;
+  direction?: 'H' | 'V';
+  oldState?: ReducerState;
+}) => {
   const matrix = times(() => repeat('', cols), rows);
   let definitions: Array<Definition>;
   if (oldState == null) {
@@ -169,118 +210,145 @@ const isGreyRow = (
           currentRow < CORNICI_ROWS - (CORNICI_COLS - currentCol - 1)))));
 
 type ZuReducerAction = {
-  [K in ReducerAction['type']]: keyof Omit<ReducerAction & { type: K }, 'type'> extends never ? () => void : (action: Omit<ReducerAction & { type: K }, 'type'>) => void;
+  [K in ReducerAction['type']]: keyof Omit<
+    ReducerAction & { type: K },
+    'type'
+  > extends never
+    ? () => void
+    : (action: Omit<ReducerAction & { type: K }, 'type'>) => void;
 };
 
 type ZuState = ReducerState & ZuReducerAction;
 
-const store = createStore<ZuState>()(immer((set) => ({
-  ...initReducer({
-    rows: DEFAULT_ROWS,
-    cols: DEFAULT_COLS,
-    showDefs: DEFAULT_SHOW_DEFS,
-    showNumbers: DEFAULT_SHOW_NUMBERS,
-    direction: 'H'
-  }),
-  setValue: (action) => {
-    set((state) => {
-      state.matrix[action.row][action.col] = action.value;
-    })
-  },
-  toggleBlack: (action) => {
-    set((state) => {
-      state.matrix[action.row][action.col] = state.matrix[action.row][action.col] == null ? '' : null;
-      state.definitions = getDefinitions(state.matrix);
-    });
-  },
-  setSize: (action) => {
-    set((state) => initReducer({
-      rows: action.rows,
-      cols: action.cols,
-      showDefs: state.showDefs,
-      showNumbers: state.showNumbers,
-      oldState: state
-    }));
-  },
-  setDefinition: (action) => {
-    set((state) => {
-      state.definitions.forEach((definition) => {
-        if(definition.row === action.row && definition.col === action.col) {
-          definition.horizontalDefinition = action.horizontalDefinition;
-          definition.verticalDefinition = action.verticalDefinition;
-        }
-      })
-    });
-  },
-  setShowDefs: (action) => {
-    set((state) => {
-      state.showDefs = action.showDefs;
-    });
-  },
-  setShowNumbers: (action) => {
-    set((state) => {
-      state.showNumbers = action.showNumbers;
-    });
-  },
-  setIncrociObbligatiMode: () => {
-    set(initReducer({
-      rows: INCROCI_OBBLIGATI_ROWS,
-      cols: INCROCI_OBBLIGATI_COLS,
-      showDefs: INCROCI_OBBLIGATI_SHOW_DEFS,
-      showNumbers: INCROCI_OBBLIGATI_SHOW_NUMBERS,
-    }));
-  },
-  setRicercaMode: () => {
-    const newState = initReducer({
-      rows: RICERCA_ROWS,
-      cols: RICERCA_COLS,
-      showDefs: RICERCA_SHOW_DEFS,
-      showNumbers: RICERCA_SHOW_NUMBERS,
-    });
-    // First 3 cells usually are marked black
-    for (let i = 0; i < 3; i += 1) {
-      (newState.matrix as ReducerState['matrix'])[0][i] = null;
-    }
-    set({
-      ...newState,
-      definitions: getDefinitions(newState.matrix)
-    });
-  },
-  wipe: () => {
-    set((state) => initReducer({
-      rows: state.rows,
-      cols: state.cols,
-      showDefs: state.showDefs,
-      showNumbers: state.showNumbers,
-      oldState: {
-        ...state,
-        matrix: state.matrix.map((row) => row.map((col) => col == null ? null : '')),
-        definitions: getDefinitions(state.matrix)
+const store = createStore<ZuState>()(
+  immer((set) => ({
+    ...initReducer({
+      rows: DEFAULT_ROWS,
+      cols: DEFAULT_COLS,
+      showDefs: DEFAULT_SHOW_DEFS,
+      showNumbers: DEFAULT_SHOW_NUMBERS,
+      direction: 'H',
+    }),
+    setValue: (action) => {
+      set((state) => {
+        state.matrix[action.row][action.col] = action.value;
+      });
+    },
+    toggleBlack: (action) => {
+      set((state) => {
+        state.matrix[action.row][action.col] =
+          state.matrix[action.row][action.col] == null ? '' : null;
+        state.definitions = getDefinitions(state.matrix);
+      });
+    },
+    setSize: (action) => {
+      set((state) =>
+        initReducer({
+          rows: action.rows,
+          cols: action.cols,
+          showDefs: state.showDefs,
+          showNumbers: state.showNumbers,
+          oldState: state,
+        })
+      );
+    },
+    setDefinition: (action) => {
+      set((state) => {
+        state.definitions.forEach((definition) => {
+          if (definition.row === action.row && definition.col === action.col) {
+            definition.horizontalDefinition = action.horizontalDefinition;
+            definition.verticalDefinition = action.verticalDefinition;
+          }
+        });
+      });
+    },
+    setShowDefs: (action) => {
+      set((state) => {
+        state.showDefs = action.showDefs;
+      });
+    },
+    setShowNumbers: (action) => {
+      set((state) => {
+        state.showNumbers = action.showNumbers;
+      });
+    },
+    setIncrociObbligatiMode: () => {
+      set(
+        initReducer({
+          rows: INCROCI_OBBLIGATI_ROWS,
+          cols: INCROCI_OBBLIGATI_COLS,
+          showDefs: INCROCI_OBBLIGATI_SHOW_DEFS,
+          showNumbers: INCROCI_OBBLIGATI_SHOW_NUMBERS,
+        })
+      );
+    },
+    setRicercaMode: () => {
+      const newState = initReducer({
+        rows: RICERCA_ROWS,
+        cols: RICERCA_COLS,
+        showDefs: RICERCA_SHOW_DEFS,
+        showNumbers: RICERCA_SHOW_NUMBERS,
+      });
+      // First 3 cells usually are marked black
+      for (let i = 0; i < 3; i += 1) {
+        (newState.matrix as ReducerState['matrix'])[0][i] = null;
       }
-    }));
-  },
-  setCorniciConcentricheMode: () => {
-    const newState = initReducer({
-      rows: CORNICI_ROWS,
-      cols: CORNICI_COLS,
-      showDefs: CORNICI_SHOW_DEFS,
-      showNumbers: CORNICI_SHOW_NUMBERS,
-    });
-    (newState.matrix as ReducerState['matrix'])[Math.floor(CORNICI_ROWS / 2)][Math.floor(CORNICI_ROWS / 2)] = null;
-    set({
-      ...newState,
-      definitions: getDefinitions(newState.matrix)
-    });
-  },
-  setDirection: (action) => {
-    set((state) => {
-      state.direction = action.direction;
-    });
-  },
-})));
+      set({
+        ...newState,
+        definitions: getDefinitions(newState.matrix),
+      });
+    },
+    wipe: () => {
+      set((state) =>
+        initReducer({
+          rows: state.rows,
+          cols: state.cols,
+          showDefs: state.showDefs,
+          showNumbers: state.showNumbers,
+          oldState: {
+            ...state,
+            matrix: state.matrix.map((row) =>
+              row.map((col) => (col == null ? null : ''))
+            ),
+            definitions: getDefinitions(state.matrix),
+          },
+        })
+      );
+    },
+    setCorniciConcentricheMode: () => {
+      const newState = initReducer({
+        rows: CORNICI_ROWS,
+        cols: CORNICI_COLS,
+        showDefs: CORNICI_SHOW_DEFS,
+        showNumbers: CORNICI_SHOW_NUMBERS,
+      });
+      (newState.matrix as ReducerState['matrix'])[Math.floor(CORNICI_ROWS / 2)][
+        Math.floor(CORNICI_ROWS / 2)
+      ] = null;
+      set({
+        ...newState,
+        definitions: getDefinitions(newState.matrix),
+      });
+    },
+    setDirection: (action) => {
+      set((state) => {
+        state.direction = action.direction;
+      });
+    },
+  }))
+);
 
 function Cruciverba() {
-  const { matrix, definitions, rows: ROWS, cols: COLS, showDefs, showNumbers, direction, ...dispatch} = useStore(store);
+  const {
+    matrix,
+    definitions,
+    rows: ROWS,
+    cols: COLS,
+    showDefs,
+    showNumbers,
+    direction,
+    ...dispatch
+  } = useStore(store);
 
   const rowsRef = useRef<HTMLInputElement | null>(null);
   const colsRef = useRef<HTMLInputElement | null>(null);
@@ -289,15 +357,21 @@ function Cruciverba() {
 
   useMemo(() => {
     // Every time size of the inputs change ricreate the inputs matrix
-    inputsRef.current = times((row) => times((col) => inputsRef.current?.[row]?.[col], COLS), ROWS);
+    inputsRef.current = times(
+      (row) => times((col) => inputsRef.current?.[row]?.[col], COLS),
+      ROWS
+    );
   }, [ROWS, COLS]);
 
-
-  const setRefCallbackFactory = (row: number, col: number) => (ref: HTMLInputElement) => {
-    if(row < inputsRef.current.length && col < inputsRef.current[row].length) {
-      inputsRef.current[row][col] = ref;
-    }
-  };
+  const setRefCallbackFactory =
+    (row: number, col: number) => (ref: HTMLInputElement) => {
+      if (
+        row < inputsRef.current.length &&
+        col < inputsRef.current[row].length
+      ) {
+        inputsRef.current[row][col] = ref;
+      }
+    };
 
   const { h: horizontalDefs, v: verticalDefs } = useMemo(
     () =>
@@ -312,16 +386,17 @@ function Cruciverba() {
     [definitions]
   );
 
-  const handleChangeFactory = (row: number, col: number) => (evt: ChangeEvent<HTMLInputElement>) => {
-    const value = evt.target.value.toUpperCase();
-    if (/^[A-Z]?$/.test(value)) {
-      dispatch.setValue({
-        row,
-        col,
-        value,
-      });
-    }
-  };
+  const handleChangeFactory =
+    (row: number, col: number) => (evt: ChangeEvent<HTMLInputElement>) => {
+      const value = evt.target.value.toUpperCase();
+      if (/^[A-Z]?$/.test(value)) {
+        dispatch.setValue({
+          row,
+          col,
+          value,
+        });
+      }
+    };
 
   const handleToggleBlackFactory = (row: number, col: number) => () => {
     dispatch.toggleBlack({
@@ -341,14 +416,20 @@ function Cruciverba() {
     });
   };
 
-  const handleDefinitionFactory = (definition: Definition, direction: 'h' | 'v') => (evt: ChangeEvent<HTMLInputElement>) => {
-    dispatch.setDefinition({
-      row: definition.row,
-      col: definition.col,
-      horizontalDefinition: direction === 'h' ? evt.target.value : definition.horizontalDefinition,
-      verticalDefinition: direction === 'v' ? evt.target.value : definition.verticalDefinition,
-    });
-  };
+  const handleDefinitionFactory =
+    (definition: Definition, direction: 'h' | 'v') =>
+    (evt: ChangeEvent<HTMLInputElement>) => {
+      dispatch.setDefinition({
+        row: definition.row,
+        col: definition.col,
+        horizontalDefinition:
+          direction === 'h'
+            ? evt.target.value
+            : definition.horizontalDefinition,
+        verticalDefinition:
+          direction === 'v' ? evt.target.value : definition.verticalDefinition,
+      });
+    };
 
   const handleToggleDefs: ChangeEventHandler<HTMLInputElement> = (evt) => {
     dispatch.setShowDefs({
@@ -364,88 +445,118 @@ function Cruciverba() {
 
   const handleChangeDirection: ChangeEventHandler<HTMLInputElement> = (evt) => {
     dispatch.setDirection({
-      direction: evt.target.value as 'H' | 'V'
-    })
-  }
+      direction: evt.target.value as 'H' | 'V',
+    });
+  };
 
-  const handleSimpleAction = (type: ReducerSimpleAction): MouseEventHandler<HTMLButtonElement> => () => {
-    dispatch[type]();
-  }
+  const handleSimpleAction =
+    (type: ReducerSimpleAction): MouseEventHandler<HTMLButtonElement> =>
+    () => {
+      dispatch[type]();
+    };
 
   const handleKeyDownNavigateFactory =
     (row: number, col: number): KeyboardEventHandler<HTMLInputElement> =>
-      (evt) => {
-        if (evt.key === ' ') {
-          // Must prevent default otherwise page will slide down!
-          evt.preventDefault();
-          dispatch.toggleBlack({
-            row,
-            col
-          });
-        }
-        if (evt.key === 'ArrowUp' && row > 0) {
-          inputsRef.current
-            .reduceRight<HTMLInputElement | null>(
-              (acc, current, index) => (acc == null && index < row && current[col] != null ? current[col] : acc),
-              null
-            )
-            ?.focus();
-        }
-        if (evt.key === 'ArrowDown' && row < matrix.length - 1) {
-          inputsRef.current
-            .reduce<HTMLInputElement | null>(
-              (acc, current, index) => (acc == null && index > row && current[col] != null ? current[col] : acc),
-              null
-            )
-            ?.focus();
-        }
-        if (evt.key === 'ArrowLeft' && col > 0) {
+    (evt) => {
+      if (evt.key === ' ') {
+        // Must prevent default otherwise page will slide down!
+        evt.preventDefault();
+        dispatch.toggleBlack({
+          row,
+          col,
+        });
+      }
+      if (evt.key === 'ArrowUp' && row > 0) {
+        inputsRef.current
+          .reduceRight<HTMLInputElement | null>(
+            (acc, current, index) =>
+              acc == null && index < row && current[col] != null
+                ? current[col]
+                : acc,
+            null
+          )
+          ?.focus();
+      }
+      if (evt.key === 'ArrowDown' && row < matrix.length - 1) {
+        inputsRef.current
+          .reduce<HTMLInputElement | null>(
+            (acc, current, index) =>
+              acc == null && index > row && current[col] != null
+                ? current[col]
+                : acc,
+            null
+          )
+          ?.focus();
+      }
+      if (evt.key === 'ArrowLeft' && col > 0) {
+        inputsRef.current[row]
+          .reduceRight<HTMLInputElement | null>(
+            (acc, current, index) =>
+              acc == null && index < col && current != null ? current : acc,
+            null
+          )
+          ?.focus();
+      }
+      if (evt.key === 'ArrowRight' && col < matrix[row].length - 1) {
+        inputsRef.current[row]
+          .reduce<HTMLInputElement | null>(
+            (acc, current, index) =>
+              acc == null && index > col && current != null ? current : acc,
+            null
+          )
+          ?.focus();
+      }
+      if (
+        evt.key === 'Backspace' &&
+        (inputsRef.current[row][col]?.value as string).length === 0
+      ) {
+        if (direction === 'H' && col > 0) {
           inputsRef.current[row]
             .reduceRight<HTMLInputElement | null>(
-              (acc, current, index) => (acc == null && index < col && current != null ? current : acc),
+              (acc, current, index) =>
+                acc == null && index < col && current != null ? current : acc,
               null
             )
             ?.focus();
-        }
-        if (evt.key === 'ArrowRight' && col < matrix[row].length - 1) {
-          inputsRef.current[row]
-            .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > col && current != null ? current : acc), null)
-            ?.focus();
-        }
-        if (evt.key === 'Backspace' && (inputsRef.current[row][col]?.value as string).length === 0) {
-          if (direction === 'H' && col > 0) {
-            inputsRef.current[row]
-              .reduceRight<HTMLInputElement | null>(
-                (acc, current, index) => (acc == null && index < col && current != null ? current : acc),
-                null
-              )
-              ?.focus();
-          } else if (direction === 'V' && row > 0) {
-            inputsRef.current
+        } else if (direction === 'V' && row > 0) {
+          inputsRef.current
             .reduceRight<HTMLInputElement | null>(
-              (acc, current, index) => (acc == null && index < row && current[col] != null ? current[col] : acc),
+              (acc, current, index) =>
+                acc == null && index < row && current[col] != null
+                  ? current[col]
+                  : acc,
               null
             )
             ?.focus();
-          }
         }
-      };
+      }
+    };
 
   const handleKeyUpNavigateFactory =
     (row: number, col: number): KeyboardEventHandler<HTMLInputElement> =>
-      (evt) => {
-        if(/^[a-zA-Z]$/.test(evt.key)){
-          if (direction === 'H' && col < matrix[row].length - 1) {
-            inputsRef.current[row]
-              .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > col && current != null ? current : acc), null)
-              ?.focus();
-          } else if (direction === 'V' && row < matrix.length - 1) {
-            inputsRef.current
-              .reduce<HTMLInputElement | null>((acc, current, index) => (acc == null && index > row && current[col] != null ? current[col] : acc), null)
-              ?.focus();
-          }
+    (evt) => {
+      if (/^[a-zA-Z]$/.test(evt.key)) {
+        if (direction === 'H' && col < matrix[row].length - 1) {
+          inputsRef.current[row]
+            .reduce<HTMLInputElement | null>(
+              (acc, current, index) =>
+                acc == null && index > col && current != null ? current : acc,
+              null
+            )
+            ?.focus();
+        } else if (direction === 'V' && row < matrix.length - 1) {
+          inputsRef.current
+            .reduce<HTMLInputElement | null>(
+              (acc, current, index) =>
+                acc == null && index > row && current[col] != null
+                  ? current[col]
+                  : acc,
+              null
+            )
+            ?.focus();
         }
-      };
+      }
+    };
 
   const isIncrociObbligatiMode =
     ROWS === INCROCI_OBBLIGATI_ROWS &&
@@ -494,23 +605,46 @@ function Cruciverba() {
   const renderedApp = (
     <div className={styles.app}>
       <table className={styles.app_table}>
-        <caption className={styles.app_caption}>{isIncrociObbligatiMode ? 'Incroci Obbligati' : (isRicercaMode ? 'Ricerca di Parole Crociate' : (isCorniciConcentricheMode ? 'Cornici Concentriche' : 'Parole Crociate'))}</caption>
+        <caption className={styles.app_caption}>
+          {isIncrociObbligatiMode
+            ? 'Incroci Obbligati'
+            : isRicercaMode
+            ? 'Ricerca di Parole Crociate'
+            : isCorniciConcentricheMode
+            ? 'Cornici Concentriche'
+            : 'Parole Crociate'}
+        </caption>
         <tbody>
           {times(
             (row) => (
               <tr key={row}>
                 {times((col) => {
-                  const definition = definitions.find((definition) => definition.row === row && definition.col === col);
+                  const definition = definitions.find(
+                    (definition) =>
+                      definition.row === row && definition.col === col
+                  );
                   return (
-                    <td className={classNames({
-                      [styles.app_td]: true,
-                      [styles.app_td__grey]: isGreyRow(isCorniciConcentricheMode, row, col)
-                    })} key={`${row}-${col}`} onDoubleClick={handleToggleBlackFactory(row, col)}>
+                    <td
+                      className={classNames({
+                        [styles.app_td]: true,
+                        [styles.app_td__grey]: isGreyRow(
+                          isCorniciConcentricheMode,
+                          row,
+                          col
+                        ),
+                      })}
+                      key={`${row}-${col}`}
+                      onDoubleClick={handleToggleBlackFactory(row, col)}
+                    >
                       {shouldBeBlack(row, col, matrix) ? (
                         <span className={styles.app_black}></span>
                       ) : (
                         <>
-                          {showNumbers && definition != null && <span className={styles.app_definition}>{definition.order}</span>}
+                          {showNumbers && definition != null && (
+                            <span className={styles.app_definition}>
+                              {definition.order}
+                            </span>
+                          )}
                           <input
                             className={styles.app_input}
                             name={`input-${row}-${col}`}
@@ -541,7 +675,10 @@ function Cruciverba() {
               <h2>Orizzontali</h2>
               <ol>
                 {horizontalDefs.map((definition, index) => (
-                  <li value={definition.order} key={`h-${definition.order}-${index}`}>
+                  <li
+                    value={definition.order}
+                    key={`h-${definition.order}-${index}`}
+                  >
                     <input
                       className={styles.app_definitionInput}
                       name={`h-${definition.order}`}
@@ -559,7 +696,10 @@ function Cruciverba() {
               <h2>Verticali</h2>
               <ol>
                 {verticalDefs.map((definition, index) => (
-                  <li value={definition.order} key={`v-${definition.order}-${index}`}>
+                  <li
+                    value={definition.order}
+                    key={`v-${definition.order}-${index}`}
+                  >
                     <input
                       className={styles.app_definitionInput}
                       name={`v-${definition.order}`}
@@ -581,39 +721,78 @@ function Cruciverba() {
     <form onSubmit={handleSetSize}>
       <fieldset>
         <legend>Opzioni</legend>
-        <label htmlFor="rows">Numero di righe:</label> <input name="rows" defaultValue={ROWS} ref={rowsRef} type="number" />{' '}
-        <label htmlFor="cols">Numero di colonne:</label> <input name="cols" defaultValue={COLS} ref={colsRef} type="number" />{' '}
+        <label htmlFor="rows">Numero di righe:</label>{' '}
+        <input name="rows" defaultValue={ROWS} ref={rowsRef} type="number" />{' '}
+        <label htmlFor="cols">Numero di colonne:</label>{' '}
+        <input name="cols" defaultValue={COLS} ref={colsRef} type="number" />{' '}
         <button type="submit">Update</button>
         <br />
-        <input id="showDefs" name="showDefs" checked={showDefs} onChange={handleToggleDefs} type="checkbox" value="showDefs" />
+        <input
+          id="showDefs"
+          name="showDefs"
+          checked={showDefs}
+          onChange={handleToggleDefs}
+          type="checkbox"
+          value="showDefs"
+        />
         <label htmlFor="showDefs">Mostra definizioni</label>
         <br />
-        <input id="showNumbers" name="showNumbers" checked={showNumbers} onChange={handleToggleNumbers} type="checkbox" value="showNumbers" />
+        <input
+          id="showNumbers"
+          name="showNumbers"
+          checked={showNumbers}
+          onChange={handleToggleNumbers}
+          type="checkbox"
+          value="showNumbers"
+        />
         <label htmlFor="showNumbers">Mostra numeri</label>
         <br />
-        <input id="directionHorizontal" name="direction" checked={direction === 'H'} onChange={handleChangeDirection} type="radio" value="H" />
-        <label htmlFor="directionHorizontal">Muoviti in orizzontale</label>
-        {' '}
-        <input id="directionVertical" name="direction" checked={direction === 'V'} onChange={handleChangeDirection} type="radio" value="V" />
+        <input
+          id="directionHorizontal"
+          name="direction"
+          checked={direction === 'H'}
+          onChange={handleChangeDirection}
+          type="radio"
+          value="H"
+        />
+        <label htmlFor="directionHorizontal">Muoviti in orizzontale</label>{' '}
+        <input
+          id="directionVertical"
+          name="direction"
+          checked={direction === 'V'}
+          onChange={handleChangeDirection}
+          type="radio"
+          value="V"
+        />
         <label htmlFor="directionVertical">Muoviti in verticale</label>
         <br />
-        <button onClick={handleSimpleAction('setIncrociObbligatiMode')} type="button"><em>Incroci obbligati</em> mode</button>
-        {' '}
-        <button onClick={handleSimpleAction('setRicercaMode')} type="button"><em>Ricerca di Parole Crociate</em> mode</button>
-        {' '}
-        <button onClick={handleSimpleAction('setCorniciConcentricheMode')} type="button"><em>Cornici Concentriche</em> mode</button>
-        {' '}
-        <button onClick={handleSimpleAction('wipe')} type="button">Wipe</button>
+        <button
+          onClick={handleSimpleAction('setIncrociObbligatiMode')}
+          type="button"
+        >
+          <em>Incroci obbligati</em> mode
+        </button>{' '}
+        <button onClick={handleSimpleAction('setRicercaMode')} type="button">
+          <em>Ricerca di Parole Crociate</em> mode
+        </button>{' '}
+        <button
+          onClick={handleSimpleAction('setCorniciConcentricheMode')}
+          type="button"
+        >
+          <em>Cornici Concentriche</em> mode
+        </button>{' '}
+        <button onClick={handleSimpleAction('wipe')} type="button">
+          Wipe
+        </button>
       </fieldset>
     </form>
   );
 
   return (
-    <div>
-      <CruciverbaMd />
+    <>
       <div className={styles.app_wrapper}>{renderedApp}</div>
       {settings}
-    </div>
+    </>
   );
 }
 

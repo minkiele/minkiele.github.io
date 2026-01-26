@@ -7,7 +7,9 @@ const getEntries = map<JournalEntry, Pick<JournalEntry, 'entry'>>(
   pick(['entry'])
 );
 
-const { metadata, App: Entry } = getAppAndMetadata('/journal', BaseEntry, true);
+const { metadata, App: Entry } = getAppAndMetadata('/journal', BaseEntry, {
+  isAsync: true,
+});
 export default Entry;
 
 export const dynamic = 'force-static';

@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
 import { FunctionComponent } from 'react';
-import InfoMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 
-const Info: FunctionComponent = () => <div>{<InfoMd />}</div>;
+const Info: FunctionComponent = () => null;
 
 export default Info;

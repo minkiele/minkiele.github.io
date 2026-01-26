@@ -7,7 +7,7 @@ import {
   MouseEventHandler,
 } from 'react';
 import { getNumber, useFactorizer } from './Factorizer.utils';
-import FactorizerMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 
 const Factorizer: FunctionComponent = () => {
   const { inputs, factorized, mcm, mcd, add, update, del } = useFactorizer();
@@ -25,8 +25,7 @@ const Factorizer: FunctionComponent = () => {
     add('2');
   };
   return (
-    <div>
-      <FactorizerMd />
+    <>
       {inputs.map((input, index) => (
         <Fragment key={`input-${index}`}>
           <fieldset>
@@ -85,7 +84,7 @@ const Factorizer: FunctionComponent = () => {
       <button type="button" onClick={handleAdd}>
         Add
       </button>
-    </div>
+    </>
   );
 };
 

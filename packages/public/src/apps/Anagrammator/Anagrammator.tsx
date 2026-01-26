@@ -1,10 +1,10 @@
-"use client"
+'use client';
 
 import { ChangeEvent, Children, useCallback, useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
 import { countAnagrams, getCountAnagramFactors } from 'anagrammator';
 import { UberMath } from '../../lib/ubermath';
-import AnagrammatorMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 import { useAnagrammatorWorker } from './Anagrammator.utils';
 
 interface AnagrammatorState {
@@ -18,7 +18,9 @@ interface AnagrammatorState {
 
 const normalizeInput = (input: string) => {
   const trimmedInput = input.trim();
-  return trimmedInput.length > 0 ? trimmedInput.toUpperCase().replace(/[^A-Z]/, '') : trimmedInput;
+  return trimmedInput.length > 0
+    ? trimmedInput.toUpperCase().replace(/[^A-Z]/, '')
+    : trimmedInput;
 };
 
 /**
@@ -26,20 +28,21 @@ const normalizeInput = (input: string) => {
  * @returns JSX.Element
  */
 function Anagrammator() {
-  const [{ value, anagramms, size, total, skipped, formula }, setState] = useState<AnagrammatorState>({
-    value: '',
-    anagramms: [],
-    size: 0,
-    total: 0,
-    skipped: 0,
-    formula: undefined,
-  });
+  const [{ value, anagramms, size, total, skipped, formula }, setState] =
+    useState<AnagrammatorState>({
+      value: '',
+      anagramms: [],
+      size: 0,
+      total: 0,
+      skipped: 0,
+      formula: undefined,
+    });
 
   const {
     input: serviceInput,
     anagramm: serviceAnagrammator,
     anagramms: serviceAnagramms,
-    idle: serviceIdle
+    idle: serviceIdle,
   } = useAnagrammatorWorker();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,7 +65,7 @@ function Anagrammator() {
   );
 
   useEffect(() => {
-    if(serviceIdle && serviceInput === value) {
+    if (serviceIdle && serviceInput === value) {
       setState((current) => ({ ...current, anagramms: serviceAnagramms }));
     }
   }, [serviceInput, value, serviceIdle, serviceAnagramms]);
@@ -82,11 +85,17 @@ function Anagrammator() {
   };
 
   return (
-    <div>
-      <AnagrammatorMd />
+    <>
       <fieldset>
         <legend>Generator controls</legend>
-        <label htmlFor="input">Type in a word:</label> <input id="input" value={value} type="text" onChange={handleChangeValue} readOnly={size > 0 && anagramms.length === 0} />{' '}
+        <label htmlFor="input">Type in a word:</label>{' '}
+        <input
+          id="input"
+          value={value}
+          type="text"
+          onChange={handleChangeValue}
+          readOnly={size > 0 && anagramms.length === 0}
+        />{' '}
       </fieldset>
       {total > 0 && (
         <>
@@ -115,12 +124,18 @@ function Anagrammator() {
           {anagramms.length > 0 && (
             <>
               <h2>The anagrams</h2>
-              <ol>{Children.toArray(anagramms.map((anagramm) => <li key={anagramm}>{anagramm}</li>))}</ol>
+              <ol>
+                {Children.toArray(
+                  anagramms.map((anagramm) => (
+                    <li key={anagramm}>{anagramm}</li>
+                  ))
+                )}
+              </ol>
             </>
           )}
         </>
       )}
-    </div>
+    </>
   );
 }
 

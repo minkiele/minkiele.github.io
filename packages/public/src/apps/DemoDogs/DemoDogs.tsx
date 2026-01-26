@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
 import { FunctionComponent, useEffect, useState } from 'react';
 import { join, pickOne, weight } from '../../lib/polygram/Collection';
-import DemoDogsMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 
 // DEMODOGS :D
 
@@ -39,7 +39,14 @@ const races = pickOne(
   'Bouledogue'
 );
 
-const variants = pickOne('Inu', 'Retriever', 'Terrier', 'Russell', 'Hound', 'Spaniel');
+const variants = pickOne(
+  'Inu',
+  'Retriever',
+  'Terrier',
+  'Russell',
+  'Hound',
+  'Spaniel'
+);
 
 const nationalities = pickOne(
   'Napoletano',
@@ -55,7 +62,11 @@ const nationalities = pickOne(
   'Afghano',
   'Francese'
 );
-const dogRaces = join(races, pickOne('', weight(variants, 2)), pickOne('', weight(nationalities, 2))).withSeparator(' ');
+const dogRaces = join(
+  races,
+  pickOne('', weight(variants, 2)),
+  pickOne('', weight(nationalities, 2))
+).withSeparator(' ');
 
 const getDemoDogs = (): Array<string> => {
   const demoDogs: Array<string> = [];
@@ -74,20 +85,19 @@ const DemoDogs: FunctionComponent = () => {
     handleDemoDogs();
   }, []);
   return (
-    <div>
-      <DemoDogsMd />
-      <div>
-        <h3>Dog breeds</h3>
-        {demoDogs != null && <ul>
+    <>
+      <h3>Dog breeds</h3>
+      {demoDogs != null && (
+        <ul>
           {demoDogs.map((demoDog) => (
             <li key={demoDog}>{demoDog}</li>
           ))}
-        </ul>}
-        <p>
-          <button onClick={handleDemoDogs}>Gimme more dog breeds</button>
-        </p>
-      </div>
-    </div>
+        </ul>
+      )}
+      <p>
+        <button onClick={handleDemoDogs}>Gimme more dog breeds</button>
+      </p>
+    </>
   );
 };
 

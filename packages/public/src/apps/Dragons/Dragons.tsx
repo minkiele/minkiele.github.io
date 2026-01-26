@@ -5,7 +5,7 @@ import { ChangeEventHandler, FunctionComponent, useState } from 'react';
 import { getDragonFractal, L, R } from '../../lib/triangles-dragons/dragons';
 import { Plane } from '../../lib/triangles-dragons/matrix/plane';
 import styles from './Dragons.module.scss';
-import DragonsMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 import DragonFractalSVG from '@/lib/triangles-dragons/svg/DragonFractalSVG';
 import {
   getCompatDirection,
@@ -89,8 +89,7 @@ const Dragons: FunctionComponent = () => {
   };
 
   return (
-    <div>
-      <DragonsMd />
+    <>
       <div>
         <fieldset>
           <legend>Iterations</legend>
@@ -175,9 +174,11 @@ const Dragons: FunctionComponent = () => {
             checked={dragons.svg}
           />
           <label htmlFor="renderingSvg">
-            SVG (will render a single segment with rounded corners up to iteration 14, will slow down
-            after iteration 19 but will still render up to iteration 24)
-          </label><br />
+            SVG (will render a single segment with rounded corners up to
+            iteration 14, will slow down after iteration 19 but will still
+            render up to iteration 24)
+          </label>
+          <br />
           <input
             type="radio"
             name="rendering"
@@ -187,8 +188,8 @@ const Dragons: FunctionComponent = () => {
             checked={!dragons.svg}
           />
           <label htmlFor="renderingText">
-            Text (will not render a single segment, will considerably slow
-            down after iteration 15, will still render up to iteration 22)
+            Text (will not render a single segment, will considerably slow down
+            after iteration 15, will still render up to iteration 22)
           </label>{' '}
         </fieldset>
       </div>
@@ -226,7 +227,7 @@ const Dragons: FunctionComponent = () => {
           ).toString()}
         </pre>
       )}
-    </div>
+    </>
   );
 };
 

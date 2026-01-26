@@ -1,5 +1,7 @@
 import { getAppAndMetadata } from '@/apps/App/AppWrapper';
-import BaseVietnam from '@/apps/Vietnam/Vietnam';
-const { metadata, App: Vietnam } = getAppAndMetadata('/vietnam', BaseVietnam);
+import BaseVietnam, { ReadmeMd } from '@/apps/Vietnam/Vietnam';
+const { metadata, App: Vietnam } = getAppAndMetadata('/vietnam', BaseVietnam, {
+  readme: ReadmeMd,
+});
 export default Vietnam;
 export { metadata };

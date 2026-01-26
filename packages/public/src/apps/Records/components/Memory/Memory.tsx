@@ -18,7 +18,6 @@ import FlipCard from '../FlipCard/FlipCard';
 import classNames from 'classnames';
 import Toggler from '../Toggler/Toggler';
 import { T } from 'ramda';
-import ReadmeMD from '../../README.md';
 import { event } from '@/apps/App/App.analytics';
 import { IdProvider } from '@/hooks/useEnsureId';
 
@@ -64,10 +63,7 @@ export default function Memory({ deck }: MemoryProps) {
   }, [status]);
 
   return (
-    <div>
-      <div>
-        <ReadmeMD />
-      </div>
+    <>
       <ol className={styles.list}>
         {cards.map((release, index) => {
           const isCardFlipped = isFlipped(index);
@@ -207,6 +203,6 @@ export default function Memory({ deck }: MemoryProps) {
           </form>
         </fieldset>
       </div>
-    </div>
+    </>
   );
 }

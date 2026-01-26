@@ -7,7 +7,7 @@ import {
   mutateGrid,
 } from './components/Piece/Piece.utils';
 import styles from './Puzzle.module.scss';
-import PuzzleMd from './README.md';
+export { default as ReadmeMd } from './README.md';
 import Board from './components/Board/Board';
 
 const DEFAULT_WIDTH = 10;
@@ -51,8 +51,7 @@ export default function Puzzle() {
   };
 
   return (
-    <div>
-      <PuzzleMd />
+    <>
       <div>
         {grid && (
           <Board
@@ -88,6 +87,6 @@ export default function Puzzle() {
           </form>
         </fieldset>
       </div>
-    </div>
+    </>
   );
 }

@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
 import { FunctionComponent } from 'react';
-import AboutMD from './ABOUT.md';
+export { default as ReadmeMd } from './ABOUT.md';
 
-const Info: FunctionComponent = () => <div>{<AboutMD />}</div>;
+const Info: FunctionComponent = () => null;
 
 export default Info;

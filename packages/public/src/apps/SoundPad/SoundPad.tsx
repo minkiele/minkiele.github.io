@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import { FunctionComponent, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
-import SoundPadMD from './README.md';
+import { FunctionComponent, useEffect, useMemo, useRef } from 'react';
+export { default as ReadmeMd } from './README.md';
 import styles from './SoundPad.module.scss';
 
 const SoundPad: FunctionComponent = () => {
@@ -30,16 +30,13 @@ const SoundPad: FunctionComponent = () => {
   };
 
   return (
-    <div>
-      <SoundPadMD />
-      <div>
-        {sounds.map(({ label, value: sound }, index) => (
-          <div className={styles.sound} key={`${label}-${sound}-${index}`}>
-            <button onClick={play(sound)}>{label}</button>
-          </div>
-        ))}
-      </div>
-    </div>
+    <>
+      {sounds.map(({ label, value: sound }, index) => (
+        <div className={styles.sound} key={`${label}-${sound}-${index}`}>
+          <button onClick={play(sound)}>{label}</button>
+        </div>
+      ))}
+    </>
   );
 };
 

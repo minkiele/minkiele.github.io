@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { DEFAULT_SCRAMBLE, DEFAULT_SPEED, useFifteen } from './Fifteen.lib';
 import styles from './Fifteen.module.scss';
-import FifteenMD from './README.md';
+export { default as ReadmeMd } from './README.md';
 import { constrainInput, parseInputValue } from './Fifteen.utils';
 
 const Fifteen: FunctionComponent = () => {
@@ -41,8 +41,7 @@ const Fifteen: FunctionComponent = () => {
     scramble(DEFAULT_SCRAMBLE);
   }, [scramble]);
   return (
-    <div>
-      <FifteenMD />
+    <>
       <div className={styles.tiles}>
         {tiles.map((row, y) => (
           <div className={styles.tiles_row} key={`row-${y}`}>
@@ -93,7 +92,7 @@ const Fifteen: FunctionComponent = () => {
           </button>
         </fieldset>
       </form>
-    </div>
+    </>
   );
 };
 

@@ -1,18 +1,16 @@
-"use client"
+'use client';
 
 import { FunctionComponent, useCallback } from 'react';
-import ThreeMD from './README.md';
+export { default as ReadmeMd } from './README.md';
 import { LightingThreeAnimation } from './Three.utils';
 import Container from './components/Container/Container';
 
 const Three: FunctionComponent = () => {
-  const handleInitLightingAnimation = useCallback((container: HTMLElement) => new LightingThreeAnimation(container), []);
-
-  return (
-    <div>
-      <ThreeMD />
-      <Container onInit={handleInitLightingAnimation} />
-    </div>
+  const handleInitLightingAnimation = useCallback(
+    (container: HTMLElement) => new LightingThreeAnimation(container),
+    []
   );
+
+  return <Container onInit={handleInitLightingAnimation} />;
 };
 export default Three;

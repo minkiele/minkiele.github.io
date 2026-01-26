@@ -6,6 +6,10 @@
   aside,
   article {
     padding: 20px;
+
+    .description + .content {
+      margin-top: 2rem;
+    }
   }
 
   aside {

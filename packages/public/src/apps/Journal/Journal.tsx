@@ -8,14 +8,14 @@ const sortEntries = sort(
 
 export default async function Journal() {
   return (
-    <div>
-      <ol>
-        {sortEntries(entries).map(({ entry }) => (
-          <li key={entry}>
-            <Link href={`/journal/${entry}`} prefetch={false}>{entry}</Link>
-          </li>
-        ))}
-      </ol>
-    </div>
+    <ol>
+      {sortEntries(entries).map(({ entry }) => (
+        <li key={entry}>
+          <Link href={`/journal/${entry}`} prefetch={false}>
+            {entry}
+          </Link>
+        </li>
+      ))}
+    </ol>
   );
 }
