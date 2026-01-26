@@ -1,30 +1,35 @@
 import {
-  ComponentType,
-  Fragment,
-  FunctionComponent,
-  ReactNode,
+  type ComponentType,
+  type FunctionComponent,
+  type ReactNode,
   createElement,
 } from 'react';
 import { getMetadata, getPageName } from './App.metadata';
-import { Metadata } from 'next';
-import AppStructure from './AppStructure';
+import type { Metadata } from 'next';
+import { isVisibleChildren } from './App.utils';
 
 interface AppWrapperProps {
   route: string;
+  readme?: ComponentType;
   children?: ReactNode;
 }
 
 const AppWrapper: FunctionComponent<AppWrapperProps> = ({
   route,
+  readme: ReadmeComponent,
   children,
 }) => {
   const pageName = getPageName(route);
-
-  return createElement(
-    Fragment,
-    undefined,
-    createElement('h1', undefined, pageName),
-    children
+  return (
+    <>
+      <h1>{pageName}</h1>
+      {ReadmeComponent != null && (
+        <div className="readme">
+          <ReadmeComponent />
+        </div>
+      )}
+      {isVisibleChildren(children) && <div className="content">{children}</div>}
+    </>
   );
 };
 
@@ -42,12 +47,10 @@ export const getAppAndMetadata = <P extends {}>(
     metadata: getMetadata(route),
     App: async function InternalAppWrapper(props: P) {
       const appChild = createElement(App, isAsync ? { ...props } : undefined);
-      return createElement(
-        AppWrapper,
-        { route },
-        readme == null
-          ? appChild
-          : createElement(AppStructure, { readme }, appChild)
+      return (
+        <AppWrapper route={route} readme={readme}>
+          {appChild}
+        </AppWrapper>
       );
     },
   };
