@@ -1,6 +1,6 @@
 import {
   type ComponentType,
-  type FunctionComponent,
+  type FC,
   type ReactNode,
   createElement,
 } from 'react';
@@ -14,7 +14,7 @@ interface AppWrapperProps {
   children?: ReactNode;
 }
 
-const AppWrapper: FunctionComponent<AppWrapperProps> = ({
+const AppWrapper: FC<AppWrapperProps> = ({
   route,
   readme: ReadmeComponent,
   children,
@@ -36,11 +36,14 @@ const AppWrapper: FunctionComponent<AppWrapperProps> = ({
 export const getAppAndMetadata = <P extends {}>(
   route: string,
   options?: {
-    app?: FunctionComponent<P>;
+    app?: FC<P>;
     isAsync?: boolean;
     readme?: ComponentType;
   }
-): { metadata: Metadata; App: FunctionComponent<P> } => {
+): {
+  metadata: Metadata;
+  App: FC<P>;
+} => {
   const isAsync = options?.isAsync ?? false;
   const readme = options?.readme;
   const App = options?.app;
