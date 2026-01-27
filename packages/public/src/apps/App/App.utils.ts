@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { LazyRouteComponent } from './App.models';
+import { isNullOrEmpty } from '@/lib/utils';
 
 export const sortRoutes = (
   a: LazyRouteComponent,
@@ -16,14 +17,5 @@ export const sortRoutes = (
   }
 };
 
-export const isVisibleChildren = (input: ReactNode) => {
-  if (input == null) {
-    return false;
-  } else if (input instanceof Array) {
-    return input.length > 0;
-  } else if (typeof input === 'boolean') {
-    return false;
-  } else {
-    return true;
-  }
-};
+export const isVisibleChildren = (input: ReactNode) =>
+  !(isNullOrEmpty(input) || typeof input === 'boolean');

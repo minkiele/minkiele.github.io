@@ -1,6 +1,6 @@
 import { getAppAndMetadata } from '@/apps/App/AppWrapper';
-import BaseInfo, { ReadmeMd } from '@/apps/Info/Info';
-const { metadata, App: Info } = getAppAndMetadata('/', BaseInfo, {
+import ReadmeMd from '@/apps/Info/Info';
+const { metadata, App: Info } = getAppAndMetadata('/', {
   readme: ReadmeMd,
 });
 

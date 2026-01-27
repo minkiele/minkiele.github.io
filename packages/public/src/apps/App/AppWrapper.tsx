@@ -35,21 +35,23 @@ const AppWrapper: FunctionComponent<AppWrapperProps> = ({
 
 export const getAppAndMetadata = <P extends {}>(
   route: string,
-  App: FunctionComponent<P>,
   options?: {
+    app?: FunctionComponent<P>;
     isAsync?: boolean;
     readme?: ComponentType;
   }
 ): { metadata: Metadata; App: FunctionComponent<P> } => {
   const isAsync = options?.isAsync ?? false;
   const readme = options?.readme;
+  const App = options?.app;
   return {
     metadata: getMetadata(route),
     App: async function InternalAppWrapper(props: P) {
-      const appChild = createElement(App, isAsync ? { ...props } : undefined);
       return (
         <AppWrapper route={route} readme={readme}>
-          {appChild}
+          {App == null
+            ? null
+            : createElement(App, isAsync ? { ...props } : null)}
         </AppWrapper>
       );
     },
