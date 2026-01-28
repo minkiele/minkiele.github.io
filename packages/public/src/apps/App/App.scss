@@ -28,6 +28,10 @@
         }
       }
     }
+
+    .last-build {
+      display: none;
+    }
   }
 
   @media (min-width: 768px) {
@@ -46,6 +50,10 @@
             white-space: normal;
           }
         }
+      }
+
+      .last-build {
+        display: block;
       }
     }
 

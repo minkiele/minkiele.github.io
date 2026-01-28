@@ -2,11 +2,17 @@
 import dayjs from 'dayjs';
 import { memo } from 'react';
 
-const LastBuild = memo(() => {
+interface LastBuildProps {
+  className?: string;
+}
+
+const LastBuild = memo(({ className }: LastBuildProps) => {
   const date = dayjs(process.env.NEXT_BUILD_TIMESTAMP).startOf('minute');
   return (
-    <p>
-      Last build: {date.format('DD/MM/YYYY')} at {date.format('HH:mm')}
+    <p className={className}>
+      Last build:
+      <br />
+      {date.format('DD/MM/YYYY')}&nbsp;{date.format('HH:mm:ss')}
     </p>
   );
 });
