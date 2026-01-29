@@ -10,9 +10,8 @@ const LastBuild = memo(({ className }: LastBuildProps) => {
   const date = dayjs(process.env.NEXT_BUILD_TIMESTAMP).startOf('minute');
   return (
     <p className={className}>
-      Last build:
-      <br />
-      {date.format('DD/MM/YYYY')}&nbsp;{date.format('HH:mm:ss')}
+      {/* It should automatically reposition itself on mobile / desktop */}
+      Last build: {date.format('DD/MM/YYYY')}&nbsp;{date.format('HH:mm:ss')}
     </p>
   );
 });
