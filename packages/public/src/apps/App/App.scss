@@ -4,7 +4,7 @@
   flex-direction: column;
 
   aside,
-  article {
+  #article-wrapper {
     padding: 20px;
 
     .readme + .content {
@@ -29,9 +29,13 @@
       }
     }
 
-    .last-build {
+    > .last-build {
       display: none;
     }
+  }
+
+  #article-wrapper > .last-build {
+    display: block;
   }
 
   @media (min-width: 768px) {
@@ -57,8 +61,11 @@
       }
     }
 
-    article {
+    #article-wrapper {
       width: calc(100% - #{$width});
+      > .last-build {
+        display: none;
+      }
     }
   }
 }

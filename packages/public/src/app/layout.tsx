@@ -91,7 +91,12 @@ export default function Layout({ children }: { children: ReactNode }) {
             <AppThemeSelector />
             <LastBuild className="last-build" />
           </aside>
-          <article id="main-article">{children}</article>
+          <div id="article-wrapper">
+            <article id="main-article">{children}</article>
+            <footer className="last-build">
+              <LastBuild />
+            </footer>
+          </div>
         </div>
         <Suspense fallback={null}>
           <UseGoogleAnalyticsPageviews />
