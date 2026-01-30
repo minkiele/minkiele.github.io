@@ -257,7 +257,10 @@ const TwentyFourClock: FunctionComponent = () => {
 
     return () => {
       clearInterval(timerId);
+      audio.pause();
       audio.removeEventListener('canplay', handleAudioLoad);
+      // Final cleanup
+      audioRef.current = undefined;
     };
   }, []);
 

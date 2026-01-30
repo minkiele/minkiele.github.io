@@ -1,5 +1,10 @@
 @use '../../styles/colors';
 
+%active {
+  background-color: #f4bb00;
+  box-shadow: #f4bb00 0px 0px 12px 0px;
+}
+
 .digit {
   --bar-width: 10px;
   --bar-height: 60px;
@@ -11,7 +16,7 @@
     position: absolute;
     background-color: #292517;
     &#{&}__active {
-      background-color: #f4bb00;
+      @extend %active;
     }
     &#{&}__h {
       width: var(--bar-height);
@@ -93,7 +98,7 @@
   }
   &__blink {
     .blinker_dot {
-      background-color: #f4bb00;
+      @extend %active;
     }
   }
 }
