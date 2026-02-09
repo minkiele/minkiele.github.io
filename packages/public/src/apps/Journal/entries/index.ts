@@ -29,3 +29,8 @@ entries.push({
   entry: '003-advent',
   component: dynamic(() => import('./003-advent.md')),
 });
+
+entries.push({
+  entry: '004-battery',
+  component: dynamic(() => import('./004-battery.md')),
+});

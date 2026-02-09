@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "nx run public:dev",
-    "build": "nx run public:build"
+    "build": "nx run public:build",
+    "generate": "nx run generator:generate"
   },
   "private": true,
   "devDependencies": {
