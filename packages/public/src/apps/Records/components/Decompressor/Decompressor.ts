@@ -1,16 +1,12 @@
 'use client';
-import { ComponentType, createElement, useMemo } from 'react';
+import { type ComponentType, createElement, useMemo } from 'react';
 import {
+  type CompressedDiscography,
   uncompressDiscography,
-  type getDiscography,
 } from '../../Records.utils';
 
-type Discography = ReturnType<typeof getDiscography> extends Promise<infer R>
-  ? R
-  : never;
-
 interface DecompressorProps<P extends object> {
-  discography: Discography;
+  discography: CompressedDiscography;
   tokens: Array<string>;
   component: ComponentType<P>;
   mapTo?: keyof P;
