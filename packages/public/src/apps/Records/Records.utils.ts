@@ -122,48 +122,55 @@ type Discography = ReturnType<typeof getDiscography> extends Promise<infer R>
 
 const reverse = <T>(input: Array<T>) => [...input].reverse();
 
-export type CompressedDiscography = Array<
-  [number, string, string, string, string, number]
->;
-
 const compressDiscography = (discography: Discography) => {
   const tokens = new TokenStorage();
-  const compressedDiscography: CompressedDiscography = reverse(discography).map(
-    ({ thumb, artist, id, medium, title, year }) => [
+  const compressedDiscography = reverse(discography)
+    .map(({ thumb, artist, id, medium, title, year }) => [
       id,
       artist,
       title,
       compressUrl(thumb, tokens),
       tokens.getToken(medium),
       year,
-    ]
-  );
+    ])
+    .flat();
   return { discography: compressedDiscography, tokens: tokens.getTokens() };
 };
 
 export const getCompressedDiscography = async () =>
   compressDiscography(await getDiscography());
 
+const unflat = <T, R = Array<T>>(input: Array<T>, length: number): Array<R> => {
+  const output: Array<R> = [];
+  for (let i = 0; i < input.length; i += length) {
+    output.push(input.slice(i, i + length) as R);
+  }
+  return output;
+};
+
 export const uncompressDiscography = (
-  discography: CompressedDiscography,
+  discography: Array<string | number>,
   storedTokens: Array<string>
 ) => {
   const tokens = new TokenStorage(storedTokens);
-  const uncompressedDiscography = reverse(discography).map(
-    ([id, artist, title, thumb, medium, year]) => {
-      const record = { id, artist, title, thumb: null, medium: null, year };
-      Object.defineProperty(record, 'thumb', {
-        configurable: false,
-        enumerable: true,
-        get: () => uncompressUrl(thumb, tokens),
-      });
-      Object.defineProperty(record, 'medium', {
-        configurable: false,
-        enumerable: true,
-        get: () => tokens.getString(medium),
-      });
-      return record;
-    }
-  );
+  const uncompressedDiscography = reverse(
+    unflat<string | number, [number, string, string, string, string, number]>(
+      discography,
+      6
+    )
+  ).map(([id, artist, title, thumb, medium, year]) => {
+    const record = { id, artist, title, thumb: null, medium: null, year };
+    Object.defineProperty(record, 'thumb', {
+      configurable: false,
+      enumerable: true,
+      get: () => uncompressUrl(thumb, tokens),
+    });
+    Object.defineProperty(record, 'medium', {
+      configurable: false,
+      enumerable: true,
+      get: () => tokens.getString(medium),
+    });
+    return record;
+  });
   return uncompressedDiscography;
 };

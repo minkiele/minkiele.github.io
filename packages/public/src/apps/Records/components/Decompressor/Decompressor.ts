@@ -1,12 +1,9 @@
 'use client';
 import { type ComponentType, createElement, useMemo } from 'react';
-import {
-  type CompressedDiscography,
-  uncompressDiscography,
-} from '../../Records.utils';
+import { uncompressDiscography } from '../../Records.utils';
 
 interface DecompressorProps<P extends object> {
-  discography: CompressedDiscography;
+  discography: Array<string | number>;
   tokens: Array<string>;
   component: ComponentType<P>;
   mapTo?: keyof P;
