@@ -122,44 +122,60 @@ type Discography = ReturnType<typeof getDiscography> extends Promise<infer R>
 
 const reverse = <T>(input: Array<T>) => [...input].reverse();
 
+// TODO dynamically find the best separator.
+// Won't work anymore when a record contains a pipe character
+const SEP = '|';
+
 const compressDiscography = (discography: Discography) => {
   const tokens = new TokenStorage();
-  const compressedDiscography = reverse(discography)
-    .map(({ thumb, artist, id, medium, title, year }) => [
-      id,
-      artist,
-      title,
-      compressUrl(thumb, tokens),
-      tokens.getToken(medium),
-      year,
-    ])
-    .flat();
-  return { discography: compressedDiscography, tokens: tokens.getTokens() };
+  const compressedDiscography = reverse(discography).map(
+    ({ thumb, artist, id, medium, title, year }) =>
+      [
+        id,
+        artist,
+        title === artist ? '' : title,
+        compressUrl(thumb, tokens),
+        tokens.getToken(medium),
+        year,
+      ].join(SEP)
+  );
+  return {
+    discography: compressedDiscography,
+    tokens: tokens.getTokens().join(SEP),
+    sep: SEP,
+  };
 };
 
 export const getCompressedDiscography = async () =>
   compressDiscography(await getDiscography());
 
-const unflat = <T, R = Array<T>>(input: Array<T>, length: number): Array<R> => {
-  const output: Array<R> = [];
-  for (let i = 0; i < input.length; i += length) {
-    output.push(input.slice(i, i + length) as R);
-  }
-  return output;
+const deserialize = (input: string | number, sep: string) => {
+  const split: Array<string | number> = input.toString().split(sep);
+  split[0] = Number(split[0]);
+  split[5] = Number(split[5]);
+  return split as [number, string, string, string, string, number];
 };
 
 export const uncompressDiscography = (
   discography: Array<string | number>,
-  storedTokens: Array<string>
+  storedTokens: string,
+  sep: string
 ) => {
-  const tokens = new TokenStorage(storedTokens);
-  const uncompressedDiscography = reverse(
-    unflat<string | number, [number, string, string, string, string, number]>(
-      discography,
-      6
-    )
-  ).map(([id, artist, title, thumb, medium, year]) => {
-    const record = { id, artist, title, thumb: null, medium: null, year };
+  const tokens = new TokenStorage(storedTokens.split(SEP));
+  const uncompressedDiscography = reverse(discography).map((serialized) => {
+    const [id, artist, title, thumb, medium, year] = deserialize(
+      serialized,
+      sep
+    );
+    const record = {
+      id,
+      artist,
+      title: title || artist,
+      thumb: null,
+      medium: null,
+      year,
+    };
+
     Object.defineProperty(record, 'thumb', {
       configurable: false,
       enumerable: true,

@@ -4,7 +4,8 @@ import { uncompressDiscography } from '../../Records.utils';
 
 interface DecompressorProps<P extends object> {
   discography: Array<string | number>;
-  tokens: Array<string>;
+  tokens: string;
+  sep: string;
   component: ComponentType<P>;
   mapTo?: keyof P;
   otherProps?: P;
@@ -13,13 +14,14 @@ interface DecompressorProps<P extends object> {
 const Decompressor = <P extends object>({
   discography,
   tokens,
+  sep,
   component: Component,
   mapTo,
   otherProps,
 }: DecompressorProps<P>) => {
   const uncompressedDiscography = useMemo(
-    () => uncompressDiscography(discography, tokens),
-    [discography, tokens]
+    () => uncompressDiscography(discography, tokens, sep),
+    [discography, tokens, sep]
   );
   const props = useMemo(
     () =>

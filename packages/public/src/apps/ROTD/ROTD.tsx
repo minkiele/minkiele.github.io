@@ -3,13 +3,17 @@ import { getCompressedDiscography } from '../Records/Records.utils';
 import Display from './components/Display/Display';
 
 export default async function ROTD() {
-  const { discography: myDiscography, tokens } =
-    await getCompressedDiscography();
+  const {
+    discography: myDiscography,
+    tokens,
+    sep,
+  } = await getCompressedDiscography();
 
   return (
     <Decompressor
       discography={myDiscography}
       tokens={tokens}
+      sep={sep}
       component={Display}
     />
   );
