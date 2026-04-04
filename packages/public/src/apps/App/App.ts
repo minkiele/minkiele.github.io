@@ -143,6 +143,12 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     prefetch: false,
   },
   {
+    route: '/iban',
+    name: 'IBAN',
+    archived: true,
+    prefetch: false,
+  },
+  {
     route: '/EnigmaUI',
     name: 'EnigmaUI (Legacy Version)',
     external: true,
