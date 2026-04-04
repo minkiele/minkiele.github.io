@@ -5,7 +5,7 @@ export const validateIban = (input: string) =>
  * Sanitize and normalize input
  */
 const sanitize = (input: string) =>
-  input.toUpperCase().replace(/[^A-Z0-9]+/, '');
+  input.toUpperCase().replace(/[^A-Z0-9]+/g, '');
 
 /**
  * To validate we must move the first 4 characters at the end of the string
