@@ -17,7 +17,7 @@ export default function IBAN() {
     <fieldset>
       <legend>Validate</legend>
       <label htmlFor="iban">IBAN</label>{' '}
-      <input type="text" id="iban" onChange={handleChange} />
+      <input type="text" id="iban" onChange={handleChange} value={iban} />
       {isVisible &&
         (isValid ? (
           <p>IBAN number {iban} is valid, rejoice!</p>
