@@ -34,3 +34,8 @@ entries.push({
   entry: '004-battery',
   component: dynamic(() => import('./004-battery.md')),
 });
+
+entries.push({
+  entry: '005-circles-in-the-stream',
+  component: dynamic(() => import('./005-circles-in-the-stream.md')),
+});

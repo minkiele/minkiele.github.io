@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from '@/lib/date';
 import { useEffect, useMemo, useReducer } from 'react';
 
 export interface ClockCommands {
@@ -70,7 +70,10 @@ const useClock = (): ClockCommands & ElapsedReducerState => {
     return undefined;
   }, [timeStatus.started]);
 
-  return useMemo(() => ({ ...timeStatus, ...commands }), [commands, timeStatus]);
+  return useMemo(
+    () => ({ ...timeStatus, ...commands }),
+    [commands, timeStatus]
+  );
 };
 
 export default useClock;

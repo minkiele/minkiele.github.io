@@ -2,8 +2,8 @@ import type { getDiscography } from '@/apps/Records/Records.utils';
 import { createStore, useStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import MersenneTwister from 'mersenne-twister';
-import dayjs from 'dayjs';
 import { useEffect } from 'react';
+import dayjs from '@/lib/date';
 
 // Mersenne Twister is a big-ass pseudo-random number generator
 // And feeding the same seed value for 24 hours will provide always the same

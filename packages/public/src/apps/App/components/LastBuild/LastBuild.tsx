@@ -1,5 +1,5 @@
 'use client';
-import dayjs from 'dayjs';
+import dayjs from '@/lib/date';
 import { memo } from 'react';
 
 interface LastBuildProps {
@@ -7,7 +7,9 @@ interface LastBuildProps {
 }
 
 const LastBuild = memo(({ className }: LastBuildProps) => {
-  const date = dayjs(process.env.NEXT_BUILD_TIMESTAMP).startOf('minute');
+  const date = dayjs(process.env.NEXT_BUILD_TIMESTAMP)
+    .tz('Europe/Rome')
+    .startOf('minute');
   return (
     <p className={className}>
       {/* It should automatically reposition itself on mobile / desktop */}

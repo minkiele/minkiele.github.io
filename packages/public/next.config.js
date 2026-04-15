@@ -11,8 +11,11 @@ const nextConfig = {
 const withMdx = require('@next/mdx')({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [require('./remark/remarkPluginRemoveH1')],
-    rehypePlugins: [],
+    remarkPlugins: [
+      require('./remark/remarkPluginRemoveH1'),
+      require('remark-math'),
+    ],
+    rehypePlugins: [require('./remark/rehypeMathML')],
   },
 });
 
