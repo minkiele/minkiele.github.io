@@ -2,91 +2,16 @@
 
 ## Circles in the stream
 
-I wanted to find a formula to find the area of a regular polygon with N sides having only the side length `L`.
+**Update 4/5/2026**, deleted a lot of unnecessary math.
 
-The following is the trigonometrical proof.
+Also, the name comes from a record that I've never listened to, and it was the first thing that came in mind to me when thinking of circles. Whatever.
 
-```math
-l=L/2
-```
+The important things are that
 
-```math
-H=l\cdot\tan(\alpha)
-```
+1. The area of a regular polygon with `N` sides and length `L` is <math display="block" class="tml-display" style="display:block math;"><mrow><mi>A</mi><mo>=</mo><msup><mi>L</mi><mn class="tml-sml-pad">2</mn></msup><mo>⋅</mo><mfrac><mi>N</mi><mrow><mn>4</mn><mo>⋅</mo><mrow><mi>tan</mi><mo>⁡</mo></mrow><mrow><mo fence="true" form="prefix" stretchy="false">(</mo><mi>π</mi><mi>/</mi><mi>N</mi><mo fence="true" form="postfix" stretchy="false">)</mo></mrow></mrow></mfrac></mrow></math>. For a triangle <math display="block" class="tml-display" style="display:block math;"><mrow><msub><mi>A</mi><mn>3</mn></msub><mo>=</mo><mfrac><msqrt><mn>3</mn></msqrt><mn>4</mn></mfrac><mo>⋅</mo><msup><mi>L</mi><mn class="tml-sml-pad">2</mn></msup></mrow></math>, for a square <math display="block" class="tml-display" style="display:block math;"><mrow><msub><mi>A</mi><mn>4</mn></msub><mo>=</mo><msup><mi>L</mi><mn class="tml-sml-pad">2</mn></msup></mrow></math> and for an hexagon <math display="block" class="tml-display" style="display:block math;"><mrow><msub><mi>A</mi><mn>6</mn></msub><mo>=</mo><mfrac><mrow><mn>3</mn><mo>⋅</mo><msqrt><mn>3</mn></msqrt></mrow><mn>2</mn></mfrac><mo>⋅</mo><msup><mi>L</mi><mn class="tml-sml-pad">2</mn></msup></mrow></math>. Big revelation for the square, and the hexagon is 6 times the triangle.
 
-```math
-\beta = π/N
-```
+2. The area of a regular polygon with N sides and a distance R from any corner to the center is <math display="block" class="tml-display" style="display:block math;"><mrow><mi>A</mi><mo>=</mo><msup><mi>R</mi><mn class="tml-med-pad">2</mn></msup><mo>⋅</mo><mi>N</mi><mo>⋅</mo><mrow><mi>sin</mi><mo>⁡</mo></mrow><mrow><mo fence="true" form="prefix" stretchy="false">(</mo><mi>π</mi><mi>/</mi><mi>N</mi><mo fence="true" form="postfix" stretchy="false">)</mo></mrow><mo>⋅</mo><mrow><mi>cos</mi><mo>⁡</mo></mrow><mrow><mo fence="true" form="prefix" stretchy="false">(</mo><mi>π</mi><mi>/</mi><mi>N</mi><mo fence="true" form="postfix" stretchy="false">)</mo></mrow></mrow></math>. The interesting thing here is that a regular polygon with infinite sides it looks pretty similar to a circle. And
+   yes, when N tends to +Infinity N sin(pi/N) cos(pi/N) tends to Pi. Wait, what?<math display="block" class="tml-display" style="display: block math;"><mrow><munder><mi>lim</mi><mrow><mi>N</mi><mo stretchy="false">→</mo><mo form="prefix" stretchy="false">+</mo><mi>∞</mi></mrow></munder><mo>⁡</mo><mspace width="0.1667em"></mspace><mi>N</mi><mo>⋅</mo><mrow><mi>sin</mi><mo>⁡</mo></mrow><mrow><mo fence="true" form="prefix" stretchy="false">(</mo><mi>π</mi><mi>/</mi><mi>N</mi><mo fence="true" form="postfix" stretchy="false">)</mo></mrow><mo>⋅</mo><mrow><mi>cos</mi><mo>⁡</mo></mrow><mrow><mo fence="true" form="prefix" stretchy="false">(</mo><mi>π</mi><mi>/</mi><mi>N</mi><mo fence="true" form="postfix" stretchy="false">)</mo></mrow><mo>=</mo><mi>π</mi></mrow></math>
 
-```math
-\alpha = π/2 - \beta = π/2 - π/N
-```
-
-```math
-\tan(\alpha)=\tan(π/2 - π/N)=\frac{\sin(π/2 - π/N)}{\cos(π/2 - π/N)}=\frac{\cancelto{1}{\sin(π/2)}\cdot\cos(π/N) - \cancel{\cos(π/2) \cdot \sin(π/N)}}{\cancel{\cos(π/2) \cdot \cos(π/N)} + \cancelto{1}{\sin(π/2)} \cdot \sin(π/N)}=\frac{\cos(π/N)}{\sin(π/N)}=\frac{1}{\tan(π/N)}
-```
-
-```math
-A_l=l \cdot H/2
-```
-
-```math
-A_L=2 \cdot A_l=l \cdot H = \frac{L \cdot H}{2}
-```
-
-```math
-H = \frac{L}{2 \cdot tan(π/2)}
-```
-
-```math
-A_N = N \cdot A_L= \frac{N \cdot L \cdot H}{2}=\frac{N \cdot L^2}{4 \cdot \tan(π/N)}
-```
-
-```math
-A_4=\frac{\cancel{4}}{\cancel{4} \cdot \cancelto{1}{\tan(π/4)}} \cdot L^2 = L^2
-```
-
-```math
-A_3=\frac{3}{4 \cdot \tan(π/3)} \cdot L^2 = \frac{1}{4} \cdot \cancelto{\sqrt{3}}{\frac{3}{\sqrt{3}}} \cdot L^2 = \frac{\sqrt{3}}{4} \cdot L^2 = 0,433 \cdot L^2
-```
-
-```math
-A_6=\frac{6}{4 \cdot \tan(π/6)} \cdot L^2 = \frac{\cancelto{3}{6} \cdot \sqrt{3}}{\cancelto{2}{4}} \cdot L^2 = \frac{3 \cdot \sqrt{3}}{2} \cdot L^2 = 2,598 \cdot L^2
-```
-
-After that I was disappointed for the futility and uselessness of the formula,
-and I asked myself what happened if I tried to compute the area of a regular
-polygon having the length from the center to the vertices `R`.
-
-```math
-l=\cos(\alpha) \cdot R = \cos(π/2 - π/N) \cdot R = \cancel{\cos(π/2) \cdot \cos(π/N)} + \cancelto{1}{\sin(π/2)} \cdot \sin(π/N) \cdot R = \sin(π/N) \cdot R
-```
-
-```math
-H=\sin(\alpha) \cdot R = \sin(π/2 - π/N) \cdot R = \cancelto{1}{\sin(π/2)}\cdot\cos(π/N) - \cancel{\cos(π/2) \cdot \sin(π/N)} \cdot R = \cos(π/N) \cdot R
-```
-
-```math
-A_L=2 \cdot A_l=l \cdot H = \sin(π/N) \cdot R \cdot \cos(π/N) \cdot R = R^2 \cdot \sin(π/N) \cdot \cos(π/N)
-```
-
-```math
-A_N = N \cdot A_L = N \cdot \sin(π/N) \cdot \cos(π/N) \cdot R^2
-```
-
-And this form
-
-```math
-t = π/N \implies N = π/t
-```
-
-```math
-\lim_{N \rightarrow +\infin} N \cdot \sin(π/N) \cdot \cos(π/N) = \lim_{t \rightarrow 0} π/t \cdot \sin(t) \cdot \cos(t) = \lim_{t \rightarrow 0} π \cdot \cancelto{1}{\frac{\sin(t)}{t}} \cdot \cancelto{1}{\cos(t)} = π
-```
-
-So the area of a regular polygon an infinite number of sides and distance
-from center and vertex R is actually the area of a circle of radius R.
-
-```math
-A_{+\infin} = π \cdot R^2
-```
+3. Also I had mathematical proof that <math display="block" class="tml-display" style="display:block math;"><mrow><mrow><munderover><mo movablelimits="false">∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover></mrow><msup><mi>i</mi><mn>3</mn></msup><mo>=</mo><msup><mrow><mo fence="true" form="prefix" stretchy="true">(</mo><mfrac><mrow><mi>i</mi><mo>⋅</mo><mrow><mo fence="true" form="prefix" stretchy="false">(</mo><mi>i</mi><mo>+</mo><mn>1</mn><mo fence="true" form="postfix" stretchy="false">)</mo></mrow></mrow><mn>2</mn></mfrac><mo fence="true" form="postfix" stretchy="true">)</mo></mrow><mn>2</mn></msup></mrow></math>
+   ...but seriously, who cares.
