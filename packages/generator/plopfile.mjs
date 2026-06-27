@@ -9,12 +9,10 @@ function data(offset = 0) {
       output += 1;
     }
     return {
-      data: {
-        next: output.toLocaleString('it', {
-          minimumIntegerDigits: 3,
-          maximumFractionDigits: 0,
-        }),
-      },
+      next: output.toLocaleString('it', {
+        minimumIntegerDigits: 3,
+        maximumFractionDigits: 0,
+      }),
     };
   };
 }
@@ -34,13 +32,13 @@ export default function (plop) {
         type: 'add',
         path: '../public/src/apps/Journal/entries/{{next}}-{{kebabCase name}}.md',
         templateFile: 'templates/new-entry.hbs',
-        ...data(),
+        data: data(),
       },
       {
         type: 'append',
         path: '../public/src/apps/Journal/entries/index.ts',
         templateFile: 'templates/add-entry.hbs',
-        ...data(-1),
+        data: data(-1),
       },
     ],
   });
