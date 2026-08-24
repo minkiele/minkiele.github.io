@@ -149,6 +149,12 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     prefetch: false,
   },
   {
+    route: '/qr',
+    name: 'QR code',
+    archived: true,
+    prefetch: false,
+  },
+  {
     route: '/EnigmaUI',
     name: 'EnigmaUI (Legacy Version)',
     external: true,
