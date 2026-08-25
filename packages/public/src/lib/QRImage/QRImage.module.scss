@@ -1,0 +1,6 @@
+@use '../../styles/colors';
+
+:export {
+  dark: colors.$fg-color;
+  light: colors.$bg-color;
+}

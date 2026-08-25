@@ -11,6 +11,7 @@ import { lazyRouteComponents } from '@/apps/App/App';
 import AppThemeSelector from '@/apps/App/AppThemeSelector';
 import { UseGoogleAnalyticsPageviews } from '@/apps/App/App.analytics';
 import LastBuild from '@/apps/App/components/LastBuild/LastBuild';
+import Sharer from '@/apps/App/components/Sharer/Sharer';
 
 export const metadata: Metadata = {
   title: {
@@ -90,11 +91,13 @@ export default function Layout({ children }: { children: ReactNode }) {
             <Nav menu={lazyRouteComponents} />
             <AppThemeSelector />
             <LastBuild className="last-build" />
+            <Sharer className="sharer" />
           </aside>
           <div id="article-wrapper">
             <article id="main-article">{children}</article>
-            <footer className="last-build">
+            <footer className="last-build sharer">
               <LastBuild />
+              <Sharer />
             </footer>
           </div>
         </div>

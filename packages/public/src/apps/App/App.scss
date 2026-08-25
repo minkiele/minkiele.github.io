@@ -29,13 +29,19 @@
       }
     }
 
-    > .last-build {
-      display: none;
+    > {
+      .last-build,
+      .sharer {
+        display: none;
+      }
     }
   }
 
-  #article-wrapper > .last-build {
-    display: block;
+  #article-wrapper > {
+    .last-build,
+    .sharer {
+      display: block;
+    }
   }
 
   @media (min-width: 768px) {
@@ -56,15 +62,19 @@
         }
       }
 
-      .last-build {
+      .last-build,
+      .sharer {
         display: block;
       }
     }
 
     #article-wrapper {
       width: calc(100% - #{$width});
-      > .last-build {
-        display: none;
+      > {
+        .last-build,
+        .sharer {
+          display: none;
+        }
       }
     }
   }

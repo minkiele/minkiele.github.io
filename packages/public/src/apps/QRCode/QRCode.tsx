@@ -1,12 +1,12 @@
 'use client';
 
 import { ChangeEventHandler, useEffect, useState } from 'react';
-import QRCodeLib from 'qrcode';
-import Image from 'next/image';
-import { isNullOrEmpty } from '@/lib/utils';
 import styles from './QRCode.module.scss';
+import dynamic from 'next/dynamic';
 
 export { default as ReadmeMd } from './README.md';
+
+const QRImage = dynamic(() => import('@/lib/QRImage/QRImage'));
 
 export default function QRCode() {
   const [content, setContent] = useState('');
@@ -19,31 +19,16 @@ export default function QRCode() {
     setContent(evt.target.value);
   };
 
-  const [encoded, setEncoded] = useState<string>();
-
-  useEffect(() => {
-    if (!isNullOrEmpty(content)) {
-      QRCodeLib.toDataURL(content, {
-        color: {
-          dark: styles.dark,
-          light: styles.light,
-        },
-      }).then(setEncoded);
-    }
-  }, [content]);
-
   return (
     <>
       <div className={styles.qrcontainer}>
-        {encoded ? (
-          <Image
-            src={encoded}
-            alt="QRCode"
-            width="256"
-            height="256"
-            className={styles.qr}
-          />
-        ) : undefined}
+        <QRImage
+          src={content}
+          alt={`QR code representation of ${content}`}
+          width="256"
+          height="256"
+          className={styles.qr}
+        />
       </div>
       <fieldset>
         <legend>Controls</legend>
