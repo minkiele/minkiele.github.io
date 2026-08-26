@@ -12,5 +12,7 @@ declare module NodeJS {
     readonly NEXT_PUBLIC_GTM_ID?: string;
     // This exists only at build time so it is marked optional
     readonly NEXT_BUILD_TIMESTAMP?: string;
+    // Don't like the share button
+    readonly NEXT_SHARE: 'true' | 'false';
   }
 }

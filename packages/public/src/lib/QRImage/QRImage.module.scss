@@ -1,6 +1,17 @@
 @use '../../styles/colors';
+@use 'sass:color' as c;
+@use 'sass:string' as s;
+
+// Apparently SASS function that force a color in RCB does not exist anymore
+@function to-hex($input) {
+  $ie-hex: c.ie-hex-str($input);
+  $output: s.slice($ie-hex, 4);
+  @return #{'#'}#{$output};
+}
 
 :export {
-  dark: colors.$fg-color;
-  light: colors.$bg-color;
+  lightFg: to-hex(colors.$fg-color);
+  lightBg: to-hex(colors.$bg-color);
+  darkFg: to-hex(colors.$dark-fg-color);
+  darkBg: to-hex(colors.$dark-bg-color);
 }

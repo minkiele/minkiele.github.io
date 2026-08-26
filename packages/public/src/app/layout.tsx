@@ -34,6 +34,8 @@ const inconsolata = InconsolataFont({
   subsets: ['latin'],
 });
 
+const isShareActive = process.env.NEXT_SHARE !== 'false';
+
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
@@ -91,13 +93,13 @@ export default function Layout({ children }: { children: ReactNode }) {
             <Nav menu={lazyRouteComponents} />
             <AppThemeSelector />
             <LastBuild className="last-build" />
-            <Sharer className="sharer" />
+            {isShareActive && <Sharer className="sharer" />}
           </aside>
           <div id="article-wrapper">
             <article id="main-article">{children}</article>
             <footer className="last-build sharer">
               <LastBuild />
-              <Sharer />
+              {isShareActive && <Sharer />}
             </footer>
           </div>
         </div>

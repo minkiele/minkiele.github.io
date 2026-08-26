@@ -4,8 +4,10 @@ export type UseThemeType = 'light' | 'dark';
 
 const STORAGE_KEY = 'io.github.minkiele.theme';
 
-let envTheme = process.env.NEXT_PUBLIC_DEFAULT_THEME as UseThemeType | undefined;
-if(envTheme !== 'light' && envTheme !== 'dark') {
+let envTheme = process.env.NEXT_PUBLIC_DEFAULT_THEME as
+  | UseThemeType
+  | undefined;
+if (envTheme !== 'light' && envTheme !== 'dark') {
   envTheme = undefined;
 }
 
@@ -41,6 +43,37 @@ const useTheme = (defaultTheme: UseThemeType | undefined = envTheme) => {
     document.querySelector('html')?.classList.toggle('dark', theme === 'dark');
   }, [theme]);
   return { theme, setTheme };
+};
+
+export const useWatchTheme = () => {
+  const [theme, setTheme] = useState<UseThemeType>();
+  const updateThemeFromDOM = useCallback(
+    (html: HTMLHtmlElement) => {
+      setTheme(html.classList.contains('dark') ? 'dark' : 'light');
+    },
+    [setTheme]
+  );
+  useEffect(() => {
+    const html = document.querySelector('html');
+
+    const observer = new MutationObserver((mutationList) => {
+      updateThemeFromDOM(mutationList[0]?.target as HTMLHtmlElement);
+    });
+
+    if (html != null) {
+      updateThemeFromDOM(html);
+      observer.observe(html, {
+        attributes: true,
+        attributeFilter: ['class'],
+        childList: false,
+        subtree: false,
+      });
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, [updateThemeFromDOM]);
+  return theme;
 };
 
 export default useTheme;

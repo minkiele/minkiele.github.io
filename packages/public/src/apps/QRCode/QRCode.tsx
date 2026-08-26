@@ -3,6 +3,7 @@
 import { ChangeEventHandler, useEffect, useState } from 'react';
 import styles from './QRCode.module.scss';
 import dynamic from 'next/dynamic';
+import { useWatchTheme } from '@/hooks/useTheme';
 
 export { default as ReadmeMd } from './README.md';
 
@@ -10,6 +11,8 @@ const QRImage = dynamic(() => import('@/lib/QRImage/QRImage'));
 
 export default function QRCode() {
   const [content, setContent] = useState('');
+
+  const theme = useWatchTheme();
 
   useEffect(() => {
     setContent(window.location.href);
@@ -28,6 +31,7 @@ export default function QRCode() {
           width="256"
           height="256"
           className={styles.qr}
+          theme={theme}
         />
       </div>
       <fieldset>

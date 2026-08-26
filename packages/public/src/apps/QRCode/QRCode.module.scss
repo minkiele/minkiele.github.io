@@ -27,6 +27,6 @@
 
 @include mixins.when-dark() {
   .qr {
-    border: 0;
+    border-color: colors.$dark-fg;
   }
 }
