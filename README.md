@@ -3,8 +3,8 @@
 ## Instructions to build the project
 
 1. Checkout this repository
-2. Run `npm install`
-3. Run `npx nx run public:build` to build the project and generate the public files
+2. Run `npm ci`
+3. Run `npm run build` to build the project and generate the public files.
 4. Host it somewhere.
 
 ## What about env vars?

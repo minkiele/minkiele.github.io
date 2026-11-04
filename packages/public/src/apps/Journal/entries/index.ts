@@ -39,3 +39,8 @@ entries.push({
   entry: '005-circles-in-the-stream',
   component: dynamic(() => import('./005-circles-in-the-stream.md')),
 });
+
+entries.push({
+  entry: '006-tango',
+  component: dynamic(() => import('./006-tango.md')),
+});
