@@ -1,9 +1,11 @@
-allLazyRouteComponents.push({
-    route: '/{{appRoute}}',
-    name: '{{appName}}',
-    external: {{appExternal}},
-    archived: {{appArchived}},
-    setTitle: {{appSetTitle}},
-    list: {{appList}},
-    prefetch: {{appPrefetch}},
-  });
+{
+  route: '/{{kebabCase name}}',
+  name: '{{name}}',
+  {{#if external}}external: true,{{/if}}
+  {{#if archived}}archived: true,{{/if}}
+  {{#unless setTitle}}setTitle: false,{{/unless}}
+  {{#unless list}}list: false,{{/unless}}
+  {{#unless prefetch}}prefetch: false,{{/unless}}
+  {{#if order includeZero=true}}order: {{order}},{{/if}}
+},
+/* please append other routes before this comment */

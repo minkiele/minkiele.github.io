@@ -1,8 +1,8 @@
 import { getAppAndMetadata } from '@/apps/App/AppWrapper';
-import Base{{appName}}, { ReadmeMd } from '@/apps/{{appPath}}';
-const { metadata, App: {{appName}} } = getAppAndMetadata('/{{appRoute}}', {
-  app: Base{{appName}},
+import Base{{pascalCase name}}, { ReadmeMd } from '@/apps/{{pascalCase name}}/{{pascalCase name}}';
+const { metadata, App: {{pascalCase name}} } = getAppAndMetadata('/{{kebabCase name}}', {
+  app: Base{{pascalCase name}},
   readme: ReadmeMd,
 });
-export default {{appName}};
+export default {{pascalCase name}};
 export { metadata };
