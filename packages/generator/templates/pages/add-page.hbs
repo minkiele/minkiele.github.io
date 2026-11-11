@@ -1,0 +1,8 @@
+import { getAppAndMetadata } from '@/apps/App/AppWrapper';
+import Base{{appName}}, { ReadmeMd } from '@/apps/{{appPath}}';
+const { metadata, App: {{appName}} } = getAppAndMetadata('/{{appRoute}}', {
+  app: Base{{appName}},
+  readme: ReadmeMd,
+});
+export default {{appName}};
+export { metadata };
