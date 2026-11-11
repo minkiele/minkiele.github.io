@@ -165,6 +165,7 @@ export const allLazyRouteComponents: Array<LazyRouteComponent> = [
     name: 'The Archive',
     prefetch: false,
   },
+  /* please append other routes before this comment */
 ].sort(sortRoutes);
 
 export const lazyRouteComponents = allLazyRouteComponents.filter(
