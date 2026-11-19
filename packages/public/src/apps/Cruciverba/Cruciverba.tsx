@@ -458,6 +458,16 @@ function Cruciverba() {
   const handleKeyDownNavigateFactory =
     (row: number, col: number): KeyboardEventHandler<HTMLInputElement> =>
     (evt) => {
+      if (
+        (evt.altKey || evt.metaKey) &&
+        (evt.key === 'ArrowUp' ||
+          evt.key === 'ArrowDown' ||
+          evt.key === 'ArrowLeft' ||
+          evt.key === 'ArrowRight')
+      ) {
+        evt.preventDefault();
+        return undefined;
+      }
       if (evt.key === ' ') {
         // Must prevent default otherwise page will slide down!
         evt.preventDefault();
@@ -557,6 +567,16 @@ function Cruciverba() {
         }
       }
     };
+
+  const handleToggleDirection: KeyboardEventHandler<HTMLElement> = (evt) => {
+    if (evt.altKey || evt.metaKey) {
+      if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
+        dispatch.setDirection({ direction: 'V' });
+      } else if (evt.key === 'ArrowLeft' || evt.key === 'ArrowRight') {
+        dispatch.setDirection({ direction: 'H' });
+      }
+    }
+  };
 
   const isIncrociObbligatiMode =
     ROWS === INCROCI_OBBLIGATI_ROWS &&
@@ -789,10 +809,10 @@ function Cruciverba() {
   );
 
   return (
-    <>
+    <div onKeyUp={handleToggleDirection}>
       <div className={styles.app_wrapper}>{renderedApp}</div>
       {settings}
-    </>
+    </div>
   );
 }
 
