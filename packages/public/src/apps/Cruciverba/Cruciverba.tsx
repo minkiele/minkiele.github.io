@@ -10,12 +10,14 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 export { default as ReadmeMd } from './README.md';
 import styles from './Cruciverba.module.scss';
 import classNames from 'classnames';
 import { createStore, useStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import Emoji from '../App/components/Emoji/Emoji';
 
 const DEFAULT_ROWS = 12;
 const DEFAULT_COLS = 22;
@@ -51,7 +53,8 @@ type ReducerSimpleAction =
   | 'setIncrociObbligatiMode'
   | 'setRicercaMode'
   | 'wipe'
-  | 'setCorniciConcentricheMode';
+  | 'setCorniciConcentricheMode'
+  | 'toggleDirection';
 
 type ReducerAction =
   | {
@@ -335,6 +338,11 @@ const store = createStore<ZuState>()(
         state.direction = action.direction;
       });
     },
+    toggleDirection: () => {
+      set((state) => {
+        state.direction = state.direction === 'H' ? 'V' : 'H';
+      });
+    },
   }))
 );
 
@@ -458,6 +466,16 @@ function Cruciverba() {
   const handleKeyDownNavigateFactory =
     (row: number, col: number): KeyboardEventHandler<HTMLInputElement> =>
     (evt) => {
+      if (
+        (evt.altKey || evt.metaKey) &&
+        (evt.key === 'ArrowUp' ||
+          evt.key === 'ArrowDown' ||
+          evt.key === 'ArrowLeft' ||
+          evt.key === 'ArrowRight')
+      ) {
+        evt.preventDefault();
+        return undefined;
+      }
       if (evt.key === ' ') {
         // Must prevent default otherwise page will slide down!
         evt.preventDefault();
@@ -558,6 +576,22 @@ function Cruciverba() {
       }
     };
 
+  const handleChangeDirectionKeys: KeyboardEventHandler<HTMLElement> = (
+    evt
+  ) => {
+    if (evt.altKey || evt.metaKey) {
+      if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
+        dispatch.setDirection({ direction: 'V' });
+      } else if (evt.key === 'ArrowLeft' || evt.key === 'ArrowRight') {
+        dispatch.setDirection({ direction: 'H' });
+      }
+    }
+  };
+
+  const handleToggleDirection: MouseEventHandler<HTMLButtonElement> = () => {
+    dispatch.toggleDirection();
+  };
+
   const isIncrociObbligatiMode =
     ROWS === INCROCI_OBBLIGATI_ROWS &&
     COLS === INCROCI_OBBLIGATI_COLS &&
@@ -601,10 +635,31 @@ function Cruciverba() {
     }
   }, [ROWS, COLS]);
 
+  const tableRef = useRef<HTMLTableElement | null>(null);
+
+  const [isIntersecting, setIntersecting] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (tableRef.current) {
+      const intObserver = new IntersectionObserver(
+        ([{ isIntersecting: isObservedIntersecting }]) => {
+          setIntersecting(isObservedIntersecting);
+        },
+        {
+          rootMargin: '0px 0px -80% 0px',
+        }
+      );
+      intObserver.observe(tableRef.current);
+      return () => {
+        intObserver.disconnect();
+      };
+    }
+  }, []);
+
   // Workaround to avoid a whole tab shifting
   const renderedApp = (
     <div className={styles.app}>
-      <table className={styles.app_table}>
+      <table ref={tableRef} className={styles.app_table}>
         <caption className={styles.app_caption}>
           {isIncrociObbligatiMode
             ? 'Incroci Obbligati'
@@ -789,10 +844,28 @@ function Cruciverba() {
   );
 
   return (
-    <>
+    <div onKeyUp={handleChangeDirectionKeys}>
       <div className={styles.app_wrapper}>{renderedApp}</div>
+      <div
+        className={classNames(styles.app_sticky, {
+          [styles.app_sticky__visible]: isIntersecting,
+        })}
+      >
+        <button
+          aria-label={
+            direction === 'H'
+              ? 'Moving horizontally, press this button to move vertically'
+              : 'Moving vertically, press this button to move horizontally'
+          }
+          type="button"
+          onClick={handleToggleDirection}
+        >
+          {direction === 'H' && <Emoji>⭤</Emoji>}
+          {direction === 'V' && <Emoji>⭥</Emoji>}
+        </button>
+      </div>
       {settings}
-    </>
+    </div>
   );
 }
 
