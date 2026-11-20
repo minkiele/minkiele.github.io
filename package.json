@@ -14,5 +14,11 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "allowScripts": {
+    "@parcel/watcher@2.5.1": true,
+    "fsevents@2.3.3": true,
+    "nx@22.3.3": true,
+    "unrs-resolver@1.11.1": true
+  }
 }
