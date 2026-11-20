@@ -42,11 +42,6 @@ export default function Layout({ children }: { children: ReactNode }) {
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/logo192.png" />
-        {/*
-          manifest.json provides metadata used when your web app is installed on a
-          user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-        */}
-        <link rel="manifest" href="/manifest.json" />
         {!isNullOrEmpty(process.env.NEXT_PUBLIC_ANALYTICS_ID) && (
           <>
             <Script
