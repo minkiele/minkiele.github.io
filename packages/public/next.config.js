@@ -34,6 +34,7 @@ module.exports = async (phase) => {
           config.plugins.push(
             new GenerateSW({
               swDest: `${__dirname}/public/service-worker.js`,
+              exclude: [/manifest\.js(on)?$/i],
               runtimeCaching: [
                 {
                   handler: 'CacheFirst',
