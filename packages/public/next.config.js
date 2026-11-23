@@ -38,7 +38,7 @@ module.exports = async (phase) => {
               runtimeCaching: [
                 {
                   handler: 'CacheFirst',
-                  urlPattern: /discogs/,
+                  urlPattern: /^https:\/\/i\.discogs\.com\/.+\.jpeg$/,
                 },
               ],
             })
