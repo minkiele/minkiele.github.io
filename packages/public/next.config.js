@@ -28,6 +28,26 @@ module.exports = async (phase) => {
         // Every time we build the app invalidate the request for Discogs API
         NEXT_BUILD_TIMESTAMP: new Date().toISOString(),
       },
+      webpack: (config, options) => {
+        if (!options.isServer && !options.dev) {
+          const { GenerateSW } = require('workbox-webpack-plugin');
+          config.plugins.push(
+            new GenerateSW({
+              swDest: `${__dirname}/public/service-worker.js`,
+              runtimeCaching: [
+                {
+                  handler: 'CacheFirst',
+                  urlPattern: /discogs/,
+                },
+              ],
+            })
+          );
+        }
+        if (nextConfigWidthMdx.webpack) {
+          return nextConfigWidthMdx.webpack(config, options);
+        }
+        return config;
+      },
     };
   }
   return nextConfigWidthMdx;

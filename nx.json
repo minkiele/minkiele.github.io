@@ -20,5 +20,6 @@
   "tui": {
     "enabled": true,
     "autoExit": true
-  }
+  },
+  "analytics": false
 }

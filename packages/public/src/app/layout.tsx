@@ -12,6 +12,7 @@ import AppThemeSelector from '@/apps/App/AppThemeSelector';
 import { UseGoogleAnalyticsPageviews } from '@/apps/App/App.analytics';
 import LastBuild from '@/apps/App/components/LastBuild/LastBuild';
 import Sharer from '@/apps/App/components/Sharer/Sharer';
+import AppSW from '@/apps/App/App.sw';
 
 export const metadata: Metadata = {
   title: {
@@ -101,6 +102,8 @@ export default function Layout({ children }: { children: ReactNode }) {
         <Suspense fallback={null}>
           <UseGoogleAnalyticsPageviews />
         </Suspense>
+
+        <AppSW />
       </body>
     </html>
   );
