@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   reactStrictMode: true,
@@ -29,7 +30,7 @@ module.exports = async (phase) => {
         NEXT_BUILD_TIMESTAMP: new Date().toISOString(),
       },
       webpack: (config, options) => {
-        if (!options.isServer && !options.dev) {
+        if (!options.isServer) {
           const { GenerateSW } = require('workbox-webpack-plugin');
           config.plugins.push(
             new GenerateSW({
@@ -39,6 +40,19 @@ module.exports = async (phase) => {
                 {
                   handler: 'CacheFirst',
                   urlPattern: /^https:\/\/i\.discogs\.com\/.+\.jpeg$/,
+                  options: {
+                    cacheName: 'discogs-cache',
+                    plugins: [
+                      {
+                        // Unfortunately we can't use CacheableResponsePlugin
+                        // provided out of the box by Workbox because it will break the build
+                        cacheWillUpdate: async ({ response }) =>
+                          response.status === 0 || response.status === 200
+                            ? response
+                            : undefined,
+                      },
+                    ],
+                  },
                 },
               ],
             })
