@@ -20,6 +20,8 @@ const nextConfigWidthMdx = withMdx(nextConfig);
 
 const { PHASE_PRODUCTION_BUILD } = require('next/constants');
 
+const { globSync: glob } = require('glob');
+
 module.exports = async (phase) => {
   if (phase === PHASE_PRODUCTION_BUILD) {
     return {
@@ -36,6 +38,9 @@ module.exports = async (phase) => {
             new GenerateSW({
               swDest: `${__dirname}/public/service-worker.js`,
               exclude: [/manifest\.js(on)?$/i],
+              additionalManifestEntries: glob('assets/**/*', {
+                cwd: `${__dirname}/public`,
+              }).map((entry) => `/${entry}`),
               runtimeCaching: [
                 {
                   handler: 'CacheFirst',
