@@ -37,7 +37,7 @@ module.exports = async (phase) => {
           config.plugins.push(
             new GenerateSW({
               swDest: `${__dirname}/public/service-worker.js`,
-              exclude: [/manifest\.js(on)?$/i],
+              exclude: [/\.map$/i, /manifest\.js(on)?$/i],
               additionalManifestEntries: glob('assets/**/*', {
                 cwd: `${__dirname}/public`,
               }).map((entry) => `/${entry}`),
@@ -60,6 +60,8 @@ module.exports = async (phase) => {
                   },
                 },
               ],
+              // Deactivate old SW and re-activate the current version as soon as it gets activated
+              clientsClaim: true,
             })
           );
         }
