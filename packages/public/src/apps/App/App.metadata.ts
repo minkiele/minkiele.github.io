@@ -1,24 +1,25 @@
-import { Metadata } from "next";
-import { allLazyRouteComponents } from "./App";
+import { Metadata } from 'next';
+import { allLazyRouteComponents } from './App';
 
 export const getMetadata = (
-    route: string,
-    meta?: Partial<Metadata>
-  ): Metadata => {
-    const props = allLazyRouteComponents.find(
-      (lazyRouteComponent) => lazyRouteComponent.route === route
-    );
-    if (props == null) {
-      throw new Error("Route not found");
-    }
-    return {
-      ...(props.setTitle !== false && { title: props.name }),
-      ...meta,
-    }
-  };
-
-  export const getPageName = (route: string): string | undefined => {
-    return allLazyRouteComponents.find(
-      (lazyRouteComponent) => lazyRouteComponent.route === route
-    )?.name
+  route: string,
+  meta?: Partial<Metadata>
+): Metadata => {
+  const props = allLazyRouteComponents.find(
+    (lazyRouteComponent) => lazyRouteComponent.route === route
+  );
+  if (props == null) {
+    throw new Error('Route not found');
   }
+  return {
+    ...(props.setTitle !== false && { title: props.name }),
+    ...(props.description && { description: props.description }),
+    ...meta,
+  };
+};
+
+export const getPageName = (route: string): string | undefined => {
+  return allLazyRouteComponents.find(
+    (lazyRouteComponent) => lazyRouteComponent.route === route
+  )?.name;
+};

@@ -49,16 +49,20 @@ const Nav: FunctionComponent<NavProps> = ({
               prefetch = true,
               archived = false,
               external = false,
+              description,
             }) => (
               <li key={route}>
                 {external ? (
                   // Link to external urls that are not part of the NextJS routing
-                  <a href={route}>{name}</a>
+                  <a href={route} title={description}>
+                    {name}
+                  </a>
                 ) : (
                   /* Do not prefetch archived apps or apps where prefetch was explicitly disabled */
                   <Link
                     href={route}
                     prefetch={!prefetch || archived ? false : undefined}
+                    title={description}
                   >
                     {name}
                   </Link>

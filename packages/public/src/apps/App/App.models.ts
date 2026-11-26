@@ -9,4 +9,5 @@ export interface LazyRouteComponent {
   order?: number;
   list?: boolean;
   external?: boolean;
+  description?: string;
 }
